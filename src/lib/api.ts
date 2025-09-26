@@ -1,18 +1,63 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
-// Helper function for API calls with credentials
+// Helper function to get JWT token from localStorage
+const getAuthToken = (): string | null => {
+  return localStorage.getItem('access_token');
+};
+
+// Helper function for API calls with JWT authentication
 export async function apiCall(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<Response> {
+  const token = getAuthToken();
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Add Authorization header if token exists
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    credentials: 'include', // Always include cookies
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers,
   });
+
+  // If token is invalid/expired, try to refresh it
+  if (response.status === 401) {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (refreshToken) {
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/api/refresh`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          localStorage.setItem('access_token', refreshData.access_token);
+          
+          // Retry the original request with new token
+          headers['Authorization'] = `Bearer ${refreshData.access_token}`;
+          return fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers,
+          });
+        }
+      } catch (error) {
+        console.error('Token refresh failed:', error);
+        // Clear tokens if refresh fails
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+      }
+    }
+  }
 
   return response;
 }
