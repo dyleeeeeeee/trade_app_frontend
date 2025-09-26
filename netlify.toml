@@ -5,7 +5,7 @@
 # Proxy all API requests to Railway backend
 [[redirects]]
   from = "/api/*"
-  to = "https://protective-optimism-production-d4a3.up.railway.app/api/:splat"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/:splat"
   status = 200
   force = true
 

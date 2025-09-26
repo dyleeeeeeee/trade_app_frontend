@@ -36,9 +36,7 @@ export default function ForgotPassword() {
       <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-border">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-              <TrendingUp className="h-7 w-7 text-primary-foreground" />
-            </div>
+            <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
           </div>
           <CardTitle className="text-2xl">Reset Password</CardTitle>
           <CardDescription>
