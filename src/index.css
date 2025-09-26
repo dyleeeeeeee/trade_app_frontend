@@ -66,6 +66,75 @@ All colors MUST be HSL.
     --transition-base: all 0.2s ease;
     --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Enhanced animations */
+    --animation-fade-in: fadeIn 0.5s ease-in-out;
+    --animation-slide-up: slideUp 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --animation-slide-in-right: slideInRight 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --animation-scale-in: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --animation-pulse-soft: pulseSoft 2s infinite;
+  }
+}
+
+/* Enhanced keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
   }
 }
 
@@ -74,21 +143,119 @@ All colors MUST be HSL.
   * {
     @apply transition-[var(--transition-fast)];
   }
-  
+
   .smooth-transition {
     @apply transition-all duration-300 ease-in-out;
   }
-  
+
   .hover-lift {
     @apply transform transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg;
   }
-  
+
   .hover-glow {
     @apply transition-all duration-300 hover:shadow-glow;
   }
-  
+
   .card-hover {
     @apply transition-all duration-300 hover:shadow-xl hover:scale-[1.02];
+  }
+
+  /* Enhanced button animations */
+  .btn-animated {
+    @apply relative overflow-hidden transition-all duration-200;
+  }
+
+  .btn-animated::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full transition-transform duration-600;
+  }
+
+  .btn-animated:hover::before {
+    @apply translate-x-full;
+  }
+
+  /* Loading shimmer */
+  .shimmer {
+    @apply relative overflow-hidden bg-gradient-to-r from-muted via-muted/50 to-muted;
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  /* Mobile-first responsive improvements */
+  .mobile-safe {
+    @apply px-4 sm:px-6 md:px-8;
+  }
+
+  /* Smooth page transitions */
+  .page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .page-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .page-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Enhanced mobile menu animations */
+  .mobile-menu-enter {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+
+  .mobile-menu-enter-active {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .mobile-menu-exit {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+
+  .mobile-menu-exit-active {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  /* Card stagger animations */
+  .stagger-children > * {
+    animation: slideUp 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Enhanced focus states for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
   }
 }
 

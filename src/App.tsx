@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { PageTransition } from "@/components/PageTransition";
 import { Suspense, lazy } from "react";
 
 // Eager load critical components
@@ -43,54 +44,56 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/security" element={<Security />} />
-              <Route path="/kyc" element={
-                <ProtectedRoute>
-                  <KYC />
-                </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/wallet" element={
-                <ProtectedRoute>
-                  <Wallet />
-                </ProtectedRoute>
-              } />
-              <Route path="/strategies" element={
-                <ProtectedRoute>
-                  <Strategies />
-                </ProtectedRoute>
-              } />
-              <Route path="/trading" element={
-                <ProtectedRoute>
-                  <Trading />
-                </ProtectedRoute>
-              } />
-              <Route path="/copy-trading" element={
-                <ProtectedRoute>
-                  <CopyTrading />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin" element={
-                <ProtectedRoute requireAdmin>
-                  <Admin />
-                </ProtectedRoute>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+          <PageTransition>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/security" element={<Security />} />
+                <Route path="/kyc" element={
+                  <ProtectedRoute>
+                    <KYC />
+                  </ProtectedRoute>
+                } />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/wallet" element={
+                  <ProtectedRoute>
+                    <Wallet />
+                  </ProtectedRoute>
+                } />
+                <Route path="/strategies" element={
+                  <ProtectedRoute>
+                    <Strategies />
+                  </ProtectedRoute>
+                } />
+                <Route path="/trading" element={
+                  <ProtectedRoute>
+                    <Trading />
+                  </ProtectedRoute>
+                } />
+                <Route path="/copy-trading" element={
+                  <ProtectedRoute>
+                    <CopyTrading />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                  <ProtectedRoute requireAdmin>
+                    <Admin />
+                  </ProtectedRoute>
+                } />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </PageTransition>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

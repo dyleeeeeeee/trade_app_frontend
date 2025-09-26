@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 // Declare iconify-icon for TypeScript
 declare global {
@@ -12,26 +13,53 @@ declare global {
 
 export default function Landing() {
   const [activeTab, setActiveTab] = useState('login');
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+
+  // Animation variants
+  const fadeInUp = {
+    initial: { opacity: 0, y: 30 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }
+  };
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   return (
     <div className="homepage bg-dark text-white">
       {/* Navigation */}
-      <nav className="navbar navbar-expand-lg container-fluid p-4">
+      <motion.nav
+        style={{ opacity }}
+        className="navbar navbar-expand-lg container-fluid p-4 bg-card/50 backdrop-blur-xl sticky top-0 z-50"
+      >
         <div className="container-fluid">
-          <div className="main-logo">
+          <motion.div
+            className="main-logo"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
             <Link to="/" className="d-block">
               <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
             </Link>
-          </div>
-          <button
-            className="navbar-toggler"
+          </motion.div>
+
+          <motion.button
+            className="navbar-toggler md:hidden p-2 hover:bg-primary/10 rounded-lg transition-colors"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar"
+            whileTap={{ scale: 0.95 }}
           >
-            <iconify-icon icon="system-uicons:menu-hamburger" className="hamburger-menu"></iconify-icon>
-          </button>
+            <iconify-icon icon="system-uicons:menu-hamburger" className="hamburger-menu h-6 w-6"></iconify-icon>
+          </motion.button>
+
           <div className="offcanvas offcanvas-end" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div className="offcanvas-header">
               <h5 className="offcanvas-title text-white" id="offcanvasNavbarLabel">Menu</h5>
@@ -40,55 +68,52 @@ export default function Landing() {
             <div className="offcanvas-body justify-content-lg-between">
               <div className="main-menu text-center d-lg-flex align-items-center">
                 <ul className="menu-list list-unstyled d-lg-flex content-light m-0">
-                  <li className="menu-item text-uppercase">
-                    <a className="fw-bold" href="#billboard">Home</a>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold" to="/about">About</Link>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold" to="/services">Services</Link>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold" to="/contact">Contact</Link>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <a className="fw-bolder text-primary" href="https://templatesjungle.gumroad.com/l/cryptocode-free-bootstrap-template" target="_blank" rel="noopener noreferrer">GET PRO</a>
-                  </li>
+                  <motion.li
+                    className="menu-item text-uppercase mx-3"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <a className="fw-bold hover:text-primary transition-colors" href="#billboard">Home</a>
+                  </motion.li>
+                  <motion.li
+                    className="menu-item text-uppercase mx-3"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Link className="fw-bold hover:text-primary transition-colors" to="/about">About</Link>
+                  </motion.li>
+                  <motion.li
+                    className="menu-item text-uppercase mx-3"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Link className="fw-bold hover:text-primary transition-colors" to="/services">Services</Link>
+                  </motion.li>
+                  <motion.li
+                    className="menu-item text-uppercase mx-3"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Link className="fw-bold hover:text-primary transition-colors" to="/contact">Contact</Link>
+                  </motion.li>
                 </ul>
               </div>
-              <div className="btn-wrap d-md-flex">
-                <Link to="/login" className="btn btn-normal btn-medium align-self-center text-uppercase btn-rounded login-btn">Log in</Link>
-                <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div className="modal-body">
-                        <p>Login form placeholder</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Link to="/signup" className="btn btn-linear btn-medium align-self-center btn-rounded text-uppercase register-btn mt-3 mt-md-0">Register</Link>
-                <div className="modal fade" id="exampleModal2" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div className="modal-body">
-                        <p>Register form placeholder</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="btn-wrap d-md-flex gap-3">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link to="/login" className="btn btn-normal btn-medium align-self-center text-uppercase btn-rounded login-btn hover:shadow-glow transition-all">
+                    Log in
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link to="/signup" className="btn btn-linear btn-medium align-self-center btn-rounded text-uppercase register-btn mt-3 mt-md-0 hover:shadow-glow transition-all">
+                    Register
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Billboard Section */}
       <div id="billboard" className="padding-medium overflow-hidden">

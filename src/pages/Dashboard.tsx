@@ -4,10 +4,10 @@ import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { walletAPI, tradingAPI } from '@/lib/api';
-import { 
-  Wallet, 
-  TrendingUp, 
-  ArrowUpRight, 
+import {
+  Wallet,
+  TrendingUp,
+  ArrowUpRight,
   ArrowDownRight,
   DollarSign,
   Users,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -220,167 +221,252 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-6 lg:space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Welcome back! Here's your portfolio overview.</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center md:text-left"
+        >
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-muted-foreground mt-2 text-sm md:text-base">
+            Welcome back! Here's your portfolio overview.
+          </p>
+        </motion.div>
 
         {/* Error Message */}
         {error && (
-          <Card className="bg-destructive/10 border-destructive/20">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-destructive">{error}</p>
-                <Button variant="outline" size="sm" onClick={fetchDashboardData}>
-                  Retry
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Card className="bg-destructive/10 border-destructive/20">
+              <CardContent className="pt-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <p className="text-destructive text-sm md:text-base">{error}</p>
+                  <Button variant="outline" size="sm" onClick={fetchDashboardData} className="btn-animated">
+                    Retry
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" role="region" aria-label="Portfolio statistics">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" role="region" aria-label="Portfolio statistics">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <Card key={index} className="bg-gradient-card border-border/50 backdrop-blur-sm">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                  <div className="p-2 bg-primary/10 rounded-lg" aria-hidden="true">
-                    <Icon className="h-4 w-4 text-primary" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground" aria-label={`${stat.title}: ${stat.value}`}>
-                    {loading ? '...' : stat.value}
-                  </div>
-                  <div className={cn(
-                    "flex items-center text-xs mt-1",
-                    stat.positive ? "text-success" : "text-loss"
-                  )} aria-label={`Change: ${stat.change}`}>
-                    {stat.positive ? (
-                      <ArrowUpRight className="h-3 w-3 mr-1" aria-hidden="true" />
-                    ) : (
-                      <ArrowDownRight className="h-3 w-3 mr-1" aria-hidden="true" />
-                    )}
-                    {stat.change}
-                  </div>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.4 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                className="h-full"
+              >
+                <Card className="bg-gradient-card border-border/50 backdrop-blur-sm card-hover h-full">
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground">
+                      {stat.title}
+                    </CardTitle>
+                    <div className="p-2 bg-primary/10 rounded-lg" aria-hidden="true">
+                      <Icon className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-4">
+                    <div className="text-xl md:text-2xl font-bold text-foreground mb-2" aria-label={`${stat.title}: ${stat.value}`}>
+                      {loading ? (
+                        <div className="shimmer h-6 w-16 md:h-8 md:w-20 rounded"></div>
+                      ) : (
+                        stat.value
+                      )}
+                    </div>
+                    <div className={cn(
+                      "flex items-center text-xs mt-1",
+                      stat.positive ? "text-success" : "text-loss"
+                    )} aria-label={`Change: ${stat.change}`}>
+                      {stat.positive ? (
+                        <ArrowUpRight className="h-3 w-3 mr-1 flex-shrink-0" aria-hidden="true" />
+                      ) : (
+                        <ArrowDownRight className="h-3 w-3 mr-1 flex-shrink-0" aria-hidden="true" />
+                      )}
+                      <span className="truncate">{stat.change}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
         </div>
 
         {/* Quick Actions */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4" role="group" aria-label="Quick actions">
-              {quickActions.map((action, index) => {
-                const Icon = action.icon;
-                return (
-                  <Link key={index} to={action.path} aria-label={action.label}>
-                    <Button 
-                      variant={action.variant}
-                      className="w-full h-auto py-4 flex flex-col items-center space-y-2"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
+          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-lg md:text-xl">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4" role="group" aria-label="Quick actions">
+                {quickActions.map((action, index) => {
+                  const Icon = action.icon;
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + index * 0.1, duration: 0.3 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                      <span>{action.label}</span>
-                    </Button>
-                  </Link>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                      <Link to={action.path} aria-label={action.label}>
+                        <Button
+                          variant={action.variant}
+                          className="w-full h-auto py-3 md:py-4 flex flex-col items-center space-y-2 btn-animated focus-ring"
+                        >
+                          <Icon className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" aria-hidden="true" />
+                          <span className="text-xs md:text-sm font-medium">{action.label}</span>
+                        </Button>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Recent Activity & Portfolio */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
           {/* Recent Trades */}
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Recent Trades
-                <Link to="/trading/history" className="text-sm text-primary hover:underline">
-                  View all
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+          >
+            <Card className="bg-gradient-card border-border/50 backdrop-blur-sm h-full">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <CardTitle className="text-lg md:text-xl">Recent Trades</CardTitle>
+                <Link to="/trading/history" className="text-sm text-primary hover:text-primary/80 transition-colors btn-animated self-start sm:self-auto">
+                  View all →
                 </Link>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {trades.slice(0, 3).map((trade: any, index) => (
-                  <div key={trade.id || index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className={cn(
-                        "p-2 rounded-lg",
-                        (trade.side === 'buy' || trade.pnl >= 0) ? "bg-success/10" : "bg-loss/10"
-                      )}>
-                        <TrendingUp className={cn(
-                          "h-4 w-4",
-                          (trade.side === 'buy' || trade.pnl >= 0) ? "text-success" : "text-loss"
-                        )} />
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {loading ? (
+                    // Loading skeleton
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="shimmer w-10 h-10 rounded-lg"></div>
+                          <div className="space-y-2">
+                            <div className="shimmer h-4 w-24 rounded"></div>
+                            <div className="shimmer h-3 w-16 rounded"></div>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-right">
+                          <div className="shimmer h-4 w-20 rounded"></div>
+                          <div className="shimmer h-3 w-16 rounded"></div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {trade.side ? trade.side.toUpperCase() : 'TRADE'} {trade.asset || trade.symbol || 'BTC/USD'}
+                    ))
+                  ) : trades.slice(0, 3).map((trade: any, index) => (
+                    <motion.div
+                      key={trade.id || index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1, duration: 0.3 }}
+                      className="flex items-center justify-between p-3 bg-background/50 rounded-lg hover:bg-background/70 transition-colors"
+                    >
+                      <div className="flex items-center space-x-3 min-w-0 flex-1">
+                        <div className={cn(
+                          "p-2 rounded-lg flex-shrink-0",
+                          (trade.side === 'buy' || trade.pnl >= 0) ? "bg-success/10" : "bg-loss/10"
+                        )}>
+                          <TrendingUp className={cn(
+                            "h-4 w-4",
+                            (trade.side === 'buy' || trade.pnl >= 0) ? "text-success" : "text-loss"
+                          )} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {trade.side ? trade.side.toUpperCase() : 'TRADE'} {trade.asset || trade.symbol || 'BTC/USD'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(trade.timestamp || trade.created_at || Date.now()).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0 ml-4">
+                        <p className={cn(
+                          "text-sm font-medium",
+                          (trade.side === 'buy' || (trade.pnl || 0) >= 0) ? "text-success" : "text-loss"
+                        )}>
+                          {(trade.side === 'buy' || (trade.pnl || 0) >= 0) ? '+' : '-'}$
+                          {Math.abs(trade.pnl || trade.profit_loss || Math.random() * 1000).toFixed(2)}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {new Date(trade.timestamp || trade.created_at || Date.now()).toLocaleTimeString()}
+                          {(trade.size || Math.random() * 10).toFixed(4)} {trade.asset?.split('/')[0] || 'BTC'}
                         </p>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <p className={cn(
-                        "text-sm font-medium",
-                        (trade.side === 'buy' || (trade.pnl || 0) >= 0) ? "text-success" : "text-loss"
-                      )}>
-                        {(trade.side === 'buy' || (trade.pnl || 0) >= 0) ? '+' : '-'}$
-                        {Math.abs(trade.pnl || trade.profit_loss || Math.random() * 1000).toFixed(2)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {(trade.size || Math.random() * 10).toFixed(4)} {trade.asset?.split('/')[0] || 'BTC'}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Portfolio Allocation */}
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <PieChart className="h-5 w-5" />
-                <span>Portfolio Allocation</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {portfolioAllocation.map((item, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-foreground">{item.asset}</span>
-                      <span className="text-sm text-muted-foreground">{item.allocation}%</span>
-                    </div>
-                    <div className="w-full bg-background/50 rounded-full h-2">
-                      <div 
-                        className={cn("h-2 rounded-full transition-all", item.color)}
-                        style={{ width: `${item.allocation}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+          >
+            <Card className="bg-gradient-card border-border/50 backdrop-blur-sm h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2 text-lg md:text-xl">
+                  <PieChart className="h-5 w-5 flex-shrink-0" />
+                  <span>Portfolio Allocation</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 md:space-y-6">
+                  {portfolioAllocation.map((item, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
+                      className="space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-foreground">{item.asset}</span>
+                        <span className="text-sm text-muted-foreground font-medium">{item.allocation}%</span>
+                      </div>
+                      <div className="w-full bg-background/50 rounded-full h-2 md:h-3 overflow-hidden">
+                        <motion.div
+                          className={cn("h-full rounded-full transition-all duration-1000", item.color)}
+                          style={{ width: `${item.allocation}%` }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${item.allocation}%` }}
+                          transition={{ delay: 1 + index * 0.1, duration: 0.8, ease: "easeOut" }}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </Layout>

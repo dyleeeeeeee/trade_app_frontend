@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { 
-  Home, 
-  Wallet, 
-  TrendingUp, 
-  Users, 
-  LogOut, 
+import {
+  Home,
+  Wallet,
+  TrendingUp,
+  Users,
+  LogOut,
   User,
   Shield,
   Menu,
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -60,19 +61,24 @@ export function Layout({ children }: LayoutProps) {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
                   return (
-                    <Link
+                    <motion.div
                       key={item.path}
-                      to={item.path}
-                      className={cn(
-                        "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all",
-                        isActive 
-                          ? "bg-primary/10 text-primary" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-card"
-                      )}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-sm font-medium">{item.label}</span>
-                    </Link>
+                      <Link
+                        to={item.path}
+                        className={cn(
+                          "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all btn-animated focus-ring",
+                          isActive
+                            ? "bg-primary/10 text-primary shadow-lg"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md"
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </Link>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -120,59 +126,96 @@ export function Layout({ children }: LayoutProps) {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div id="mobile-menu" className="md:hidden border-t border-border bg-card">
-            <div className="px-4 py-4 space-y-2">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-all",
-                      isActive 
-                        ? "bg-primary/10 text-primary" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
-                  </Link>
-                );
-              })}
-              <div className="pt-4 border-t border-border">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-foreground">{user?.email}</span>
-                  </div>
-                  {user?.role === 'admin' && (
-                    <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full">
-                      Admin
-                    </span>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={logout}
-                  className="w-full justify-start text-muted-foreground hover:text-foreground"
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+              className="md:hidden border-t border-border bg-card/95 backdrop-blur-xl"
+            >
+              <div className="px-4 py-4 space-y-3">
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.2 }}
+                  className="stagger-children"
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
+                  {navItems.map((item, index) => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <motion.div
+                        key={item.path}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
+                      >
+                        <Link
+                          to={item.path}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={cn(
+                            "flex items-center space-x-3 px-4 py-3 rounded-lg transition-all btn-animated",
+                            isActive
+                              ? "bg-primary/10 text-primary shadow-lg"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md"
+                          )}
+                        >
+                          <Icon className="h-5 w-5" />
+                          <span className="font-medium">{item.label}</span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.2 }}
+                  className="pt-4 border-t border-border space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground truncate max-w-[150px]">{user?.email}</span>
+                    </div>
+                    {user?.role === 'admin' && (
+                      <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full animate-pulse-soft">
+                        Admin
+                      </span>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      logout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full justify-start text-muted-foreground hover:text-foreground btn-animated"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                </motion.div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {children}
+      <main className="flex-1 mobile-safe">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="py-6 md:py-8"
+        >
+          {children}
+        </motion.div>
       </main>
     </div>
   );
