@@ -298,86 +298,16 @@ export default function Strategies() {
               Subscribed
             </Button>
           ) : (
-            <Dialog open={dialogOpen && selectedStrategy?.id === strategy.id} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button 
-                  className="w-full bg-gradient-primary hover:shadow-glow"
-                  onClick={() => {
-                    setSelectedStrategy(strategy);
-                    setDialogOpen(true);
-                  }}
-                >
-                  Subscribe
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Subscribe to {strategy.name}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="p-4 bg-background/50 rounded-lg">
-                    <p className="text-sm text-muted-foreground mb-2">Strategy Details</p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Daily ROI</p>
-                        <p className="font-medium">{strategy.expected_roi.toFixed(2)}%</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Risk Level</p>
-                        <p className="font-medium capitalize">{strategy.risk_level}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Min Investment</p>
-                        <p className="font-medium">${strategy.min_investment.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Max Investment</p>
-                        <p className="font-medium">
-                          {strategy.max_investment ? `$${strategy.max_investment.toLocaleString()}` : 'No limit'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="investment">Investment Amount ($)</Label>
-                    <Input
-                      id="investment"
-                      type="number"
-                      placeholder={`Min: $${strategy.min_investment}`}
-                      value={investmentAmount}
-                      onChange={(e) => setInvestmentAmount(e.target.value)}
-                      min={strategy.min_investment}
-                      max={strategy.max_investment}
-                    />
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => setDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      className="flex-1 bg-gradient-primary hover:shadow-glow"
-                      onClick={() => handleSubscribe(strategy)}
-                      disabled={subscribing === strategy.id}
-                    >
-                      {subscribing === strategy.id ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Subscribing...
-                        </>
-                      ) : (
-                        'Confirm Subscription'
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button 
+              className="w-full bg-gradient-primary hover:shadow-glow"
+              onClick={() => {
+                setSelectedStrategy(strategy);
+                setInvestmentAmount('');
+                setDialogOpen(true);
+              }}
+            >
+              Subscribe
+            </Button>
           )}
         </CardContent>
       </Card>
@@ -525,6 +455,85 @@ export default function Strategies() {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Subscription Dialog */}
+        <Dialog open={dialogOpen} onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) {
+            setSelectedStrategy(null);
+            setInvestmentAmount('');
+          }
+        }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Subscribe to {selectedStrategy?.name}</DialogTitle>
+            </DialogHeader>
+            {selectedStrategy && (
+              <div className="space-y-4">
+                <div className="p-4 bg-background/50 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2">Strategy Details</p>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Daily ROI</p>
+                      <p className="font-medium">{selectedStrategy.expected_roi.toFixed(2)}%</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Risk Level</p>
+                      <p className="font-medium capitalize">{selectedStrategy.risk_level}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Min Investment</p>
+                      <p className="font-medium">${selectedStrategy.min_investment.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Max Investment</p>
+                      <p className="font-medium">
+                        {selectedStrategy.max_investment ? `$${selectedStrategy.max_investment.toLocaleString()}` : 'No limit'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="investment">Investment Amount ($)</Label>
+                  <Input
+                    id="investment"
+                    type="number"
+                    placeholder={`Min: $${selectedStrategy.min_investment}`}
+                    value={investmentAmount}
+                    onChange={(e) => setInvestmentAmount(e.target.value)}
+                    min={selectedStrategy.min_investment}
+                    max={selectedStrategy.max_investment}
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => setDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="flex-1 bg-gradient-primary hover:shadow-glow"
+                    onClick={() => handleSubscribe(selectedStrategy)}
+                    disabled={subscribing === selectedStrategy.id}
+                  >
+                    {subscribing === selectedStrategy.id ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Subscribing...
+                      </>
+                    ) : (
+                      'Confirm Subscription'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );

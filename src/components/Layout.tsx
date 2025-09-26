@@ -31,6 +31,7 @@ export function Layout({ children }: LayoutProps) {
       { path: '/trading', label: 'Trading', icon: TrendingUp },
       { path: '/copy-trading', label: 'Copy Trading', icon: Users },
       { path: '/kyc', label: 'KYC', icon: Shield },
+      { path: '/strategies', label: 'Strategies', icon: TrendingUp },
     ];
 
     if (user?.role === 'admin') {
@@ -50,7 +51,7 @@ export function Layout({ children }: LayoutProps) {
             <div className="flex items-center space-x-8">
               <Link to="/dashboard" className="flex items-center space-x-2">
                 <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-8 w-auto" />
-                <span className="text-xl font-bold text-foreground">InvestPro</span>
+                <span className="text-xl font-bold text-foreground">Astrid Global</span>
               </Link>
 
               {/* Desktop Navigation */}

@@ -20,6 +20,7 @@ import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import Security from "./pages/Security";
+import Strategies from "./pages/Strategies";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,11 @@ const App = () => (
             <Route path="/wallet" element={
               <ProtectedRoute>
                 <Wallet />
+              </ProtectedRoute>
+            } />
+            <Route path="/strategies" element={
+              <ProtectedRoute>
+                <Strategies />
               </ProtectedRoute>
             } />
             <Route path="/trading" element={
