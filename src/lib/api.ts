@@ -146,7 +146,37 @@ export const tradingAPI = {
   },
 };
 
-// Admin API calls
+// Strategy API calls
+export const strategyAPI = {
+  async getStrategies() {
+    const response = await apiCall('/api/strategies', {
+      method: 'GET',
+    });
+    return response;
+  },
+
+  async getMyStrategies() {
+    const response = await apiCall('/api/strategies/my-strategies', {
+      method: 'GET',
+    });
+    return response;
+  },
+
+  async subscribeToStrategy(strategyId: number, investedAmount: number) {
+    const response = await apiCall(`/api/strategies/${strategyId}/subscribe`, {
+      method: 'POST',
+      body: JSON.stringify({ invested_amount: investedAmount }),
+    });
+    return response;
+  },
+
+  async unsubscribeFromStrategy(strategyId: number) {
+    const response = await apiCall(`/api/strategies/${strategyId}/unsubscribe`, {
+      method: 'POST',
+    });
+    return response;
+  },
+};
 export const adminAPI = {
   async getUsers() {
     const response = await apiCall('/api/admin/users', {
