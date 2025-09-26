@@ -2,6 +2,13 @@
   publish = "dist"
   command = "npm run build"
 
+# Proxy API requests to Railway backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/:splat"
+  status = 200
+
+# SPA fallback for client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
