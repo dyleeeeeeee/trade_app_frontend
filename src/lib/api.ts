@@ -20,7 +20,7 @@ export async function apiCall(
 // Auth API calls
 export const authAPI = {
   async login(email: string, password: string) {
-    const response = await apiCall('/login', {
+    const response = await apiCall('/api/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -28,7 +28,7 @@ export const authAPI = {
   },
 
   async signup(email: string, password: string) {
-    const response = await apiCall('/signup', {
+    const response = await apiCall('/api/signup', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -36,14 +36,14 @@ export const authAPI = {
   },
 
   async logout() {
-    const response = await apiCall('/logout', {
+    const response = await apiCall('/api/logout', {
       method: 'POST',
     });
     return response;
   },
 
   async forgotPassword(email: string) {
-    const response = await apiCall('/forgot-password', {
+    const response = await apiCall('/api/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ email }),
     });
@@ -51,7 +51,7 @@ export const authAPI = {
   },
 
   async getCurrentUser() {
-    const response = await apiCall('/user', {
+    const response = await apiCall('/api/user', {
       method: 'GET',
     });
     return response;
@@ -61,14 +61,14 @@ export const authAPI = {
 // Wallet API calls
 export const walletAPI = {
   async getBalance() {
-    const response = await apiCall('/wallet', {
+    const response = await apiCall('/api/wallet', {
       method: 'GET',
     });
     return response;
   },
 
   async deposit(amount: number) {
-    const response = await apiCall('/deposit', {
+    const response = await apiCall('/api/deposit', {
       method: 'POST',
       body: JSON.stringify({ amount }),
     });
@@ -76,7 +76,7 @@ export const walletAPI = {
   },
 
   async withdraw(amount: number) {
-    const response = await apiCall('/withdraw', {
+    const response = await apiCall('/api/withdraw', {
       method: 'POST',
       body: JSON.stringify({ amount }),
     });
@@ -84,7 +84,7 @@ export const walletAPI = {
   },
 
   async transfer(recipient: string, amount: number) {
-    const response = await apiCall('/transfer', {
+    const response = await apiCall('/api/transfer', {
       method: 'POST',
       body: JSON.stringify({ recipient, amount }),
     });
@@ -92,14 +92,14 @@ export const walletAPI = {
   },
 
   async getWithdrawals() {
-    const response = await apiCall('/withdrawals', {
+    const response = await apiCall('/api/withdrawals', {
       method: 'GET',
     });
     return response;
   },
 
   async getDeposits() {
-    const response = await apiCall('/deposits', {
+    const response = await apiCall('/api/deposits', {
       method: 'GET',
     });
     return response;
@@ -109,7 +109,7 @@ export const walletAPI = {
 // Trading API calls
 export const tradingAPI = {
   async placeTrade(asset: string, side: 'buy' | 'sell', size: number) {
-    const response = await apiCall('/trade', {
+    const response = await apiCall('/api/trade', {
       method: 'POST',
       body: JSON.stringify({ asset, side, size }),
     });
@@ -117,21 +117,21 @@ export const tradingAPI = {
   },
 
   async getTrades() {
-    const response = await apiCall('/trades', {
+    const response = await apiCall('/api/trades', {
       method: 'GET',
     });
     return response;
   },
 
   async getPrices() {
-    const response = await apiCall('/prices', {
+    const response = await apiCall('/api/prices', {
       method: 'GET',
     });
     return response;
   },
 
   async subscribeToTrader(traderId: string, allocation: number) {
-    const response = await apiCall('/copy/subscribe', {
+    const response = await apiCall('/api/copy/subscribe', {
       method: 'POST',
       body: JSON.stringify({ trader_id: traderId, allocation }),
     });
@@ -139,7 +139,7 @@ export const tradingAPI = {
   },
 
   async getFollowedTraders() {
-    const response = await apiCall('/copy/subscriptions', {
+    const response = await apiCall('/api/copy/subscriptions', {
       method: 'GET',
     });
     return response;
@@ -149,14 +149,14 @@ export const tradingAPI = {
 // Admin API calls
 export const adminAPI = {
   async getUsers() {
-    const response = await apiCall('/admin/users', {
+    const response = await apiCall('/api/admin/users', {
       method: 'GET',
     });
     return response;
   },
 
   async blockUser(userId: string, block: boolean) {
-    const response = await apiCall(`/admin/users/${userId}/block`, {
+    const response = await apiCall(`/api/admin/users/${userId}/block`, {
       method: 'POST',
       body: JSON.stringify({ block }),
     });
@@ -164,21 +164,21 @@ export const adminAPI = {
   },
 
   async getAllWithdrawals() {
-    const response = await apiCall('/admin/withdrawals', {
+    const response = await apiCall('/api/admin/withdrawals', {
       method: 'GET',
     });
     return response;
   },
 
   async approveWithdrawal(withdrawalId: string) {
-    const response = await apiCall(`/admin/withdrawals/${withdrawalId}/approve`, {
+    const response = await apiCall(`/api/admin/withdrawals/${withdrawalId}/approve`, {
       method: 'POST',
     });
     return response;
   },
 
   async updateUserBalance(userId: string, balance: number) {
-    const response = await apiCall(`/admin/users/${userId}/balance`, {
+    const response = await apiCall(`/api/admin/users/${userId}/balance`, {
       method: 'POST',
       body: JSON.stringify({ balance }),
     });
@@ -186,7 +186,7 @@ export const adminAPI = {
   },
 
   async getUserBalance(userId: string) {
-    const response = await apiCall(`/admin/users/${userId}/balance-info`, {
+    const response = await apiCall(`/api/admin/users/${userId}/balance-info`, {
       method: 'GET',
     });
     return response;
