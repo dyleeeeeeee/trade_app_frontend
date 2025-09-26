@@ -1,0 +1,5 @@
+# Redirect all routes to index.html for SPA routing
+/*    /index.html   200
+
+# API proxy to Railway backend
+/api/*  https://protective-optimism-production-d4a3.up.railway.app/:splat  200
