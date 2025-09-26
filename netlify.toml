@@ -2,11 +2,108 @@
   publish = "dist"
   command = "npm run build"
 
-# Proxy API requests to Railway backend
+# Proxy all API requests to Railway backend
 [[redirects]]
-  from = "/api/*"
-  to = "https://protective-optimism-production-d4a3.up.railway.app/:splat"
+  from = "/login"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/login"
   status = 200
+  force = true
+
+[[redirects]]
+  from = "/signup"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/signup"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/logout"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/logout"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/forgot-password"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/forgot-password"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/user"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/user"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/wallet"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/wallet"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deposit"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/deposit"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/withdraw"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/withdraw"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/transfer"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/transfer"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/withdrawals"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/withdrawals"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deposits"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/deposits"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/trade"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/trade"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/trades"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/trades"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/prices"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/prices"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/copy/subscribe"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/copy/subscribe"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/copy/subscriptions"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/copy/subscriptions"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "https://protective-optimism-production-d4a3.up.railway.app/admin/:splat"
+  status = 200
+  force = true
 
 # SPA fallback for client-side routing
 [[redirects]]
