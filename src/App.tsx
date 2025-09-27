@@ -28,11 +28,49 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Security = lazy(() => import("./pages/Security"));
 const Strategies = lazy(() => import("./pages/Strategies"));
 
-// Loading component
+import { motion } from 'framer-motion';
+
+// Fluid loading spinner with advanced animations
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-  </div>
+  <motion.div
+    className="flex items-center justify-center min-h-screen"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.3 }}
+  >
+    <div className="relative">
+      {/* Outer ring */}
+      <motion.div
+        className="w-16 h-16 border-4 border-primary/20 rounded-full"
+        initial={{ scale: 0, rotate: 0 }}
+        animate={{ scale: 1, rotate: 360 }}
+        transition={{
+          scale: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+          rotate: { duration: 2, repeat: Infinity, ease: 'linear' }
+        }}
+      />
+      {/* Inner ring */}
+      <motion.div
+        className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+      />
+      {/* Center dot */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 w-2 h-2 bg-primary rounded-full -translate-x-1/2 -translate-y-1/2"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.5, 1, 0.5]
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: 'easeInOut'
+        }}
+      />
+    </div>
+  </motion.div>
 );
 
 const queryClient = new QueryClient();

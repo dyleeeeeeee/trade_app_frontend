@@ -49,7 +49,7 @@ export default function Login() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="bg-card/80 backdrop-blur-xl border-border shadow-2xl">
+        <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-border shadow-2xl">
           <motion.div variants={itemVariants}>
             <CardHeader className="text-center pb-2">
               <motion.div
@@ -75,11 +75,11 @@ export default function Login() {
           </motion.div>
 
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-5 md:space-y-6">
+            <CardContent className="space-y-6">
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
@@ -87,7 +87,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-background/50 pl-10 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                    className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                   />
                 </div>
               </motion.div>
@@ -95,7 +95,7 @@ export default function Login() {
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     id="password"
                     type="password"
@@ -103,7 +103,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-background/50 pl-10 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                    className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                   />
                 </div>
               </motion.div>
@@ -118,7 +118,7 @@ export default function Login() {
               </motion.div>
             </CardContent>
 
-            <CardFooter className="flex flex-col space-y-4 pt-2">
+            <CardFooter className="flex flex-col space-y-6 pt-4">
               <motion.div variants={itemVariants} className="w-full">
                 <Button
                   type="submit"

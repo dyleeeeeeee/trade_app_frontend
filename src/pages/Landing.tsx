@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { TrendingUp } from 'lucide-react';
 
 // Declare iconify-icon for TypeScript
 declare global {
@@ -116,97 +117,190 @@ export default function Landing() {
       </motion.nav>
 
       {/* Billboard Section */}
-      <div id="billboard" className="padding-medium overflow-hidden">
-        <div className="container">
-          <div className="row d-flex flex-wrap">
-            <div className="col-md-5">
-              <div className="image-holder border-set-bold border-rounded-circle">
-                <img src="/images/banner-image.png" alt="banner" className="banner-image" />
+      <section id="billboard" className="py-20 lg:py-32">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <motion.div
+              className="order-2 lg:order-1"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="aspect-square max-w-md mx-auto lg:mx-0 rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="/images/banner-image.png"
+                  alt="Professional Crypto Trading Platform"
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </div>
-            <div className="col-md-7">
-              <div className="banner-content content-light m-5">
-                <h1 className="banner-title display-3">Expert Crypto and Wealth Management Solutions</h1>
-                <p>At Astrid Global Ltd, we specialize in comprehensive crypto and wealth management solutions, providing secure investment opportunities and expert guidance for your financial growth. Join our platform to access professional wealth management services alongside cutting-edge cryptocurrency trading. Take control of your financial future with our integrated approach to crypto investments and wealth preservation. Sign up now to start building your diversified portfolio.</p>
-                <div className="btn-wrap">
-                  <Link to="/signup" className="btn btn-linear btn-medium text-uppercase btn-rounded">Try for free</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </motion.div>
 
-      {/* Association Section */}
-      <section id="association-with" className="padding-large">
-        <div className="container">
-          <div className="row d-flex flex-wrap justify-content-between">
-            <img src="/images/association-brand1.png" alt="brand" className="image-association" />
-            <img src="/images/association-brand2.png" alt="brand" className="image-association" />
-            <img src="/images/association-brand3.png" alt="brand" className="image-association" />
-            <img src="/images/association-brand4.png" alt="brand" className="image-association" />
-            <img src="/images/association-brand5.png" alt="brand" className="image-association" />
+            <motion.div
+              className="order-1 lg:order-2 space-y-8"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <div className="space-y-6">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+                  <span className="bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent">
+                    Expert Crypto &
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">
+                    Wealth Management
+                  </span>
+                </h1>
+
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl">
+                  At Astrid Global Ltd, we specialize in comprehensive crypto and wealth management solutions,
+                  providing secure investment opportunities and expert guidance for your financial growth.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Link
+                    to="/signup"
+                    className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    Start Investing
+                    <TrendingUp className="ml-2 h-5 w-5" />
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-400 border-2 border-blue-400/50 hover:border-blue-400 hover:bg-blue-400/10 rounded-xl transition-all duration-300"
+                  >
+                    Sign In
+                  </Link>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Product Card Section */}
-      <section id="product-card" className="position-relative padding-large">
-        <div className="pattern-overlay"><img src="/images/pattern-blur.png" alt="pattern-overlay" /></div>
-        <div className="section-header text-center">
-          <h2 className="display-5">Premier Crypto and Wealth Management Offerings</h2>
+      {/* Association Section */}
+      <section className="py-16 lg:py-20 bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-sm">
+        <div className="container mx-auto px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-4">
+              Trusted by Industry Leaders
+            </h3>
+          </motion.div>
+
+          <motion.div
+            className="flex flex-wrap justify-center items-center gap-8 lg:gap-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            {[1, 2, 3, 4, 5].map((i) => (
+              <motion.div
+                key={i}
+                className="grayscale hover:grayscale-0 transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <img
+                  src={`/images/association-brand${i}.png`}
+                  alt={`Partner ${i}`}
+                  className="h-8 lg:h-10 w-auto opacity-60 hover:opacity-100 transition-opacity duration-300"
+                />
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-        <div className="container">
-          <div className="row d-flex flex-wrap">
-            <div className="col-md-4 my-3">
-              <div className="product-item mx-4 text-center border-set-bold border-rounded-50">
-                <div className="icon-holder">
-                  <i className="icon icon-bitcoin"></i>
-                </div>
-                <div className="product-detail">
-                  <div className="card-header">
-                    <h3 className="card-title light">Bitcoin</h3>
-                    <span className="currency text-linear">31,020.564 $</span>
+      </section>
+
+      {/* Product Card Section */}
+      <section className="py-20 lg:py-32">
+        <div className="container mx-auto px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Premier Crypto Offerings
+              </span>
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Explore our curated selection of top-performing cryptocurrencies with real-time pricing and instant trading capabilities.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10"
+            variants={staggerContainer}
+            initial="animate"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            {[
+              { name: 'Bitcoin', price: '31,020.564', symbol: 'BTC', icon: 'bitcoin' },
+              { name: 'Ethereum', price: '4.4668', symbol: 'ETH', icon: 'ethereum' },
+              { name: 'Ripple', price: '0.6549', symbol: 'XRP', icon: 'ripple' }
+            ].map((crypto, index) => (
+              <motion.div
+                key={crypto.symbol}
+                className="group"
+                whileHover={{ y: -8 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              >
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8 text-center hover:border-blue-400/30 transition-all duration-300">
+                  <motion.div
+                    className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <span className="text-2xl font-bold text-white">{crypto.symbol[0]}</span>
+                  </motion.div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">{crypto.name}</h3>
+                      <div className="text-2xl font-mono font-bold text-blue-400">
+                        {crypto.price} $
+                      </div>
+                    </div>
+
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Link
+                        to="/trading"
+                        className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        Buy Now
+                        <TrendingUp className="ml-2 h-4 w-4" />
+                      </Link>
+                    </motion.div>
                   </div>
-                  <div className="btn-card padding-small">
-                    <Link to="/trading" className="btn btn-outline-accent btn-medium btn-rounded btn-medium text-uppercase">buy it now</Link>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-md-4 my-3">
-              <div className="product-item mx-4 text-center border-set-bold border-rounded-50">
-                <div className="icon-holder">
-                  <i className="icon icon-ethereum"></i>
-                </div>
-                <div className="product-detail">
-                  <div className="card-header">
-                    <h3 className="card-title light">Ethereum</h3>
-                    <span className="currency text-linear">4.4668 $</span>
-                  </div>
-                  <div className="btn-card padding-small">
-                    <Link to="/trading" className="btn btn-outline-accent btn-medium btn-rounded btn-medium text-uppercase">buy it now</Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 my-3">
-              <div className="product-item mx-4 text-center border-set-bold border-rounded-50">
-                <div className="icon-holder">
-                  <i className="icon icon-ripple"></i>
-                </div>
-                <div className="product-detail">
-                  <div className="card-header">
-                    <h3 className="card-title light">Ripple</h3>
-                    <span className="currency text-linear">0.6549 $</span>
-                  </div>
-                  <div className="btn-card padding-small">
-                    <Link to="/trading" className="btn btn-outline-accent btn-medium btn-rounded btn-medium text-uppercase">buy it now</Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 

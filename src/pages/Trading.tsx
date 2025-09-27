@@ -292,7 +292,7 @@ export default function Trading() {
                           ${(trade.size * trade.price).toFixed(2)}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {new Date(trade.timestamp).toLocaleString()}
+                          {new Date(trade.created_at).toLocaleString()}
                         </p>
                       </div>
                     </div>

@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import { motion, HTMLMotionProps } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transform hover:scale-[1.02] active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 relative overflow-hidden",
   {
     variants: {
       variant: {
@@ -32,6 +33,39 @@ const buttonVariants = cva(
   },
 );
 
+// Fluid button animations
+const buttonMotionVariants = {
+  idle: {
+    scale: 1,
+    y: 0,
+  },
+  hover: {
+    scale: 1.02,
+    y: -1,
+    transition: {
+      type: 'spring',
+      stiffness: 400,
+      damping: 25,
+      mass: 0.8
+    }
+  },
+  tap: {
+    scale: 0.98,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 600,
+      damping: 20,
+      mass: 0.5
+    }
+  },
+  disabled: {
+    scale: 1,
+    y: 0,
+    opacity: 0.5
+  }
+};
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -39,9 +73,54 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+  ({ className, variant, size, asChild = false, disabled, ...props }, ref) => {
+    const Comp = asChild ? Slot : motion.button;
+
+    const motionProps: HTMLMotionProps<"button"> = {
+      variants: buttonMotionVariants,
+      initial: "idle",
+      whileHover: disabled ? undefined : "hover",
+      whileTap: disabled ? undefined : "tap",
+      animate: disabled ? "disabled" : "idle",
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 20,
+      },
+      style: {
+        willChange: 'transform',
+        backfaceVisibility: 'hidden'
+      }
+    };
+
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        />
+      );
+    }
+
+    return (
+      <motion.button
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        disabled={disabled}
+        {...motionProps}
+        {...props}
+      >
+        {/* Ripple effect */}
+        <motion.div
+          className="absolute inset-0 bg-white/20 rounded-md"
+          initial={{ scale: 0, opacity: 1 }}
+          whileTap={{ scale: 4, opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        />
+        {props.children}
+      </motion.button>
+    );
   },
 );
 Button.displayName = "Button";
