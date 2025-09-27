@@ -402,7 +402,41 @@ export default function Dashboard() {
                             {trade.side ? trade.side.toUpperCase() : 'TRADE'} {trade.asset || trade.symbol || 'BTC/USD'}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {new Date(trade.timestamp || trade.created_at || Date.now()).toLocaleTimeString()}
+                            {(() => {
+                              try {
+                                const timestamp = trade.timestamp || trade.created_at;
+                                if (!timestamp) return 'Recently';
+
+                                // Handle different date formats
+                                let date;
+                                if (typeof timestamp === 'string') {
+                                  // Try ISO string first
+                                  date = new Date(timestamp);
+                                  if (isNaN(date.getTime())) {
+                                    // Try parsing as timestamp number
+                                    date = new Date(parseInt(timestamp));
+                                  }
+                                  if (isNaN(date.getTime())) {
+                                    return 'Recently';
+                                  }
+                                } else if (typeof timestamp === 'number') {
+                                  date = new Date(timestamp);
+                                } else {
+                                  date = new Date(timestamp);
+                                }
+
+                                if (isNaN(date.getTime())) {
+                                  return 'Recently';
+                                }
+
+                                return date.toLocaleTimeString([], {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                });
+                              } catch (error) {
+                                return 'Recently';
+                              }
+                            })()}
                           </p>
                         </div>
                       </div>
