@@ -34,9 +34,8 @@ export async function apiCall(
         const refreshResponse = await fetch(`${API_BASE_URL}/api/refresh`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${refreshToken}`,
           },
-          body: JSON.stringify({ refresh_token: refreshToken }),
         });
 
         if (refreshResponse.ok) {
