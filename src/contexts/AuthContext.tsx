@@ -66,6 +66,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const userData = await response.json();
           setUser(userData);
           setHasCheckedAuth(true);
+        } else if (response.status === 403) {
+          // Account blocked - clear token and redirect
+          console.log('Account blocked, clearing auth');
+          const errorData = await response.json().catch(() => ({ message: 'Account blocked' }));
+          localStorage.removeItem('access_token');
+          setUser(null);
+          setHasCheckedAuth(true);
+          toast.error(errorData.message || 'Your account has been blocked. Please contact support.');
         } else if (response.status === 401) {
           // Token is invalid/expired - clear it
           console.log('Token invalid, clearing auth');
@@ -122,11 +130,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast.success('Login successful!');
         navigate('/dashboard');
       } else {
-        const error = await response.json();
-        toast.error(error.message || 'Login failed');
+        const errorData = await response.json().catch(() => ({ message: 'Login failed' }));
+        
+        // Handle specific error scenarios
+        if (response.status === 403) {
+          toast.error(errorData.message || 'Your account has been blocked. Please contact support.');
+        } else if (response.status === 401) {
+          toast.error(errorData.message || 'Invalid email or password');
+        } else if (response.status === 400) {
+          toast.error(errorData.message || 'Please enter both email and password');
+        } else {
+          toast.error(errorData.message || 'Login failed. Please try again.');
+        }
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      toast.error('Network error. Please check your connection and try again.');
       console.error('Login error:', error);
     }
   };
@@ -145,11 +163,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast.success('Account created successfully!');
         navigate('/dashboard');
       } else {
-        const error = await response.json();
-        toast.error(error.message || 'Signup failed');
+        const errorData = await response.json().catch(() => ({ message: 'Signup failed' }));
+        
+        // Handle specific error scenarios
+        if (response.status === 400) {
+          if (errorData.message?.includes('already exists')) {
+            toast.error('An account with this email already exists');
+          } else if (errorData.message?.includes('required')) {
+            toast.error('Please fill in all required fields');
+          } else {
+            toast.error(errorData.message || 'Signup failed');
+          }
+        } else {
+          toast.error(errorData.message || 'Signup failed. Please try again.');
+        }
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      toast.error('Network error. Please check your connection and try again.');
       console.error('Signup error:', error);
     }
   };
