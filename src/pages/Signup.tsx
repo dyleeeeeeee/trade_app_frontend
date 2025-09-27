@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, Loader2 } from 'lucide-react';
+import { TrendingUp, Loader2, Mail, Lock, Shield } from 'lucide-react';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -41,39 +41,48 @@ export default function Signup() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-background/50"
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-background/50"
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="bg-background/50"
-              />
+              <div className="relative">
+                <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
