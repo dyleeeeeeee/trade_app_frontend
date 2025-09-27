@@ -135,14 +135,14 @@ export default function Dashboard() {
       positive: true
     },
     {
-      title: 'Today\'s P&L',
+      title: 'Today\'s Profit',
       value: `$${pnlData.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: TrendingUp,
       change: `${pnlData.change >= 0 ? '+' : ''}${pnlData.change.toFixed(1)}%`,
       positive: pnlData.value >= 0
     },
     {
-      title: 'Active Trades',
+      title: 'Active Trades Bonus',
       value: activeTradesCount.toString(),
       icon: Activity,
       change: `${recentTradesCount} new`,
