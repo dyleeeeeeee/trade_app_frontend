@@ -26,38 +26,7 @@ export async function apiCall(
     headers,
   });
 
-  // If token is invalid/expired, try to refresh it
-  if (response.status === 401) {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (refreshToken) {
-      try {
-        const refreshResponse = await fetch(`${API_BASE_URL}/api/refresh`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${refreshToken}`,
-          },
-        });
-
-        if (refreshResponse.ok) {
-          const refreshData = await refreshResponse.json();
-          localStorage.setItem('access_token', refreshData.access_token);
-          
-          // Retry the original request with new token
-          headers['Authorization'] = `Bearer ${refreshData.access_token}`;
-          return fetch(`${API_BASE_URL}${endpoint}`, {
-            ...options,
-            headers,
-          });
-        }
-      } catch (error) {
-        console.error('Token refresh failed:', error);
-        // Clear tokens if refresh fails
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-      }
-    }
-  }
-
+  // Return response directly - no token refresh logic
   return response;
 }
 

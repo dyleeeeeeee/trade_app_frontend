@@ -40,43 +40,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userData = await response.json();
         setUser(userData);
       } else {
-        // Token might be expired, try to refresh
-        const refreshToken = localStorage.getItem('refresh_token');
-        if (refreshToken) {
-          try {
-            const refreshResponse = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/refresh`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${refreshToken}`,
-              },
-            });
-
-            if (refreshResponse.ok) {
-              const refreshData = await refreshResponse.json();
-              localStorage.setItem('access_token', refreshData.access_token);
-              
-              // Retry getting user data
-              const retryResponse = await authAPI.getCurrentUser();
-              if (retryResponse.ok) {
-                const userData = await retryResponse.json();
-                setUser(userData);
-                return;
-              }
-            }
-          } catch (error) {
-            console.error('Token refresh failed:', error);
-          }
-        }
-        
-        // Clear invalid tokens
+        // Clear invalid token
         localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
         setUser(null);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -93,9 +63,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         
-        // Store JWT tokens
+        // Store JWT token
         localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
         
         setUser(data.user);
         toast.success('Login successful!');
@@ -116,9 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         
-        // Store JWT tokens
+        // Store JWT token
         localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
         
         setUser(data.user);
         toast.success('Account created successfully!');
@@ -137,18 +105,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authAPI.logout();
       
-      // Clear JWT tokens
+      // Clear JWT token
       localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
       
       setUser(null);
       toast.success('Logged out successfully');
       navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
-      // Still clear user state and tokens even if logout fails
+      // Still clear user state and token even if logout fails
       localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
       setUser(null);
       navigate('/login');
     }
