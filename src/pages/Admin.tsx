@@ -16,8 +16,10 @@ export default function Admin() {
   const [withdrawals, setWithdrawals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [balanceModalOpen, setBalanceModalOpen] = useState(false);
+  const [profitModalOpen, setProfitModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [newBalance, setNewBalance] = useState('');
+  const [newProfit, setNewProfit] = useState('');
 
   useEffect(() => {
     fetchAdminData();
@@ -32,18 +34,22 @@ export default function Admin() {
 
       if (usersRes.ok) {
         const usersData = await usersRes.json();
-        const usersWithBalances = await Promise.all(
+        const usersWithData = await Promise.all(
           usersData.users.map(async (user: any) => {
             try {
-              const balanceRes = await adminAPI.getUserBalance(user.id);
+              const [balanceRes, profitRes] = await Promise.all([
+                adminAPI.getUserBalance(user.id),
+                adminAPI.getUserProfit(user.id)
+              ]);
               const balance = balanceRes.ok ? (await balanceRes.json()).balance || 0 : 0;
-              return { ...user, balance };
+              const profit = profitRes.ok ? (await profitRes.json()).profit || 0 : 0;
+              return { ...user, balance, profit };
             } catch {
-              return { ...user, balance: 0 };
+              return { ...user, balance: 0, profit: 0 };
             }
           })
         );
-        setUsers(usersWithBalances);
+        setUsers(usersWithData);
       }
 
       if (withdrawalsRes.ok) {
@@ -108,10 +114,39 @@ export default function Admin() {
     }
   };
 
+  const handleUpdateProfit = async () => {
+    if (!selectedUser || !newProfit) return;
+
+    setLoading(true);
+    try {
+      const response = await adminAPI.updateUserProfit(selectedUser.id, parseFloat(newProfit));
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(`PNL updated from $${data.previous_profit} to $${data.new_profit}`);
+        setProfitModalOpen(false);
+        setNewProfit('');
+        setSelectedUser(null);
+        fetchAdminData();
+      } else {
+        toast.error('Failed to update PNL');
+      }
+    } catch (error) {
+      toast.error('Failed to update PNL');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const openBalanceModal = (user: any) => {
     setSelectedUser(user);
     setNewBalance(user.balance?.toString() || '0');
     setBalanceModalOpen(true);
+  };
+
+  const openProfitModal = (user: any) => {
+    setSelectedUser(user);
+    setNewProfit(user.profit?.toString() || '0');
+    setProfitModalOpen(true);
   };
 
   return (
@@ -172,6 +207,7 @@ export default function Admin() {
                   <tr className="border-b border-border">
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Email</th>
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Balance</th>
+                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">PNL</th>
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Status</th>
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Role</th>
                     <th className="text-right p-3 text-sm font-medium text-muted-foreground">Actions</th>
@@ -183,6 +219,9 @@ export default function Admin() {
                       <td className="p-3 text-sm text-foreground">{user.email}</td>
                       <td className="p-3 text-sm font-medium text-success">
                         ${user.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                      </td>
+                      <td className="p-3 text-sm font-medium text-success">
+                        ${user.profit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </td>
                       <td className="p-3">
                         <Badge variant={user.blocked ? 'destructive' : 'default'}>
@@ -203,6 +242,15 @@ export default function Admin() {
                         >
                           <Edit className="h-4 w-4 mr-1" />
                           Edit Balance
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openProfitModal(user)}
+                          disabled={loading}
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit PNL
                         </Button>
                         <Button
                           variant="outline"
@@ -281,6 +329,74 @@ export default function Admin() {
                         </>
                       ) : (
                         'Update Balance'
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Profit Edit Modal */}
+        <Dialog open={profitModalOpen} onOpenChange={setProfitModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center space-x-2">
+                <DollarSign className="h-5 w-5" />
+                <span>Edit User PNL</span>
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {selectedUser && (
+                <div className="space-y-4">
+                  <div className="p-4 bg-background/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground">User</p>
+                    <p className="font-medium">{selectedUser.email}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Current PNL: <span className="text-success font-medium">
+                        ${selectedUser.profit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="newProfit">New PNL (USD)</Label>
+                    <Input
+                      id="newProfit"
+                      type="number"
+                      step="0.01"
+                      placeholder="Enter new PNL"
+                      value={newProfit}
+                      onChange={(e) => setNewProfit(e.target.value)}
+                      className="bg-background/50"
+                    />
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        setProfitModalOpen(false);
+                        setSelectedUser(null);
+                        setNewProfit('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleUpdateProfit}
+                      disabled={loading || !newProfit}
+                      className="flex-1 bg-success hover:bg-success/80"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        'Update PNL'
                       )}
                     </Button>
                   </div>

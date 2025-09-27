@@ -265,4 +265,19 @@ export const adminAPI = {
     });
     return response;
   },
+
+  async getUserProfit(userId: string) {
+    const response = await apiCall(`/api/admin/users/${userId}/profit-info`, {
+      method: 'GET',
+    });
+    return response;
+  },
+
+  async updateUserProfit(userId: string, profit: number) {
+    const response = await apiCall(`/api/admin/users/${userId}/profit`, {
+      method: 'POST',
+      body: JSON.stringify({ profit }),
+    });
+    return response;
+  },
 };
