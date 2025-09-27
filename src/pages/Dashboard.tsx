@@ -49,6 +49,7 @@ interface PortfolioItem {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
+  const [profit, setProfit] = useState(0);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,7 +121,7 @@ export default function Dashboard() {
     ].filter(item => item.allocation > 0);
   };
 
-  const pnlData = { value: 0, change: 0 };
+  const pnlData = { value: profit, change: 0 }; // Using actual profit from API
   const activeTradesCount = getActiveTradesCount();
   const recentTradesCount = getRecentTradesCount();
   const copyTradingStats = getCopyTradingStats();
@@ -135,7 +136,7 @@ export default function Dashboard() {
       positive: true
     },
     {
-      title: 'Today\'s Profit',
+      title: 'Total Profit',
       value: `$${pnlData.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: TrendingUp,
       change: `${pnlData.change >= 0 ? '+' : ''}${pnlData.change.toFixed(1)}%`,
@@ -186,9 +187,11 @@ export default function Dashboard() {
       if (walletRes.ok) {
         const walletData = await walletRes.json();
         setBalance(walletData.balance || 0);
+        setProfit(walletData.profit || 0);
       } else {
         console.error('Failed to fetch wallet balance');
         setBalance(0);
+        setProfit(0);
       }
 
       // Handle trades

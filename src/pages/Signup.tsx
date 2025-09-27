@@ -42,7 +42,7 @@ export default function Signup() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -50,14 +50,14 @@ export default function Signup() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="password"
                   type="password"
@@ -65,14 +65,14 @@ export default function Signup() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
-                <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -80,7 +80,7 @@ export default function Signup() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 />
               </div>
             </div>
