@@ -242,13 +242,14 @@ export default function Wallet() {
                         <Label className="text-sm font-medium">Wallet Address (BTC)</Label>
                         <div className="flex items-center space-x-2 p-3 bg-background/50 rounded-lg">
                           <code className="flex-1 text-sm font-mono break-all">
-                            bc1qc74yhsz3wwnurxxm09nx9z459j0287yeq0kn9z
+                            {/* bc1qc74yhsz3wwnurxxm09nx9z459j0287yeq0kn9z */}
+                            bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt
                           </code>
                           <Button 
                             variant="ghost" 
                             size="sm"
                             onClick={() => {
-                              navigator.clipboard.writeText('bc1qc74yhsz3wwnurxxm09nx9z459j0287yeq0kn9z');
+                              navigator.clipboard.writeText('bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt');
                               toast.success('Address copied to clipboard!');
                             }}
                           >
