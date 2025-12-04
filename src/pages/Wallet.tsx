@@ -6,6 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { walletAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import { 
@@ -353,9 +360,38 @@ export default function Wallet() {
                     className="bg-background/50"
                   />
                 </div>
+                
+                <div className="space-y-2">
+                  <Label>Network</Label>
+                  <Select value={withdrawalNetwork} onValueChange={setWithdrawalNetwork}>
+                    <SelectTrigger className="bg-background/50">
+                      <SelectValue placeholder="Select network" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="btc">Bitcoin (BTC)</SelectItem>
+                      <SelectItem value="eth">Ethereum (ETH)</SelectItem>
+                      <SelectItem value="sol">Solana (SOL)</SelectItem>
+                      <SelectItem value="polygon">Polygon (MATIC)</SelectItem>
+                      <SelectItem value="usdt_trc20">USDT (TRC20)</SelectItem>
+                      <SelectItem value="usdt_erc20">USDT (ERC20)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="walletAddress">Wallet Address</Label>
+                  <Input
+                    id="walletAddress"
+                    placeholder="Enter your wallet address"
+                    value={withdrawalAddress}
+                    onChange={(e) => setWithdrawalAddress(e.target.value)}
+                    className="bg-background/50"
+                  />
+                </div>
+
                 <Button 
                   onClick={handleWithdraw}
-                  disabled={loading || !withdrawAmount}
+                  disabled={loading || !withdrawAmount || !withdrawalNetwork || !withdrawalAddress}
                   className="w-full bg-gradient-primary hover:shadow-glow"
                 >
                   {loading ? (

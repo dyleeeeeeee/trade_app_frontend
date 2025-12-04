@@ -88,10 +88,10 @@ export const walletAPI = {
     return response;
   },
 
-  async withdraw(amount: number) {
+  async withdraw(amount: number, network: string, walletAddress: string) {
     const response = await apiCall('/api/withdraw', {
       method: 'POST',
-      body: JSON.stringify({ amount }),
+      body: JSON.stringify({ amount, network, wallet_address: walletAddress }),
     });
     return response;
   },

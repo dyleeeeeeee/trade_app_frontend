@@ -87,7 +87,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                    className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                   />
                 </div>
               </motion.div>
@@ -103,7 +103,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                    className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                   />
                 </div>
               </motion.div>
