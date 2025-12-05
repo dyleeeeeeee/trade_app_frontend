@@ -42,7 +42,9 @@ export default function Signup() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                </div>
                 <Input
                   id="email"
                   type="email"
@@ -50,14 +52,16 @@ export default function Signup() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                </div>
                 <Input
                   id="password"
                   type="password"
@@ -65,14 +69,16 @@ export default function Signup() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
-                <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                </div>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -80,7 +86,7 @@ export default function Signup() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-background/50 pl-12 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 />
               </div>
             </div>
