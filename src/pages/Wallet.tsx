@@ -108,6 +108,11 @@ export default function Wallet() {
   };
 
   const handleWithdraw = async () => {
+    console.log('Submitting withdrawal:', { 
+      amount: withdrawAmount, 
+      network: withdrawalNetwork, 
+      address: withdrawalAddress 
+    });
     setLoading(true);
     try {
       const response = await walletAPI.withdraw(parseFloat(withdrawAmount), withdrawalNetwork, withdrawalAddress);
@@ -472,13 +477,16 @@ export default function Wallet() {
           <CardContent>
             <div className="space-y-3">
               {withdrawals.length > 0 ? (
-                withdrawals.map((withdrawal: { amount: number; status: string; created_at: string }, index: number) => (
+                withdrawals.map((withdrawal: any, index: number) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(withdrawal.status)}
                       <div>
                         <p className="text-sm font-medium text-foreground">
                           ${withdrawal.amount}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {withdrawal.network ? withdrawal.network.toUpperCase() : 'Unknown'} • {withdrawal.wallet_address ? `${withdrawal.wallet_address.substring(0, 6)}...` : ''}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(withdrawal.created_at).toLocaleDateString()}
