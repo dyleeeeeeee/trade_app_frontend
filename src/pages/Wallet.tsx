@@ -43,6 +43,8 @@ export default function Wallet() {
   const [transferRecipient, setTransferRecipient] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
   const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [withdrawalNetwork, setWithdrawalNetwork] = useState('');
+  const [withdrawalAddress, setWithdrawalAddress] = useState('');
 
   useEffect(() => {
     fetchWalletData();
@@ -108,10 +110,12 @@ export default function Wallet() {
   const handleWithdraw = async () => {
     setLoading(true);
     try {
-      const response = await walletAPI.withdraw(parseFloat(withdrawAmount));
+      const response = await walletAPI.withdraw(parseFloat(withdrawAmount), withdrawalNetwork, withdrawalAddress);
       if (response.ok) {
         toast.success('Withdrawal request submitted');
         setWithdrawAmount('');
+        setWithdrawalNetwork('');
+        setWithdrawalAddress('');
         fetchWalletData();
       } else {
         toast.error('Withdrawal failed');
