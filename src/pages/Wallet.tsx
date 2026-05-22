@@ -258,8 +258,8 @@ export default function Wallet() {
                         <Label className="text-sm font-medium">Wallet Address (BTC)</Label>
                         <div className="flex items-center space-x-2 p-3 bg-background/50 rounded-lg">
                           <code className="flex-1 text-sm font-mono break-all">
-                            {/* bc1qndh646ztj08nzmtshmsl5wmlq7kn7kad0vx8wl bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
-                            bc1qndh646ztj08nzmtshmsl5wmlq7kn7kad0vx8wl
+                            {/* bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
+                            bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw
                           </code>
                           <Button 
                             variant="ghost" 
