@@ -66,12 +66,12 @@ export default function CopyTrading() {
     }
   };
 
-  // Mock trader data
   const topTraders = [
     {
       id: 'trader1',
       name: 'Alex Chen',
-      avatar: '👨‍💼',
+      initials: 'AC',
+      gradient: 'from-blue-500 to-purple-600',
       winRate: 78,
       totalReturn: 245.8,
       followers: 1234,
@@ -82,7 +82,8 @@ export default function CopyTrading() {
     {
       id: 'trader2',
       name: 'Sarah Williams',
-      avatar: '👩‍💼',
+      initials: 'SW',
+      gradient: 'from-emerald-500 to-teal-600',
       winRate: 82,
       totalReturn: 189.3,
       followers: 892,
@@ -93,7 +94,8 @@ export default function CopyTrading() {
     {
       id: 'trader3',
       name: 'Mike Johnson',
-      avatar: '🧑‍💼',
+      initials: 'MJ',
+      gradient: 'from-orange-500 to-red-600',
       winRate: 71,
       totalReturn: 312.7,
       followers: 2103,
@@ -114,7 +116,7 @@ export default function CopyTrading() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Active Subscriptions
@@ -125,7 +127,7 @@ export default function CopyTrading() {
               <p className="text-xs text-muted-foreground mt-1">Following traders</p>
             </CardContent>
           </Card>
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Allocated
@@ -138,7 +140,7 @@ export default function CopyTrading() {
               <p className="text-xs text-muted-foreground mt-1">Of portfolio</p>
             </CardContent>
           </Card>
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Avg. Performance
@@ -152,7 +154,7 @@ export default function CopyTrading() {
         </div>
 
         {/* Top Traders */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+        <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Award className="h-5 w-5 text-warning" />
@@ -164,12 +166,14 @@ export default function CopyTrading() {
               {topTraders.map((trader) => (
                 <Card 
                   key={trader.id}
-                  className="bg-background/50 border-border/50 hover:shadow-glow transition-all"
+                  className="bg-slate-900/40 border-slate-700/30 hover:bg-slate-900/70 transition-all"
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
-                        <div className="text-3xl">{trader.avatar}</div>
+                        <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-br", trader.gradient)}>
+                          {trader.initials}
+                        </div>
                         <div>
                           <p className="font-semibold text-foreground">{trader.name}</p>
                           <div className="flex items-center space-x-2 mt-1">
@@ -264,7 +268,7 @@ export default function CopyTrading() {
 
         {/* Active Subscriptions */}
         {subscriptions.length > 0 && (
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <UserCheck className="h-5 w-5" />
@@ -274,9 +278,9 @@ export default function CopyTrading() {
             <CardContent>
               <div className="space-y-3">
                 {subscriptions.map((sub: any, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
                     <div className="flex items-center space-x-3">
-                      <div className="text-2xl">👤</div>
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center text-xs font-bold text-white">T</div>
                       <div>
                         <p className="text-sm font-medium text-foreground">
                           Trader {sub.trader_id}

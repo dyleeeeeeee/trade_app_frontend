@@ -237,7 +237,7 @@ export default function Wallet() {
               {/* Deposit Instructions Modal */}
               <Dialog open={depositModalOpen} onOpenChange={setDepositModalOpen}>
                 <DialogTrigger asChild>
-                  <Card className="bg-gradient-card border-border/50 backdrop-blur-sm cursor-pointer hover:shadow-glow">
+                  <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm cursor-pointer hover:shadow-glow">
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2">
                         <ArrowDownRight className="h-5 w-5 text-success" />
@@ -275,7 +275,7 @@ export default function Wallet() {
 
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">Wallet Address (BTC)</Label>
-                        <div className="flex items-center space-x-2 p-3 bg-background/50 rounded-lg">
+                        <div className="flex items-center space-x-2 p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
                           <code className="flex-1 text-sm font-mono break-all">
                             {/* bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
                             bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw
@@ -328,7 +328,7 @@ export default function Wallet() {
               </Dialog>
 
               {/* Deposit History */}
-              <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+              <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle>Deposit History</CardTitle>
                 </CardHeader>
@@ -336,7 +336,7 @@ export default function Wallet() {
                   <div className="space-y-3">
                     {deposits.length > 0 ? (
                       deposits.map((deposit: any, index: number) => (
-                        <div key={deposit.id || index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                        <div key={deposit.id || index} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
                           <div className="flex items-center space-x-3">
                             <div className="p-2 rounded-lg bg-success/10">
                               <ArrowDownRight className="h-4 w-4 text-success" />
@@ -369,7 +369,7 @@ export default function Wallet() {
           </TabsContent>
 
           <TabsContent value="withdraw">
-            <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+            <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <ArrowUpRight className="h-5 w-5 text-loss" />
@@ -385,14 +385,14 @@ export default function Wallet() {
                     placeholder="Enter amount"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
-                    className="bg-background/50"
+                    className="bg-slate-900/50 border-slate-700/50"
                   />
                 </div>
                 
                 <div className="space-y-2">
                   <Label>Network</Label>
                   <Select value={withdrawalNetwork} onValueChange={setWithdrawalNetwork}>
-                    <SelectTrigger className="bg-background/50">
+                    <SelectTrigger className="bg-slate-900/50 border-slate-700/50">
                       <SelectValue placeholder="Select network" />
                     </SelectTrigger>
                     <SelectContent>
@@ -413,7 +413,7 @@ export default function Wallet() {
                     placeholder="Enter your wallet address"
                     value={withdrawalAddress}
                     onChange={(e) => setWithdrawalAddress(e.target.value)}
-                    className="bg-background/50"
+                    className="bg-slate-900/50 border-slate-700/50"
                   />
                 </div>
 
@@ -439,7 +439,7 @@ export default function Wallet() {
           </TabsContent>
 
           <TabsContent value="transfer">
-            <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+            <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Send className="h-5 w-5 text-primary" />
@@ -455,7 +455,7 @@ export default function Wallet() {
                     placeholder="recipient@example.com"
                     value={transferRecipient}
                     onChange={(e) => setTransferRecipient(e.target.value)}
-                    className="bg-background/50"
+                    className="bg-slate-900/50 border-slate-700/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -466,7 +466,7 @@ export default function Wallet() {
                     placeholder="Enter amount"
                     value={transferAmount}
                     onChange={(e) => setTransferAmount(e.target.value)}
-                    className="bg-background/50"
+                    className="bg-slate-900/50 border-slate-700/50"
                   />
                 </div>
                 <Button 
@@ -489,7 +489,7 @@ export default function Wallet() {
         </Tabs>
 
         {/* Withdrawal History */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
+        <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Withdrawal History</CardTitle>
           </CardHeader>
@@ -497,7 +497,7 @@ export default function Wallet() {
             <div className="space-y-3">
               {withdrawals.length > 0 ? (
                 withdrawals.map((withdrawal: any, index: number) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
                     <div className="flex items-center space-x-3">
                       {getStatusBadge(withdrawal.status)}
                       <div>

@@ -80,14 +80,10 @@ export default function Dashboard() {
   };
 
   const getCopyTradingStats = () => {
-    if (!subscriptions) return { count: 0, successRate: 0 };
+    if (!subscriptions) return { count: 0 };
 
     const count = subscriptions.length;
-    // Calculate success rate from subscriptions (simplified)
-    const successRate = subscriptions.length > 0 ?
-      Math.min(95, 75 + Math.random() * 20) : 0; // Mock success rate
-
-    return { count, successRate };
+    return { count };
   };
 
   const getPortfolioAllocation = () => {
@@ -134,29 +130,29 @@ export default function Dashboard() {
       title: 'Total Balance',
       value: `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: DollarSign,
-      change: '+12.5%',
-      positive: true
+      change: profit !== 0 ? `${profit >= 0 ? '+' : ''}$${Math.abs(profit).toLocaleString('en-US', { maximumFractionDigits: 0 })} P&L` : '—',
+      positive: profit >= 0
     },
     {
       title: 'Total Profit',
       value: `$${pnlData.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: TrendingUp,
-      change: `${pnlData.change >= 0 ? '+' : ''}${pnlData.change.toFixed(1)}%`,
+      change: pnlData.value !== 0 ? (pnlData.value >= 0 ? 'Profitable' : 'In loss') : '—',
       positive: pnlData.value >= 0
     },
     {
-      title: 'Active Trades Bonus',
+      title: 'Active Trades',
       value: activeTradesCount.toString(),
       icon: Activity,
-      change: `${recentTradesCount} new`,
+      change: recentTradesCount > 0 ? `${recentTradesCount} today` : '—',
       positive: true
     },
     {
       title: 'Copy Trading',
       value: `${copyTradingStats.count} traders`,
       icon: Users,
-      change: `${copyTradingStats.successRate.toFixed(0)}% success`,
-      positive: true
+      change: copyTradingStats.count > 0 ? 'Active' : 'None',
+      positive: copyTradingStats.count > 0
     }
   ];
 
@@ -473,13 +469,13 @@ export default function Dashboard() {
                       <div className="text-right flex-shrink-0 ml-4">
                         <p className={cn(
                           "text-sm font-bold font-mono",
-                          (trade.side === 'buy' || (trade.pnl || 0) >= 0) ? "text-emerald-400" : "text-red-400"
+                          trade.side === 'buy' ? "text-emerald-400" : "text-red-400"
                         )}>
-                          {(trade.side === 'buy' || (trade.pnl || 0) >= 0) ? '+' : '-'}$
-                          {Math.abs(trade.pnl || trade.profit_loss || Math.random() * 1000).toFixed(2)}
+                          {trade.side === 'buy' ? '-' : '+'}$
+                          {((trade.size || 0) * (trade.price || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                         <p className="text-xs text-muted-foreground font-mono">
-                          {(trade.size || Math.random() * 10).toFixed(4)} {(trade.asset || 'BTC/USD').split('/')[0]}
+                          {(trade.size || 0).toFixed(4)} {(trade.asset || 'BTC/USD').split('/')[0]}
                         </p>
                       </div>
                     </motion.div>

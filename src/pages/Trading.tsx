@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,10 +15,23 @@ import {
   Activity,
   Loader2,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  RefreshCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface AssetData {
+  symbol: string;
+  name: string;
+  id: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  previousClose: number;
+  volume: number;
+  marketCap: number;
+}
 
 export default function Trading() {
   const [trades, setTrades] = useState([]);
@@ -27,22 +40,17 @@ export default function Trading() {
   const [asset, setAsset] = useState('BTC/USD');
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
-  const [assets, setAssets] = useState([
-    { symbol: 'BTC/USD', name: 'Bitcoin', price: 0, change: 0, id: 'bitcoin' },
-    { symbol: 'ETH/USD', name: 'Ethereum', price: 0, change: 0, id: 'ethereum' },
-    { symbol: 'AAPL', name: 'Apple Inc.', price: 0, change: 0, id: 'apple' },
-    { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 0, change: 0, id: 'google' },
-    { symbol: 'NVDA', name: 'NVIDIA Corp.', price: 0, change: 0, id: 'nvidia' },
-    { symbol: 'TSLA', name: 'Tesla Inc.', price: 0, change: 0, id: 'tesla' },
-    { symbol: 'META', name: 'Meta Platforms', price: 0, change: 0, id: 'meta' },
-    { symbol: 'AMZN', name: 'Amazon.com', price: 0, change: 0, id: 'amazon' },
-    { symbol: 'SPACEX', name: 'SpaceX', price: 0, change: 0, id: 'spacex' },
-  ]);
+  const [assets, setAssets] = useState<AssetData[]>([]);
   const [pricesLoading, setPricesLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [priceFlash, setPriceFlash] = useState<Record<string, 'up' | 'down' | null>>({});
+  const prevPrices = useRef<Record<string, number>>({});
 
   useEffect(() => {
     fetchTrades();
     fetchPrices();
+    const interval = setInterval(fetchPrices, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -64,20 +72,45 @@ export default function Trading() {
     }
   };
 
-  const fetchPrices = async () => {
-    setPricesLoading(true);
+  const fetchPrices = useCallback(async () => {
+    if (assets.length === 0) setPricesLoading(true);
     try {
       const response = await tradingAPI.getPrices();
       if (response.ok) {
         const data = await response.json();
-        setAssets(data.assets.map((a: any) => ({ ...a, price: parseFloat(a.price) })));
+        const newAssets: AssetData[] = data.assets.map((a: any) => ({
+          ...a,
+          price: parseFloat(a.price),
+          change: a.change || 0,
+          changePercent: a.changePercent || 0,
+          previousClose: a.previousClose || 0,
+          volume: a.volume || 0,
+          marketCap: a.marketCap || 0,
+        }));
+
+        // Detect price direction for flash animation
+        const flashes: Record<string, 'up' | 'down' | null> = {};
+        newAssets.forEach(a => {
+          const prev = prevPrices.current[a.symbol];
+          if (prev && prev !== a.price) {
+            flashes[a.symbol] = a.price > prev ? 'up' : 'down';
+          }
+          prevPrices.current[a.symbol] = a.price;
+        });
+        if (Object.keys(flashes).length > 0) {
+          setPriceFlash(flashes);
+          setTimeout(() => setPriceFlash({}), 1200);
+        }
+
+        setAssets(newAssets);
+        setLastUpdated(new Date());
       }
     } catch (error) {
       console.error('Failed to fetch prices:', error);
     } finally {
       setPricesLoading(false);
     }
-  };
+  }, [assets.length]);
 
   const handleTrade = async () => {
     setLoading(true);
@@ -108,9 +141,17 @@ export default function Trading() {
     <Layout>
       <div className="space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">Markets</h1>
-          <p className="text-muted-foreground mt-1">Real-time prices and trading</p>
+        <div className="flex items-end justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">Markets</h1>
+            <p className="text-muted-foreground mt-1">Real-time prices and trading</p>
+          </div>
+          {lastUpdated && (
+            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <RefreshCw className="h-3 w-3" />
+              Updated {lastUpdated.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </div>
+          )}
         </div>
 
         {/* Market Overview — Ticker Cards */}
@@ -153,30 +194,47 @@ export default function Trading() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-end justify-between">
-                      <p className="text-lg font-bold text-foreground" style={{ fontFamily: 'var(--font-mono, monospace)' }}>
-                        {pricesLoading ? (
-                          <span className="inline-flex items-center gap-1.5">
-                            <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
-                          </span>
-                        ) : (
-                          `$${assetItem.price.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
-                        )}
-                      </p>
-                      {!pricesLoading && (
-                        <span className={cn(
-                          "inline-flex items-center gap-0.5 text-[11px] font-semibold px-1.5 py-0.5 rounded-full",
-                          assetItem.change > 0
-                            ? "bg-emerald-500/15 text-emerald-400"
-                            : "bg-red-500/15 text-red-400"
-                        )}>
-                          {assetItem.change > 0 ? (
-                            <ArrowUpRight className="h-3 w-3" />
-                          ) : (
-                            <ArrowDownRight className="h-3 w-3" />
+                    <div className="space-y-1.5">
+                      <div className="flex items-end justify-between">
+                        <p
+                          className={cn(
+                            "text-lg font-bold text-foreground font-mono transition-colors duration-300",
+                            priceFlash[assetItem.symbol] === 'up' && "text-emerald-300",
+                            priceFlash[assetItem.symbol] === 'down' && "text-red-300",
                           )}
-                          {Math.abs(assetItem.change).toFixed(2)}%
-                        </span>
+                        >
+                          {pricesLoading ? (
+                            <span className="inline-flex items-center gap-1.5">
+                              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+                            </span>
+                          ) : (
+                            `$${assetItem.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          )}
+                        </p>
+                        {!pricesLoading && (
+                          <span className={cn(
+                            "inline-flex items-center gap-0.5 text-[11px] font-semibold px-1.5 py-0.5 rounded-full",
+                            assetItem.changePercent >= 0
+                              ? "bg-emerald-500/15 text-emerald-400"
+                              : "bg-red-500/15 text-red-400"
+                          )}>
+                            {assetItem.changePercent >= 0 ? (
+                              <ArrowUpRight className="h-3 w-3" />
+                            ) : (
+                              <ArrowDownRight className="h-3 w-3" />
+                            )}
+                            {Math.abs(assetItem.changePercent).toFixed(2)}%
+                          </span>
+                        )}
+                      </div>
+                      {!pricesLoading && assetItem.volume > 0 && (
+                        <p className="text-[10px] text-slate-500 font-mono">
+                          Vol: {assetItem.volume >= 1e9
+                            ? `${(assetItem.volume / 1e9).toFixed(1)}B`
+                            : assetItem.volume >= 1e6
+                              ? `${(assetItem.volume / 1e6).toFixed(1)}M`
+                              : assetItem.volume.toLocaleString()}
+                        </p>
                       )}
                     </div>
                   </CardContent>
