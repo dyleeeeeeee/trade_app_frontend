@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { walletAPI, tradingAPI } from '@/lib/api';
-import { AssetLogo, getAssetColor } from '@/components/AssetLogo';
+import { AssetLogo } from '@/components/AssetLogo';
 import {
-  Wallet,
   TrendingUp,
   ArrowUpRight,
   ArrowDownRight,
@@ -14,12 +13,10 @@ import {
   Users,
   Activity,
   PieChart,
-  Send
+  Send,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
-import { useStaggeredAnimation, useFluidHover } from '@/hooks/use-fluid-animations';
 import { usePrices } from '@/hooks/use-prices';
 import { LivePrice, PriceChange } from '@/components/LivePrice';
 
@@ -43,15 +40,7 @@ interface Subscription {
   success_rate?: number;
 }
 
-interface PortfolioItem {
-  asset: string;
-  symbol: string;
-  allocation: number;
-  brandColor: string;
-}
-
 export default function Dashboard() {
-  const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [profit, setProfit] = useState(0);
   const [trades, setTrades] = useState<Trade[]>([]);
@@ -72,7 +61,6 @@ export default function Dashboard() {
 
   const getActiveTradesCount = () => {
     if (!trades) return 0;
-    // Consider trades that are open/pending as active
     return trades.filter((trade: Trade) =>
       trade.status === 'open' || trade.status === 'pending' || !trade.status
     ).length;
@@ -80,7 +68,6 @@ export default function Dashboard() {
 
   const getRecentTradesCount = () => {
     if (!trades) return 0;
-    // Count trades from last 24 hours
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     return trades.filter((trade: Trade) =>
@@ -90,17 +77,12 @@ export default function Dashboard() {
 
   const getCopyTradingStats = () => {
     if (!subscriptions) return { count: 0 };
-
-    const count = subscriptions.length;
-    return { count };
+    return { count: subscriptions.length };
   };
 
   const getPortfolioAllocation = () => {
-    // Calculate portfolio allocation based on balance and trades
-    // This is a simplified calculation - in a real app, this would be more complex
     const totalBalance = balance;
 
-    // Default allocations if no trades data
     if (!trades || trades.length === 0) {
       return [
         { asset: 'Cash', symbol: 'CASH', allocation: Math.max(10, 100 - Math.min(totalBalance / 1000 * 20, 90)), brandColor: '#64748b' },
@@ -110,7 +92,6 @@ export default function Dashboard() {
       ].filter(item => item.allocation > 0);
     }
 
-    // Calculate from actual trades (simplified)
     const btcTrades = trades.filter((t: Trade) => (t.asset || t.symbol || '').includes('BTC'));
     const ethTrades = trades.filter((t: Trade) => (t.asset || t.symbol || '').includes('ETH'));
 
@@ -128,7 +109,6 @@ export default function Dashboard() {
     ].filter(item => item.allocation > 0);
   };
 
-  const pnlData = { value: profit, change: 0 }; // Using actual profit from API
   const activeTradesCount = getActiveTradesCount();
   const recentTradesCount = getRecentTradesCount();
   const copyTradingStats = getCopyTradingStats();
@@ -140,44 +120,37 @@ export default function Dashboard() {
       value: `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: DollarSign,
       change: profit !== 0 ? `${profit >= 0 ? '+' : ''}$${Math.abs(profit).toLocaleString('en-US', { maximumFractionDigits: 0 })} P&L` : '—',
-      positive: profit >= 0
+      positive: profit >= 0,
     },
     {
       title: 'Total Profit',
-      value: `$${pnlData.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      value: `$${profit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: TrendingUp,
-      change: pnlData.value !== 0 ? (pnlData.value >= 0 ? 'Profitable' : 'In loss') : '—',
-      positive: pnlData.value >= 0
+      change: profit !== 0 ? (profit >= 0 ? 'Profitable' : 'In loss') : '—',
+      positive: profit >= 0,
     },
     {
       title: 'Active Trades',
       value: activeTradesCount.toString(),
       icon: Activity,
       change: recentTradesCount > 0 ? `${recentTradesCount} today` : '—',
-      positive: true
+      positive: true,
     },
     {
       title: 'Copy Trading',
       value: `${copyTradingStats.count} traders`,
       icon: Users,
       change: copyTradingStats.count > 0 ? 'Active' : 'None',
-      positive: copyTradingStats.count > 0
-    }
+      positive: copyTradingStats.count > 0,
+    },
   ];
 
   const quickActions = [
-    { label: 'Deposit', icon: ArrowDownRight, path: '/wallet', variant: 'premium' as const },
-    { label: 'Withdraw', icon: ArrowUpRight, path: '/wallet', variant: 'glass' as const },
-    { label: 'Transfer', icon: Send, path: '/wallet', variant: 'glass' as const },
-    { label: 'Copy Trade', icon: Users, path: '/copy-trading', variant: 'premium' as const }
+    { label: 'Deposit', icon: ArrowDownRight, path: '/wallet', variant: 'primary' as const },
+    { label: 'Withdraw', icon: ArrowUpRight, path: '/wallet', variant: 'secondary' as const },
+    { label: 'Transfer', icon: Send, path: '/wallet', variant: 'secondary' as const },
+    { label: 'Copy Trade', icon: Users, path: '/copy-trading', variant: 'secondary' as const },
   ];
-
-  // Fluid animation hooks
-  const fluidHover = useFluidHover();
-  const { containerVariants: statsContainerVariants, itemVariants: statsItemVariants } = useStaggeredAnimation(stats.length, { staggerChildren: 0.08 });
-  const { containerVariants: actionsContainerVariants, itemVariants: actionsItemVariants } = useStaggeredAnimation(quickActions.length, { staggerChildren: 0.06 });
-  const { containerVariants: tradesContainerVariants, itemVariants: tradesItemVariants } = useStaggeredAnimation(Math.min(trades.length, 3), { staggerChildren: 0.05 });
-  const { containerVariants: portfolioContainerVariants, itemVariants: portfolioItemVariants } = useStaggeredAnimation(portfolioAllocation.length, { staggerChildren: 0.07 });
 
   const fetchDashboardData = async ({ silent = false }: { silent?: boolean } = {}) => {
     try {
@@ -189,10 +162,9 @@ export default function Dashboard() {
       const [walletRes, tradesRes, subscriptionsRes] = await Promise.all([
         walletAPI.getBalance(),
         tradingAPI.getTrades(),
-        tradingAPI.getFollowedTraders()
+        tradingAPI.getFollowedTraders(),
       ]);
 
-      // Handle wallet balance
       if (walletRes.ok) {
         const walletData = await walletRes.json();
         setBalance(walletData.balance || 0);
@@ -203,7 +175,6 @@ export default function Dashboard() {
         setProfit(0);
       }
 
-      // Handle trades
       if (tradesRes.ok) {
         const tradesData = await tradesRes.json();
         setTrades(tradesData.trades || []);
@@ -212,7 +183,6 @@ export default function Dashboard() {
         setTrades([]);
       }
 
-      // Handle subscriptions
       if (subscriptionsRes.ok) {
         const subscriptionsData = await subscriptionsRes.json();
         setSubscriptions(subscriptionsData.subscriptions || []);
@@ -221,13 +191,12 @@ export default function Dashboard() {
         setSubscriptions([]);
       }
 
-      // If all requests failed, show error
       if (!walletRes.ok && !tradesRes.ok && !subscriptionsRes.ok) {
         setError('Failed to load dashboard data. Please try again.');
         toast.error('Failed to load dashboard data');
       }
-    } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
+    } catch (err) {
+      console.error('Failed to fetch dashboard data:', err);
       if (!silent) {
         setError('Network error. Please check your connection and try again.');
         toast.error('Network error. Please check your connection.');
@@ -237,372 +206,243 @@ export default function Dashboard() {
     }
   };
 
+  const formatTradeTime = (trade: Trade) => {
+    try {
+      const timestamp = trade.timestamp || trade.created_at;
+      if (!timestamp) return 'Recently';
+      const date = new Date(typeof timestamp === 'string' ? timestamp : Number(timestamp));
+      if (isNaN(date.getTime())) return 'Recently';
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return 'Recently';
+    }
+  };
+
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          {/* Header */}
-          <motion.div
-            className="text-center mb-12 lg:mb-16"
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, type: 'spring', stiffness: 200 }}
-          >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 lg:mb-6">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">
-                Portfolio Dashboard
-              </span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Welcome back! Here's your comprehensive portfolio overview and trading performance.
-            </p>
-          </motion.div>
+      <div className="flex flex-col gap-12">
+        {/* Header */}
+        <header className="flex flex-col gap-1">
+          <h1 className="text-h1">Dashboard</h1>
+          <p className="text-body text-text-secondary">
+            Welcome back — here's your portfolio at a glance.
+          </p>
+        </header>
 
-          {/* Error Message */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              transition={{ duration: 0.4, type: 'spring', stiffness: 200 }}
-              className="mb-8"
-            >
-              <Card className="bg-red-500/10 border-red-500/20 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <p className="text-red-300 text-base md:text-lg">{error}</p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => fetchDashboardData()}
-                      className="border-red-500/30 hover:border-red-400 hover:bg-red-500/10 text-red-300 hover:text-red-200"
-                    >
-                      Retry
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
+        {/* Error */}
+        {error && (
+          <Card className="border-feedback-error/30 bg-feedback-error/10 p-4">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-body-sm text-feedback-error">{error}</p>
+              <Button variant="secondary" size="sm" onClick={() => fetchDashboardData()}>Retry</Button>
+            </div>
+          </Card>
+        )}
 
-          {/* Stats Grid */}
-          <motion.div
-            variants={statsContainerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 lg:mb-16"
-            role="region"
-            aria-label="Portfolio statistics"
-          >
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={index}
-                  variants={statsItemVariants}
-                  whileHover={fluidHover}
-                  className="h-full"
+        {/* Stats */}
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" aria-label="Portfolio statistics">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            const neutral = stat.change === '—';
+            return (
+              <Card key={stat.title} interactive className="p-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-caption uppercase text-text-tertiary">{stat.title}</p>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-interactive/10" aria-hidden="true">
+                    <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} />
+                  </span>
+                </div>
+                <p className="mt-4 font-mono text-h2 text-text-primary" aria-label={`${stat.title}: ${stat.value}`}>
+                  {loading ? (
+                    <span className="shimmer inline-block h-7 w-28 rounded-md bg-surface-overlay/60" />
+                  ) : (
+                    stat.value
+                  )}
+                </p>
+                <div
+                  className={cn(
+                    'mt-2 flex items-center gap-1 text-body-sm',
+                    neutral ? 'text-text-tertiary' : stat.positive ? 'text-feedback-success' : 'text-feedback-error',
+                  )}
                 >
-                  <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 hover:border-blue-400/30 transition-all duration-300 h-full">
-                    <CardHeader className="flex flex-row items-center justify-between pb-3">
-                      <CardTitle className="text-sm md:text-base font-medium text-gray-400 uppercase tracking-wide">
-                        {stat.title}
-                      </CardTitle>
-                      <motion.div
-                        className="p-3 bg-blue-500/10 rounded-xl"
-                        aria-hidden="true"
-                        whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                        transition={{ duration: 0.4, ease: 'easeInOut' }}
-                      >
-                        <motion.div whileHover={{ scale: 1.05 }}>
-                          <Icon className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
-                        </motion.div>
-                      </motion.div>
-                    </CardHeader>
-                    <CardContent className="pb-4">
-                      <motion.div
-                        className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3"
-                        aria-label={`${stat.title}: ${stat.value}`}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                      >
-                        {loading ? (
-                          <motion.div
-                            className="shimmer h-8 w-24 md:h-10 md:w-32 rounded-lg"
-                            animate={{
-                              opacity: [0.5, 1, 0.5],
-                              scale: [1, 1.02, 1]
-                            }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                          />
-                        ) : (
-                          <span className="font-mono">{stat.value}</span>
-                        )}
-                      </motion.div>
-                      <motion.div
-                        className={cn(
-                          "flex items-center text-sm md:text-base",
-                          stat.positive ? "text-green-400" : "text-red-400"
-                        )}
-                        aria-label={`Change: ${stat.change}`}
-                        initial={{ x: -10, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                      >
-                        <motion.div
-                          whileHover={{ scale: 1.2, rotate: 10 }}
-                          transition={{ type: 'spring', stiffness: 400 }}
-                        >
-                          {stat.positive ? (
-                            <ArrowUpRight className="h-4 w-4 mr-2 flex-shrink-0" aria-hidden="true" />
-                          ) : (
-                            <ArrowDownRight className="h-4 w-4 mr-2 flex-shrink-0" aria-hidden="true" />
-                          )}
-                        </motion.div>
-                        <span className="font-medium">{stat.change}</span>
-                      </motion.div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                  {!neutral && (
+                    stat.positive
+                      ? <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                      : <ArrowDownRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                  )}
+                  <span>{stat.change}</span>
+                </div>
+              </Card>
+            );
+          })}
+        </section>
+
+        {/* Live Markets — polled every 15s */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-caption uppercase text-text-tertiary">Live Markets</h2>
+            <span className="flex items-center gap-2 text-caption text-text-tertiary">
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-feedback-success opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-feedback-success" />
+              </span>
+              Real-time
+            </span>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            {(prices && prices.length > 0 ? prices.slice(0, 6) : Array.from({ length: 6 })).map((asset: any, i: number) => (
+              <div key={asset?.symbol ?? i} className="flex items-center gap-3 rounded-xl border border-hairline/[0.08] bg-surface-overlay/40 p-3">
+                {asset ? (
+                  <>
+                    <AssetLogo symbol={asset.symbol} size={32} />
+                    <div className="min-w-0">
+                      <p className="truncate text-caption font-semibold text-text-primary">{asset.symbol}</p>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <LivePrice value={Number(asset.price)} className="font-mono text-body-sm text-text-secondary" />
+                        <PriceChange changePercent={asset.changePercent} />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-8 w-full animate-pulse rounded-md bg-surface-overlay" />
+                )}
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="p-6">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-h3">Quick actions</h2>
+            <p className="text-body-sm text-text-secondary">Manage your portfolio with these essential tools.</p>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4" role="group" aria-label="Quick actions">
+            {quickActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <Button
+                  key={action.label}
+                  asChild
+                  variant={action.variant}
+                  className="h-auto flex-col gap-2 py-5"
+                >
+                  <Link to={action.path} aria-label={action.label}>
+                    <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+                    <span className="text-body-sm font-semibold">{action.label}</span>
+                  </Link>
+                </Button>
               );
             })}
-          </motion.div>
-
-          {/* Live Markets — polled every 15s */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mb-12 lg:mb-16"
-          >
-            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50">
-              <CardHeader className="flex flex-row items-center justify-between pb-3">
-                <CardTitle className="text-sm md:text-base font-medium text-gray-400 uppercase tracking-wide">
-                  Live Markets
-                </CardTitle>
-                <span className="flex items-center gap-2 text-caption text-gray-500">
-                  <span className="relative flex h-2 w-2" aria-hidden="true">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-                  </span>
-                  Real-time
-                </span>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                  {(prices && prices.length > 0 ? prices.slice(0, 6) : Array.from({ length: 6 })).map(
-                    (asset: any, i: number) => (
-                      <div
-                        key={asset?.symbol ?? i}
-                        className="flex items-center gap-3 rounded-xl border border-slate-700/40 bg-slate-800/40 p-3"
-                      >
-                        {asset ? (
-                          <>
-                            <AssetLogo symbol={asset.symbol} className="h-8 w-8 flex-shrink-0" />
-                            <div className="min-w-0">
-                              <p className="truncate text-xs font-semibold text-white">{asset.symbol}</p>
-                              <div className="flex items-center gap-1.5">
-                                <LivePrice
-                                  value={Number(asset.price)}
-                                  className="text-sm font-mono text-gray-200"
-                                />
-                                <PriceChange changePercent={asset.changePercent} />
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="h-8 w-full animate-pulse rounded-md bg-slate-700/50" />
-                        )}
-                      </div>
-                    ),
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="mb-12 lg:mb-16"
-          >
-            <Card className="bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-sm border border-slate-700/30">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl md:text-2xl font-bold text-white">Quick Actions</CardTitle>
-                <p className="text-gray-400 mt-2">Manage your portfolio with these essential tools</p>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6" role="group" aria-label="Quick actions">
-                  {quickActions.map((action, index) => {
-                    const Icon = action.icon;
-                    return (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5 + index * 0.1, duration: 0.4, type: 'spring' }}
-                        whileHover={{ scale: 1.05, y: -4 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Link to={action.path} aria-label={action.label}>
-                          <Button
-                            variant={action.variant}
-                            className="w-full h-auto py-4 md:py-5 flex flex-col items-center space-y-3 btn-animated focus-ring group"
-                          >
-                            <motion.div
-                              whileHover={{ rotate: 360 }}
-                              transition={{ duration: 0.6 }}
-                            >
-                              <Icon className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true" />
-                            </motion.div>
-                            <span className="text-sm md:text-base font-semibold">{action.label}</span>
-                          </Button>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+          </div>
+        </Card>
 
         {/* Recent Activity & Portfolio */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           {/* Recent Trades */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6, duration: 0.4 }}
-          >
-            <Card className="bg-gradient-card border-border/50 backdrop-blur-sm h-full">
-              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <CardTitle className="text-lg md:text-xl">Recent Trades</CardTitle>
-                <Link to="/trading/history" className="text-sm text-primary hover:text-primary/80 transition-colors btn-animated self-start sm:self-auto">
-                  View all →
-                </Link>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {loading ? (
-                    // Loading skeleton
-                    Array.from({ length: 3 }).map((_, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <div className="shimmer w-10 h-10 rounded-lg"></div>
-                          <div className="space-y-2">
-                            <div className="shimmer h-4 w-24 rounded"></div>
-                            <div className="shimmer h-3 w-16 rounded"></div>
-                          </div>
-                        </div>
-                        <div className="space-y-2 text-right">
-                          <div className="shimmer h-4 w-20 rounded"></div>
-                          <div className="shimmer h-3 w-16 rounded"></div>
+          <Card className="flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-h3">Recent trades</CardTitle>
+              <Link to="/trading" className="text-body-sm text-interactive transition-colors hover:text-interactive-hover">
+                View all
+              </Link>
+            </CardHeader>
+            <CardContent className="flex-1">
+              {loading ? (
+                <div className="flex flex-col gap-3">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="flex items-center justify-between rounded-xl border border-hairline/[0.08] p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="shimmer h-9 w-9 rounded-lg bg-surface-overlay/60" />
+                        <div className="flex flex-col gap-2">
+                          <div className="shimmer h-4 w-24 rounded bg-surface-overlay/60" />
+                          <div className="shimmer h-3 w-16 rounded bg-surface-overlay/60" />
                         </div>
                       </div>
-                    ))
-                  ) : trades.slice(0, 3).map((trade: Trade, index) => (
-                    <motion.div
+                      <div className="shimmer h-4 w-20 rounded bg-surface-overlay/60" />
+                    </div>
+                  ))}
+                </div>
+              ) : trades.length === 0 ? (
+                <div className="flex flex-col items-center gap-3 py-12 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-hairline/[0.08] bg-surface-overlay/60">
+                    <Activity className="h-6 w-6 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                  </div>
+                  <p className="text-body-sm font-medium text-text-primary">No trades yet</p>
+                  <p className="max-w-xs text-body-sm text-text-secondary">Your executed trades will appear here once you start trading.</p>
+                  <Button asChild variant="secondary" size="sm" className="mt-1">
+                    <Link to="/trading">Start trading</Link>
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {trades.slice(0, 3).map((trade: Trade, index) => (
+                    <div
                       key={trade.id || index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30 hover:bg-slate-900/70 transition-colors"
+                      className="flex items-center justify-between rounded-xl border border-hairline/[0.08] bg-surface-overlay/40 p-3 transition-colors duration-micro hover:bg-surface-overlay/70"
                     >
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
                         <AssetLogo symbol={trade.asset || trade.symbol || 'BTC/USD'} size={28} />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-foreground truncate">
+                          <p className="truncate text-body-sm font-semibold text-text-primary">
                             {trade.side ? trade.side.toUpperCase() : 'TRADE'} {(trade.asset || trade.symbol || 'BTC/USD').replace('/USD', '')}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            {(() => {
-                              try {
-                                const timestamp = trade.timestamp || trade.created_at;
-                                if (!timestamp) return 'Recently';
-                                const date = new Date(typeof timestamp === 'string' ? timestamp : Number(timestamp));
-                                if (isNaN(date.getTime())) return 'Recently';
-                                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                              } catch {
-                                return 'Recently';
-                              }
-                            })()}
-                          </p>
+                          <p className="text-caption text-text-tertiary">{formatTradeTime(trade)}</p>
                         </div>
                       </div>
-                      <div className="text-right flex-shrink-0 ml-4">
-                        <p className={cn(
-                          "text-sm font-bold font-mono",
-                          trade.side === 'buy' ? "text-emerald-400" : "text-red-400"
-                        )}>
+                      <div className="ml-4 flex-shrink-0 text-right">
+                        <p className={cn('font-mono text-body-sm font-semibold', trade.side === 'buy' ? 'text-feedback-success' : 'text-feedback-error')}>
                           {trade.side === 'buy' ? '-' : '+'}$
                           {((trade.size || 0) * (trade.price || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-muted-foreground font-mono">
+                        <p className="font-mono text-caption text-text-tertiary">
                           {(trade.size || 0).toFixed(4)} {(trade.asset || 'BTC/USD').split('/')[0]}
                         </p>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Portfolio Allocation */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7, duration: 0.4 }}
-          >
-            <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2 text-lg md:text-xl">
-                  <PieChart className="h-5 w-5 flex-shrink-0 text-slate-400" />
-                  <span>Portfolio Allocation</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-5">
-                  {portfolioAllocation.map((item: any, index: number) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
-                      className="space-y-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          {item.symbol !== 'CASH' && <AssetLogo symbol={item.symbol} size={20} />}
-                          {item.symbol === 'CASH' && (
-                            <div className="w-5 h-5 rounded-full bg-slate-600 flex items-center justify-center">
-                              <DollarSign className="h-3 w-3 text-slate-300" />
-                            </div>
-                          )}
-                          <span className="text-sm font-medium text-foreground">{item.asset}</span>
-                        </div>
-                        <span className="text-sm font-bold text-foreground font-mono">{item.allocation}%</span>
+          <Card className="flex flex-col">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-h3">
+                <PieChart className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                Portfolio allocation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1">
+              <div className="flex flex-col gap-5">
+                {portfolioAllocation.map((item: any, index: number) => (
+                  <div key={index} className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        {item.symbol !== 'CASH' ? (
+                          <AssetLogo symbol={item.symbol} size={20} />
+                        ) : (
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface-overlay">
+                            <DollarSign className="h-3 w-3 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                          </span>
+                        )}
+                        <span className="text-body-sm font-medium text-text-primary">{item.asset}</span>
                       </div>
-                      <div className="w-full bg-slate-900/60 rounded-full h-2.5 overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ width: `${item.allocation}%`, backgroundColor: item.brandColor }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${item.allocation}%` }}
-                          transition={{ delay: 1 + index * 0.1, duration: 0.8, ease: "easeOut" }}
-                        />
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                      <span className="font-mono text-body-sm font-semibold text-text-primary">{item.allocation}%</span>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-surface-overlay">
+                      <div
+                        className="h-full rounded-full transition-[width] duration-layout ease-standard"
+                        style={{ width: `${item.allocation}%`, backgroundColor: item.brandColor }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
       </div>
     </Layout>
   );

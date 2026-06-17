@@ -4,8 +4,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, Loader2, Mail, Lock, Shield } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Loader2, Mail, Lock, ShieldCheck } from 'lucide-react';
+import { toast } from 'sonner';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -13,11 +15,14 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
+  const reduce = useReducedMotion();
+
+  const mismatch = confirmPassword.length > 0 && password !== confirmPassword;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
     setIsLoading(true);
@@ -26,59 +31,41 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-4">
-      <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-border">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
+    <div className="flex min-h-screen items-center justify-center px-6 py-12">
+      <motion.div
+        className="w-full max-w-md"
+        initial={{ opacity: 0, y: reduce ? 0 : 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0, 0, 0.2, 1] }}
+      >
+        <Card className="p-8">
+          <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
+            <h1 className="text-h2">Create your account</h1>
+            <p className="text-body-sm text-text-secondary">Start your investment journey today</p>
           </div>
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>
-            Start your investment journey today
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
+
+          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
-                />
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="pl-10" />
               </div>
             </div>
-            <div className="space-y-2">
+
+            <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Lock className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
-                />
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="pl-10" />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="confirmPassword">Confirm password</Label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Shield className="h-4 w-4 text-muted-foreground" />
-                </div>
+                <ShieldCheck className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -86,35 +73,33 @@ export default function Signup() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-background/50 pl-11 focus:ring-2 focus:ring-primary/50 transition-all duration-200"
+                  aria-invalid={mismatch}
+                  className="pl-10"
                 />
               </div>
+              {mismatch && <p className="text-caption text-feedback-error">Passwords don't match.</p>}
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full bg-gradient-primary hover:shadow-glow"
-              disabled={isLoading}
-            >
+
+            <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading || mismatch}>
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Creating account…
                 </>
               ) : (
-                'Sign Up'
+                'Create account'
               )}
             </Button>
-            <p className="text-sm text-muted-foreground text-center">
+
+            <p className="text-center text-body-sm text-text-secondary">
               Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:underline">
+              <Link to="/login" className="font-medium text-interactive transition-colors hover:text-interactive-hover">
                 Sign in
               </Link>
             </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </form>
+        </Card>
+      </motion.div>
     </div>
   );
 }
