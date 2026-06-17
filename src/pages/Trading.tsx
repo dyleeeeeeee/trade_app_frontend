@@ -59,7 +59,7 @@ export default function Trading() {
   useEffect(() => {
     fetchTrades();
     fetchPrices();
-    const interval = setInterval(fetchPrices, 30000);
+    const interval = setInterval(fetchPrices, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -132,7 +132,19 @@ export default function Trading() {
       );
 
       if (response.ok) {
-        toast.success(`${orderType === 'buy' ? 'Buy' : 'Sell'} order placed`);
+        // Show the ACTUAL fill price from the server, not the indicative quote.
+        let filled = '';
+        try {
+          const data = await response.json();
+          const t = data?.trade ?? data;
+          const fillPrice = parseFloat(t?.price);
+          if (Number.isFinite(fillPrice)) {
+            filled = ` at $${fillPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          }
+        } catch {
+          /* fall back to a generic confirmation */
+        }
+        toast.success(`${orderType === 'buy' ? 'Bought' : 'Sold'} ${size} ${asset.replace('/USD', '')}${filled}`);
         setSize('');
         fetchTrades();
       } else {
@@ -358,7 +370,7 @@ export default function Trading() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label className="text-caption uppercase tracking-wider text-text-tertiary">Market price</Label>
+                  <Label className="text-caption uppercase tracking-wider text-text-tertiary">Last price</Label>
                   <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
                     {pricesLoading ? (
                       <div className="flex items-center gap-2">
@@ -372,10 +384,13 @@ export default function Trading() {
                       />
                     )}
                   </div>
+                  <p className="text-caption text-text-tertiary">
+                    Latest quote. Market orders fill at the live price at execution, so it may differ slightly from the chart.
+                  </p>
                 </div>
 
                 <div className="flex justify-between items-center border-t border-white/[0.08] pt-4 text-body-sm">
-                  <span className="text-text-secondary">Total</span>
+                  <span className="text-text-secondary">Est. total</span>
                   <span className="font-mono tabular-nums font-medium text-text-primary">
                     ${(parseFloat(size || '0') * parseFloat(price || '0')).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>

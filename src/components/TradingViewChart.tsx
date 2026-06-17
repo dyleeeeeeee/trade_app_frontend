@@ -14,8 +14,10 @@ declare global {
  * genuinely real, live-priced equity — charted as NASDAQ:SPCX like any other.
  */
 export const TV_SYMBOL: Record<string, string> = {
-  'BTC/USD': 'BINANCE:BTCUSDT',
-  'ETH/USD': 'BINANCE:ETHUSDT',
+  // Coinbase USD pairs (not Binance USDT) better match the backend's
+  // yfinance BTC-USD / ETH-USD quotes, narrowing the chart-vs-fill gap.
+  'BTC/USD': 'COINBASE:BTCUSD',
+  'ETH/USD': 'COINBASE:ETHUSD',
   AAPL: 'NASDAQ:AAPL',
   GOOGL: 'NASDAQ:GOOGL',
   NVDA: 'NASDAQ:NVDA',
