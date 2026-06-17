@@ -1,11 +1,11 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+// Unrouted fallback placeholder.
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="flex min-h-screen items-center justify-center px-6 text-center">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-h1 text-text-primary">Astrid Global</h1>
+        <p className="text-body text-text-secondary">Crypto trading and wealth management.</p>
       </div>
     </div>
   );
