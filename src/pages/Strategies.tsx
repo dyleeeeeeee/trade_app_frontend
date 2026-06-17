@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  TrendingUp, 
+import {
+  TrendingUp,
   Activity,
   DollarSign,
   BarChart3,
@@ -227,13 +227,13 @@ export default function Strategies() {
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk) {
       case 'low':
-        return 'secondary';
+        return 'success' as const;
       case 'medium':
-        return 'default';
+        return 'warning' as const;
       case 'high':
-        return 'destructive';
+        return 'error' as const;
       default:
-        return 'default';
+        return 'neutral' as const;
     }
   };
 
@@ -242,54 +242,63 @@ export default function Strategies() {
     const isSubscribed = myStrategies.some(s => s.strategy_id === strategy.id);
 
     return (
-      <Card className="bg-gradient-card border-border/50 backdrop-blur-sm hover-lift">
-        <CardHeader>
-          <div className="flex items-start justify-between mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Icon className="h-6 w-6 text-primary" />
-            </div>
-            <Badge variant={getRiskBadgeVariant(strategy.risk_level)}>
-              {strategy.risk_level} risk
-            </Badge>
-          </div>
-          <CardTitle className="text-lg">{strategy.name}</CardTitle>
-          <CardDescription className="text-sm">
-            {strategy.description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Performance Chart Placeholder */}
-          <div className="h-32 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg flex items-center justify-center">
-            <div className="text-center text-muted-foreground">
-              <LineChart className="h-8 w-8 mx-auto mb-2" />
-              <p className="text-xs">Performance history coming soon</p>
-            </div>
-          </div>
+      <Card interactive className="flex flex-col p-6">
+        <div className="flex items-start justify-between">
+          <span
+            className="flex h-11 w-11 items-center justify-center rounded-xl bg-interactive/15"
+            aria-hidden="true"
+          >
+            <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} />
+          </span>
+          <Badge variant={getRiskBadgeVariant(strategy.risk_level)}>
+            {strategy.risk_level} risk
+          </Badge>
+        </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="p-2 bg-background/50 rounded-lg">
-              <p className="text-xs text-muted-foreground">Target daily ROI</p>
-              <p className={cn(
-                "text-sm font-bold",
-                strategy.expected_roi > 1 ? "text-success" : "text-foreground"
-              )}>
-                {strategy.expected_roi.toFixed(2)}%
-              </p>
-            </div>
-            <div className="p-2 bg-background/50 rounded-lg">
-              <p className="text-xs text-muted-foreground">Minimum</p>
-              <p className="text-sm font-bold">${strategy.min_investment.toLocaleString()}</p>
-            </div>
-            <div className="p-2 bg-background/50 rounded-lg">
-              <p className="text-xs text-muted-foreground">Subscribers</p>
-              <p className="text-sm font-bold">{strategy.subscriber_count}</p>
-            </div>
-          </div>
+        <div className="mt-4 flex flex-col gap-1.5">
+          <h3 className="text-h3">{strategy.name}</h3>
+          <p className="text-body-sm text-text-secondary">{strategy.description}</p>
+        </div>
 
-          {/* Subscribe Button */}
+        {/* Performance Chart Placeholder */}
+        <div className="mt-5 flex h-32 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+          <div className="text-center text-text-tertiary">
+            <LineChart className="mx-auto mb-2 h-6 w-6" strokeWidth={1.5} />
+            <p className="text-caption">Performance history coming soon</p>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="mt-5 grid grid-cols-3 gap-2 text-center">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+            <p className="text-caption uppercase text-text-tertiary">Daily ROI</p>
+            <p
+              className={cn(
+                'mt-1 font-mono tabular-nums text-body-sm font-semibold',
+                strategy.expected_roi > 1 ? 'text-feedback-success' : 'text-text-primary',
+              )}
+            >
+              {strategy.expected_roi.toFixed(2)}%
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+            <p className="text-caption uppercase text-text-tertiary">Minimum</p>
+            <p className="mt-1 font-mono tabular-nums text-body-sm font-semibold text-text-primary">
+              ${strategy.min_investment.toLocaleString()}
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+            <p className="text-caption uppercase text-text-tertiary">Members</p>
+            <p className="mt-1 font-mono tabular-nums text-body-sm font-semibold text-text-primary">
+              {strategy.subscriber_count}
+            </p>
+          </div>
+        </div>
+
+        {/* Subscribe Button */}
+        <div className="mt-5">
           {isSubscribed ? (
-            <Button 
+            <Button
               variant="secondary"
               className="w-full"
               onClick={() => handleUnsubscribe(strategy.id, strategy.name)}
@@ -299,8 +308,8 @@ export default function Strategies() {
               Subscribed
             </Button>
           ) : (
-            <Button 
-              className="w-full bg-gradient-primary hover:shadow-glow"
+            <Button
+              className="w-full"
               onClick={() => {
                 setSelectedStrategy(strategy);
                 setInvestmentAmount('');
@@ -311,7 +320,7 @@ export default function Strategies() {
               Subscribe
             </Button>
           )}
-        </CardContent>
+        </div>
       </Card>
     );
   };
@@ -319,8 +328,8 @@ export default function Strategies() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin" />
+        <div className="flex min-h-[400px] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-interactive" />
         </div>
       </Layout>
     );
@@ -329,45 +338,97 @@ export default function Strategies() {
   const cryptoStrategies = strategies.filter(s => s.category === 'crypto');
   const quantStrategies = strategies.filter(s => s.category === 'quant');
 
+  const overviewStats = [
+    {
+      label: 'Active strategies',
+      value: `${myStrategies.length}`,
+      icon: Target,
+      tone: 'neutral' as const,
+    },
+    {
+      label: 'Total invested',
+      value: `$${myStrategies.reduce((sum, s) => sum + s.invested_amount, 0).toLocaleString()}`,
+      icon: DollarSign,
+      tone: 'neutral' as const,
+    },
+    {
+      label: 'Total earnings',
+      value: `+$${myStrategies.reduce((sum, s) => sum + s.total_earnings, 0).toFixed(2)}`,
+      icon: TrendingUp,
+      tone: 'success' as const,
+    },
+    {
+      label: 'Avg. daily ROI',
+      value: `${
+        myStrategies.length > 0
+          ? (myStrategies.reduce((sum, s) => sum + s.expected_roi, 0) / myStrategies.length).toFixed(2)
+          : '0.00'
+      }%`,
+      icon: Activity,
+      tone: 'neutral' as const,
+    },
+  ];
+
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Strategies</h1>
-          <p className="text-muted-foreground mt-1">
+        <header className="flex flex-col gap-1">
+          <p className="text-caption uppercase text-text-tertiary">Automated investing</p>
+          <h1 className="text-h1">Strategies</h1>
+          <p className="text-body text-text-secondary">
             Put your money to work with automated crypto and quant strategies.
           </p>
-        </div>
+        </header>
 
         {/* My Strategies Summary */}
         {myStrategies.length > 0 && (
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Target className="h-5 w-5" />
+          <Card className="p-6">
+            <CardHeader className="p-0">
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-interactive" strokeWidth={1.5} />
                 <span>Your strategies</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <CardContent className="p-0 pt-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {myStrategies.map((strategy) => (
-                  <div key={strategy.subscription_id} className="p-4 bg-background/50 rounded-lg">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium text-foreground">{strategy.strategy_name}</h4>
+                  <div
+                    key={strategy.subscription_id}
+                    className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5"
+                  >
+                    <div className="mb-3 flex items-start justify-between gap-2">
+                      <h4 className="text-body font-semibold text-text-primary">
+                        {strategy.strategy_name}
+                      </h4>
                       <Badge variant={getRiskBadgeVariant(strategy.risk_level)}>
                         {strategy.risk_level}
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm">
-                      <p className="text-muted-foreground">Invested: <span className="text-foreground font-medium">${strategy.invested_amount.toLocaleString()}</span></p>
-                      <p className="text-muted-foreground">Earnings: <span className="text-success font-medium">+${strategy.total_earnings.toFixed(2)}</span></p>
-                      <p className="text-muted-foreground">Days active: <span className="text-foreground font-medium">{strategy.days_active}</span></p>
-                    </div>
-                    <Button 
-                      variant="outline" 
+                    <dl className="flex flex-col gap-2 text-body-sm">
+                      <div className="flex items-center justify-between">
+                        <dt className="text-text-tertiary">Invested</dt>
+                        <dd className="font-mono tabular-nums font-medium text-text-primary">
+                          ${strategy.invested_amount.toLocaleString()}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-text-tertiary">Earnings</dt>
+                        <dd className="font-mono tabular-nums font-medium text-feedback-success">
+                          +${strategy.total_earnings.toFixed(2)}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-text-tertiary">Days active</dt>
+                        <dd className="font-mono tabular-nums font-medium text-text-primary">
+                          {strategy.days_active}
+                        </dd>
+                      </div>
+                    </dl>
+                    <Button
+                      variant="secondary"
                       size="sm"
-                      className="w-full mt-3"
+                      className="mt-4 w-full"
                       onClick={() => handleUnsubscribe(strategy.strategy_id, strategy.strategy_name)}
                       aria-label={`Unsubscribe from ${strategy.strategy_name}`}
                     >
@@ -381,56 +442,38 @@ export default function Strategies() {
         )}
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Active strategies</p>
-                <p className="text-2xl font-bold">{myStrategies.length}</p>
-              </div>
-              <Target className="h-8 w-8 text-primary opacity-20" />
-            </div>
-          </Card>
-          <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total invested</p>
-                <p className="text-2xl font-bold">
-                  ${myStrategies.reduce((sum, s) => sum + s.invested_amount, 0).toLocaleString()}
+        <section
+          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+          aria-label="Strategy portfolio overview"
+        >
+          {overviewStats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <Card key={stat.label} interactive className="p-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-caption uppercase text-text-tertiary">{stat.label}</p>
+                  <span
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-interactive/10"
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} />
+                  </span>
+                </div>
+                <p
+                  className={cn(
+                    'mt-4 font-mono tabular-nums text-h2',
+                    stat.tone === 'success' ? 'text-feedback-success' : 'text-text-primary',
+                  )}
+                >
+                  {stat.value}
                 </p>
-              </div>
-              <DollarSign className="h-8 w-8 text-primary opacity-20" />
-            </div>
-          </Card>
-          <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total earnings</p>
-                <p className="text-2xl font-bold text-success">
-                  +${myStrategies.reduce((sum, s) => sum + s.total_earnings, 0).toFixed(2)}
-                </p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-success opacity-20" />
-            </div>
-          </Card>
-          <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Avg. daily ROI</p>
-                <p className="text-2xl font-bold">
-                  {myStrategies.length > 0 
-                    ? (myStrategies.reduce((sum, s) => sum + s.expected_roi, 0) / myStrategies.length).toFixed(2)
-                    : '0.00'
-                  }%
-                </p>
-              </div>
-              <Activity className="h-8 w-8 text-warning opacity-20" />
-            </div>
-          </Card>
-        </div>
+              </Card>
+            );
+          })}
+        </section>
 
         {/* Strategy Tabs */}
-        <Tabs defaultValue="crypto" className="space-y-6">
+        <Tabs defaultValue="crypto" className="flex flex-col gap-6">
           <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="crypto" className="flex items-center gap-2">
               <Bitcoin className="h-4 w-4" />
@@ -442,31 +485,35 @@ export default function Strategies() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="crypto" className="space-y-6">
+          <TabsContent value="crypto" className="flex flex-col gap-6">
             {cryptoStrategies.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {cryptoStrategies.map((strategy) => (
                   <StrategyCard key={strategy.id} strategy={strategy} />
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground py-8 text-center">
-                No crypto strategies available right now. Check back soon.
-              </p>
+              <Card className="p-10 text-center">
+                <p className="text-body-sm text-text-tertiary">
+                  No crypto strategies available right now. Check back soon.
+                </p>
+              </Card>
             )}
           </TabsContent>
 
-          <TabsContent value="quant" className="space-y-6">
+          <TabsContent value="quant" className="flex flex-col gap-6">
             {quantStrategies.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {quantStrategies.map((strategy) => (
                   <StrategyCard key={strategy.id} strategy={strategy} />
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground py-8 text-center">
-                No quant strategies available right now. Check back soon.
-              </p>
+              <Card className="p-10 text-center">
+                <p className="text-body-sm text-text-tertiary">
+                  No quant strategies available right now. Check back soon.
+                </p>
+              </Card>
             )}
           </TabsContent>
         </Tabs>
@@ -485,32 +532,38 @@ export default function Strategies() {
               <CardDescription>Choose how much to invest. You can unsubscribe anytime.</CardDescription>
             </DialogHeader>
             {selectedStrategy && (
-              <div className="space-y-4">
-                <div className="p-4 bg-background/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">Strategy details</p>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="flex flex-col gap-4">
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                  <p className="text-caption uppercase text-text-tertiary">Strategy details</p>
+                  <div className="mt-3 grid grid-cols-2 gap-4 text-body-sm">
                     <div>
-                      <p className="text-muted-foreground">Target daily ROI</p>
-                      <p className="font-medium">{selectedStrategy.expected_roi.toFixed(2)}%</p>
+                      <p className="text-text-tertiary">Target daily ROI</p>
+                      <p className="mt-0.5 font-mono tabular-nums font-medium text-text-primary">
+                        {selectedStrategy.expected_roi.toFixed(2)}%
+                      </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Risk level</p>
-                      <p className="font-medium capitalize">{selectedStrategy.risk_level}</p>
+                      <p className="text-text-tertiary">Risk level</p>
+                      <p className="mt-0.5 font-medium capitalize text-text-primary">
+                        {selectedStrategy.risk_level}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Minimum</p>
-                      <p className="font-medium">${selectedStrategy.min_investment.toLocaleString()}</p>
+                      <p className="text-text-tertiary">Minimum</p>
+                      <p className="mt-0.5 font-mono tabular-nums font-medium text-text-primary">
+                        ${selectedStrategy.min_investment.toLocaleString()}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Maximum</p>
-                      <p className="font-medium">
+                      <p className="text-text-tertiary">Maximum</p>
+                      <p className="mt-0.5 font-mono tabular-nums font-medium text-text-primary">
                         {selectedStrategy.max_investment ? `$${selectedStrategy.max_investment.toLocaleString()}` : 'No limit'}
                       </p>
                     </div>
                   </div>
                 </div>
-                
-                <div className="space-y-2">
+
+                <div className="flex flex-col gap-2">
                   <Label htmlFor="investment">Amount to invest ($)</Label>
                   <Input
                     id="investment"
@@ -524,15 +577,15 @@ export default function Strategies() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="secondary"
                     className="flex-1"
                     onClick={() => setDialogOpen(false)}
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    className="flex-1 bg-gradient-primary hover:shadow-glow"
+                  <Button
+                    className="flex-1"
                     onClick={() => handleSubscribe(selectedStrategy)}
                     disabled={subscribing === selectedStrategy.id}
                   >

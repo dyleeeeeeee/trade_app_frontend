@@ -7,10 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Shield, 
-  Upload, 
-  CheckCircle, 
+import {
+  Shield,
+  Upload,
+  CheckCircle,
   AlertCircle,
   FileText,
   User,
@@ -36,7 +36,7 @@ export default function KYC() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Simulate API call
     setKycStatus('submitted');
     toast({
@@ -72,99 +72,116 @@ export default function KYC() {
     }
   ];
 
+  const completedSteps = kycSteps.filter((step) => step.status === 'complete').length;
+  const progressPct = Math.round((completedSteps / kycSteps.length) * 100);
+
+  const statusMeta = {
+    verified: { label: 'Verified', tone: 'success', icon: CheckCircle },
+    submitted: { label: 'Under review', tone: 'info', icon: AlertCircle },
+    rejected: { label: 'Rejected', tone: 'error', icon: AlertCircle },
+    pending: { label: 'Not started', tone: 'warning', icon: AlertCircle },
+  } as const;
+
   const getStatusBadge = () => {
-    switch (kycStatus) {
-      case 'verified':
-        return (
-          <div className="flex items-center gap-2 text-success">
-            <CheckCircle className="h-5 w-5" />
-            <span className="font-medium">Verified</span>
-          </div>
-        );
-      case 'submitted':
-        return (
-          <div className="flex items-center gap-2 text-warning">
-            <AlertCircle className="h-5 w-5" />
-            <span className="font-medium">Under review</span>
-          </div>
-        );
-      case 'rejected':
-        return (
-          <div className="flex items-center gap-2 text-destructive">
-            <AlertCircle className="h-5 w-5" />
-            <span className="font-medium">Rejected</span>
-          </div>
-        );
-      default:
-        return (
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <AlertCircle className="h-5 w-5" />
-            <span className="font-medium">Not started</span>
-          </div>
-        );
-    }
+    const meta = statusMeta[kycStatus];
+    const Icon = meta.icon;
+    return (
+      <span
+        className={cn(
+          'inline-flex items-center gap-2 rounded-full px-3 py-1 text-caption font-medium',
+          meta.tone === 'success' && 'bg-feedback-success/15 text-feedback-success',
+          meta.tone === 'info' && 'bg-feedback-info/15 text-feedback-info',
+          meta.tone === 'error' && 'bg-feedback-error/15 text-feedback-error',
+          meta.tone === 'warning' && 'bg-feedback-warning/15 text-feedback-warning',
+        )}
+      >
+        <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+        {meta.label}
+      </span>
+    );
   };
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Verify your identity</h1>
-            <p className="text-muted-foreground mt-1">A few quick steps to confirm it's you. Your information stays private and encrypted.</p>
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex flex-col gap-2">
+            <p className="text-caption uppercase text-text-tertiary">Identity verification</p>
+            <h1 className="text-h1 text-text-primary">Verify your identity</h1>
+            <p className="max-w-xl text-body text-text-secondary">
+              A few quick steps to confirm it's you. Your information stays private and encrypted.
+            </p>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-lg border border-border">
-            <Shield className="h-5 w-5 text-primary" />
+          <span className="inline-flex items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2.5">
+            <Shield className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
             {getStatusBadge()}
-          </div>
-        </div>
+          </span>
+        </header>
 
         {/* KYC Status Alert */}
         {kycStatus === 'submitted' && (
-          <Alert className="border-warning/50 bg-warning/10">
-            <AlertCircle className="h-4 w-4 text-warning" />
-            <AlertDescription className="text-foreground">
-              Your details are under review. We'll let you know as soon as you're verified, usually within 1 to 2 business days.
-            </AlertDescription>
-          </Alert>
+          <Card className="border-feedback-info/30 bg-feedback-info/10 p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-feedback-info" strokeWidth={1.5} aria-hidden="true" />
+              <p className="text-body-sm text-text-secondary">
+                Your details are under review. We'll let you know as soon as you're verified, usually within 1 to 2 business days.
+              </p>
+            </div>
+          </Card>
         )}
 
-        {/* Progress Steps */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle>Your progress</CardTitle>
-            <CardDescription>Finish all four steps to get verified.</CardDescription>
+        {/* Progress Stepper */}
+        <Card className="p-6">
+          <CardHeader className="p-0">
+            <div className="flex items-end justify-between gap-4">
+              <div className="flex flex-col gap-1">
+                <CardTitle>Your progress</CardTitle>
+                <CardDescription>Finish all four steps to get verified.</CardDescription>
+              </div>
+              <p className="font-mono text-body-sm tabular-nums text-text-tertiary">
+                {completedSteps}/{kycSteps.length}
+              </p>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <CardContent className="p-0 pt-6">
+            {/* Progress bar */}
+            <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+              <div
+                className="h-full rounded-full bg-interactive transition-[width] duration-interaction ease-[cubic-bezier(0,0,0.2,1)]"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               {kycSteps.map((step, index) => {
                 const Icon = step.icon;
+                const complete = step.status === 'complete';
                 return (
-                  <div key={index} className="relative">
-                    <div className={cn(
-                      "p-4 rounded-lg border smooth-transition",
-                      step.status === 'complete' 
-                        ? "bg-success/10 border-success/30" 
-                        : "bg-card border-border hover:border-primary/30"
-                    )}>
-                      <div className="flex flex-col items-center text-center space-y-2">
-                        <div className={cn(
-                          "p-3 rounded-full",
-                          step.status === 'complete' ? "bg-success/20" : "bg-primary/10"
-                        )}>
-                          <Icon className={cn(
-                            "h-6 w-6",
-                            step.status === 'complete' ? "text-success" : "text-primary"
-                          )} />
-                        </div>
-                        <h3 className="font-medium text-sm">{step.title}</h3>
-                        <p className="text-xs text-muted-foreground">{step.description}</p>
-                      </div>
-                    </div>
-                    {index < kycSteps.length - 1 && (
-                      <div className="hidden md:block absolute top-1/2 -right-2 w-4 h-0.5 bg-border" />
+                  <div
+                    key={index}
+                    className={cn(
+                      'flex flex-col items-center gap-3 rounded-xl border p-5 text-center transition-colors duration-interaction ease-standard',
+                      complete
+                        ? 'border-feedback-success/30 bg-feedback-success/10'
+                        : 'border-white/[0.08] bg-white/[0.04]',
                     )}
+                  >
+                    <span
+                      className={cn(
+                        'flex h-12 w-12 items-center justify-center rounded-full',
+                        complete ? 'bg-feedback-success/15' : 'bg-interactive/10',
+                      )}
+                      aria-hidden="true"
+                    >
+                      <Icon
+                        className={cn('h-6 w-6', complete ? 'text-feedback-success' : 'text-interactive')}
+                        strokeWidth={1.5}
+                      />
+                    </span>
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-body-sm font-medium text-text-primary">{step.title}</h3>
+                      <p className="text-caption text-text-tertiary">{step.description}</p>
+                    </div>
                   </div>
                 );
               })}
@@ -173,45 +190,43 @@ export default function KYC() {
         </Card>
 
         {/* KYC Form */}
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Personal Information */}
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
+          <Card className="p-6">
+            <CardHeader className="p-0">
               <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
+                <User className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
                 Your details
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
+            <CardContent className="flex flex-col gap-5 p-0 pt-6">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="fullName">Full name (as shown on your ID)</Label>
                 <Input
                   id="fullName"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   placeholder="John Doe"
-                  className="mt-1"
                   required
                 />
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="dateOfBirth">Date of birth</Label>
                 <Input
                   id="dateOfBirth"
                   type="date"
                   value={formData.dateOfBirth}
                   onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                  className="mt-1"
                   required
                 />
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="nationality">Nationality</Label>
                 <Select
                   value={formData.nationality}
                   onValueChange={(value) => setFormData({ ...formData, nationality: value })}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select nationality" />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,21 +245,21 @@ export default function KYC() {
           </Card>
 
           {/* Identity Verification */}
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
+          <Card className="p-6">
+            <CardHeader className="p-0">
               <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
+                <CreditCard className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
                 Your ID
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
+            <CardContent className="flex flex-col gap-5 p-0 pt-6">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="idType">Document type</Label>
                 <Select
                   value={formData.idType}
                   onValueChange={(value) => setFormData({ ...formData, idType: value })}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger>
                     <SelectValue placeholder="Choose a document" />
                   </SelectTrigger>
                   <SelectContent>
@@ -254,84 +269,80 @@ export default function KYC() {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="idNumber">Document number</Label>
                 <Input
                   id="idNumber"
                   value={formData.idNumber}
                   onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                   placeholder="The number on your document"
-                  className="mt-1"
                   required
                 />
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <Label>Photo of your document</Label>
                 <div
-                  className="mt-1 p-8 border-2 border-dashed border-border rounded-lg text-center hover:border-primary/50 smooth-transition cursor-pointer"
+                  className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/[0.12] bg-white/[0.03] p-8 text-center transition-colors duration-interaction ease-standard hover:border-interactive/40 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base cursor-pointer"
                   role="button"
                   tabIndex={0}
                   aria-label="Upload a photo of your ID document"
                 >
-                  <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">Drag a file here, or click to choose one</p>
-                  <p className="text-xs text-muted-foreground mt-1">PNG or JPG, up to 10 MB</p>
+                  <Upload className="h-8 w-8 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                  <p className="text-body-sm text-text-secondary">Drag a file here, or click to choose one</p>
+                  <p className="text-caption text-text-tertiary">PNG or JPG, up to 10 MB</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Address Information */}
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
+          <Card className="p-6">
+            <CardHeader className="p-0">
               <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+                <FileText className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
                 Your address
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
+            <CardContent className="flex flex-col gap-5 p-0 pt-6">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="address">Street address</Label>
                 <Input
                   id="address"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="123 Main Street"
-                  className="mt-1"
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="flex flex-col gap-2">
                   <Label htmlFor="city">City</Label>
                   <Input
                     id="city"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     placeholder="New York"
-                    className="mt-1"
                     required
                   />
                 </div>
-                <div>
+                <div className="flex flex-col gap-2">
                   <Label htmlFor="postalCode">Postal code</Label>
                   <Input
                     id="postalCode"
                     value={formData.postalCode}
                     onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
                     placeholder="10001"
-                    className="mt-1"
                     required
                   />
                 </div>
               </div>
-              <div>
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="country">Country</Label>
                 <Select
                   value={formData.country}
                   onValueChange={(value) => setFormData({ ...formData, country: value })}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -350,42 +361,40 @@ export default function KYC() {
           </Card>
 
           {/* Selfie Verification */}
-          <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-            <CardHeader>
+          <Card className="p-6">
+            <CardHeader className="p-0">
               <CardTitle className="flex items-center gap-2">
-                <Camera className="h-5 w-5" />
+                <Camera className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
                 A quick selfie
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Hold your ID next to your face and take a clear photo. This confirms the document is yours.
-                  </AlertDescription>
-                </Alert>
-                <div
-                  className="p-8 border-2 border-dashed border-border rounded-lg text-center hover:border-primary/50 smooth-transition cursor-pointer"
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Take or upload a selfie holding your ID"
-                >
-                  <Camera className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">Open your camera</p>
-                  <p className="text-xs text-muted-foreground mt-1">Or upload a photo instead</p>
-                </div>
+            <CardContent className="flex flex-col gap-5 p-0 pt-6">
+              <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-interactive" strokeWidth={1.5} aria-hidden="true" />
+                <p className="text-body-sm text-text-secondary">
+                  Hold your ID next to your face and take a clear photo. This confirms the document is yours.
+                </p>
+              </div>
+              <div
+                className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/[0.12] bg-white/[0.03] p-8 text-center transition-colors duration-interaction ease-standard hover:border-interactive/40 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label="Take or upload a selfie holding your ID"
+              >
+                <Camera className="h-8 w-8 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <p className="text-body-sm text-text-secondary">Open your camera</p>
+                <p className="text-caption text-text-tertiary">Or upload a photo instead</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Submit Button */}
           <div className="lg:col-span-2">
-            <Button 
-              type="submit" 
-              size="lg" 
+            <Button
+              type="submit"
+              size="lg"
               className="w-full"
-              variant="premium"
+              variant="primary"
               disabled={kycStatus === 'submitted' || kycStatus === 'verified'}
             >
               {kycStatus === 'submitted' ? 'Under review' : 'Submit for verification'}

@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { adminAPI, walletAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import { Shield, Users, DollarSign, CheckCircle, XCircle, Clock, Loader2, Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function Admin() {
   const [users, setUsers] = useState([]);
@@ -20,6 +22,17 @@ export default function Admin() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [newBalance, setNewBalance] = useState('');
   const [newProfit, setNewProfit] = useState('');
+  const reduce = useReducedMotion();
+
+  const rise = (delay = 0) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 12 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: '-60px' },
+          transition: { duration: 0.5, ease: [0, 0, 0.2, 1] as const, delay },
+        };
 
   useEffect(() => {
     fetchAdminData();
@@ -149,159 +162,196 @@ export default function Admin() {
     setProfitModalOpen(true);
   };
 
+  const pendingWithdrawals = withdrawals.filter((w: any) => w.status === 'pending');
+
   return (
     <Layout>
-      <div className="space-y-6">
-        <div className="flex items-center space-x-3">
-          <Shield className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin</h1>
-            <p className="text-muted-foreground">Manage users and review withdrawals.</p>
+      <div className="flex flex-col gap-8">
+        {/* Page header */}
+        <motion.header {...rise()} className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-interactive/15 text-interactive">
+              <Shield className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+            </span>
+            <div className="flex flex-col gap-0.5">
+              <p className="text-caption uppercase text-text-tertiary">Console</p>
+              <h1 className="text-h1 text-text-primary">Admin</h1>
+            </div>
           </div>
-        </div>
+          <p className="text-body text-text-secondary">Manage users and review withdrawals.</p>
+        </motion.header>
 
         {/* Withdrawal Management */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <DollarSign className="h-5 w-5" />
-              <span>Pending withdrawals</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {withdrawals.filter((w: any) => w.status === 'pending').map((withdrawal: any) => (
-                <div key={withdrawal.id} className="flex items-center justify-between p-4 bg-background/50 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <Clock className="h-5 w-5 text-warning" />
-                    <div>
-                      <p className="font-medium text-foreground">${withdrawal.amount}</p>
-                      <p className="text-sm text-muted-foreground">{withdrawal.user_email}</p>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => handleApproveWithdrawal(withdrawal.id)}
-                    disabled={loading}
-                    aria-label={`Approve withdrawal of $${withdrawal.amount} for ${withdrawal.user_email}`}
-                    className="bg-success hover:bg-success/80"
+        <motion.section {...rise(0.05)}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <span>Pending withdrawals</span>
+                <Badge variant="warning" className="ml-1">{pendingWithdrawals.length}</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-3">
+                {pendingWithdrawals.map((withdrawal: any) => (
+                  <div
+                    key={withdrawal.id}
+                    className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
                   >
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Approve'}
-                  </Button>
-                </div>
-              ))}
-              {withdrawals.filter((w: any) => w.status === 'pending').length === 0 && (
-                <p className="text-sm text-muted-foreground">No withdrawals waiting for review.</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                    <div className="flex items-center gap-4">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-feedback-warning/15 text-feedback-warning">
+                        <Clock className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+                      </span>
+                      <div className="flex flex-col gap-0.5">
+                        <p className="font-mono tabular-nums text-body font-semibold text-text-primary">
+                          ${withdrawal.amount}
+                        </p>
+                        <p className="text-body-sm text-text-secondary">{withdrawal.user_email}</p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => handleApproveWithdrawal(withdrawal.id)}
+                      disabled={loading}
+                      size="sm"
+                      aria-label={`Approve withdrawal of $${withdrawal.amount} for ${withdrawal.user_email}`}
+                    >
+                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+                        <>
+                          <CheckCircle className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                          Approve
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                ))}
+                {pendingWithdrawals.length === 0 && (
+                  <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-10 text-center">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-feedback-success/15 text-feedback-success">
+                      <CheckCircle className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+                    </span>
+                    <p className="text-body-sm text-text-secondary">No withdrawals waiting for review.</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.section>
 
         {/* User Management */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Users className="h-5 w-5" />
-              <span>Users</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">Email</th>
-                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">Balance</th>
-                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">P&L</th>
-                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">Status</th>
-                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">Role</th>
-                    <th className="text-right p-3 text-sm font-medium text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+        <motion.section {...rise(0.1)}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <span>Users</span>
+                <Badge variant="neutral" className="ml-1">{users.length}</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Email</TableHead>
+                    <TableHead className="text-right">Balance</TableHead>
+                    <TableHead className="text-right">P&L</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {users.map((user: any) => (
-                    <tr key={user.id} className="border-b border-border/50">
-                      <td className="p-3 text-sm text-foreground">{user.email}</td>
-                      <td className="p-3 text-sm font-medium text-success">
+                    <TableRow key={user.id}>
+                      <TableCell className="text-text-primary">{user.email}</TableCell>
+                      <TableCell className="text-right font-mono tabular-nums font-medium text-feedback-success">
                         ${user.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
-                      </td>
-                      <td className="p-3 text-sm font-medium text-success">
+                      </TableCell>
+                      <TableCell className="text-right font-mono tabular-nums font-medium text-feedback-success">
                         ${user.profit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
-                      </td>
-                      <td className="p-3">
-                        <Badge variant={user.blocked ? 'destructive' : 'default'}>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.blocked ? 'error' : 'success'}>
                           {user.blocked ? 'Blocked' : 'Active'}
                         </Badge>
-                      </td>
-                      <td className="p-3">
-                        <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.role === 'admin' ? 'default' : 'neutral'}>
                           {user.role}
                         </Badge>
-                      </td>
-                      <td className="p-3 text-right space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openBalanceModal(user)}
-                          disabled={loading}
-                          aria-label={`Edit balance for ${user.email}`}
-                        >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit balance
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openProfitModal(user)}
-                          disabled={loading}
-                          aria-label={`Edit P&L for ${user.email}`}
-                        >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit P&L
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleBlockUser(user.id, !user.blocked)}
-                          disabled={loading}
-                          aria-label={`${user.blocked ? 'Unblock' : 'Block'} ${user.email}`}
-                        >
-                          {user.blocked ? 'Unblock' : 'Block'}
-                        </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => openBalanceModal(user)}
+                            disabled={loading}
+                            aria-label={`Edit balance for ${user.email}`}
+                          >
+                            <Edit className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                            Balance
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => openProfitModal(user)}
+                            disabled={loading}
+                            aria-label={`Edit P&L for ${user.email}`}
+                          >
+                            <Edit className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                            P&L
+                          </Button>
+                          <Button
+                            variant={user.blocked ? 'secondary' : 'destructive'}
+                            size="sm"
+                            onClick={() => handleBlockUser(user.id, !user.blocked)}
+                            disabled={loading}
+                            aria-label={`${user.blocked ? 'Unblock' : 'Block'} ${user.email}`}
+                          >
+                            {user.blocked ? 'Unblock' : 'Block'}
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
               {users.length === 0 && (
-                <p className="text-sm text-muted-foreground p-3">No users yet.</p>
+                <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-10 text-center">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-overlay text-text-tertiary">
+                    <Users className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+                  </span>
+                  <p className="text-body-sm text-text-secondary">No users yet.</p>
+                </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.section>
 
         {/* Balance Edit Modal */}
         <Dialog open={balanceModalOpen} onOpenChange={setBalanceModalOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <DollarSign className="h-5 w-5" />
+              <DialogTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                 <span>Edit balance</span>
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-5">
               {selectedUser && (
-                <div className="space-y-4">
-                  <div className="p-4 bg-background/50 rounded-lg">
-                    <p className="text-sm text-muted-foreground">User</p>
-                    <p className="font-medium">{selectedUser.email}</p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Current balance: <span className="text-success font-medium">
+                <div className="flex flex-col gap-5">
+                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                    <p className="text-caption uppercase text-text-tertiary">User</p>
+                    <p className="text-body font-medium text-text-primary">{selectedUser.email}</p>
+                    <p className="mt-2 text-body-sm text-text-secondary">
+                      Current balance:{' '}
+                      <span className="font-mono tabular-nums font-medium text-feedback-success">
                         ${selectedUser.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </span>
                     </p>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="newBalance">New balance (USD)</Label>
                     <Input
                       id="newBalance"
@@ -311,13 +361,12 @@ export default function Admin() {
                       placeholder="0.00"
                       value={newBalance}
                       onChange={(e) => setNewBalance(e.target.value)}
-                      className="bg-background/50"
                     />
                   </div>
 
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       className="flex-1"
                       onClick={() => {
                         setBalanceModalOpen(false);
@@ -330,11 +379,11 @@ export default function Admin() {
                     <Button
                       onClick={handleUpdateBalance}
                       disabled={loading || !newBalance}
-                      className="flex-1 bg-success hover:bg-success/80"
+                      className="flex-1"
                     >
                       {loading ? (
                         <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          <Loader2 className="h-4 w-4 animate-spin" />
                           Saving
                         </>
                       ) : (
@@ -352,25 +401,26 @@ export default function Admin() {
         <Dialog open={profitModalOpen} onOpenChange={setProfitModalOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <DollarSign className="h-5 w-5" />
+              <DialogTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                 <span>Edit P&L</span>
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-5">
               {selectedUser && (
-                <div className="space-y-4">
-                  <div className="p-4 bg-background/50 rounded-lg">
-                    <p className="text-sm text-muted-foreground">User</p>
-                    <p className="font-medium">{selectedUser.email}</p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Current P&L: <span className="text-success font-medium">
+                <div className="flex flex-col gap-5">
+                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                    <p className="text-caption uppercase text-text-tertiary">User</p>
+                    <p className="text-body font-medium text-text-primary">{selectedUser.email}</p>
+                    <p className="mt-2 text-body-sm text-text-secondary">
+                      Current P&L:{' '}
+                      <span className="font-mono tabular-nums font-medium text-feedback-success">
                         ${selectedUser.profit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </span>
                     </p>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="newProfit">New P&L (USD)</Label>
                     <Input
                       id="newProfit"
@@ -379,13 +429,12 @@ export default function Admin() {
                       placeholder="0.00"
                       value={newProfit}
                       onChange={(e) => setNewProfit(e.target.value)}
-                      className="bg-background/50"
                     />
                   </div>
 
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       className="flex-1"
                       onClick={() => {
                         setProfitModalOpen(false);
@@ -398,11 +447,11 @@ export default function Admin() {
                     <Button
                       onClick={handleUpdateProfit}
                       disabled={loading || !newProfit}
-                      className="flex-1 bg-success hover:bg-success/80"
+                      className="flex-1"
                     >
                       {loading ? (
                         <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          <Loader2 className="h-4 w-4 animate-spin" />
                           Saving
                         </>
                       ) : (

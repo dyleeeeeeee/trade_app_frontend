@@ -1,159 +1,116 @@
-import { Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+
+import { MarketingLayout } from '@/components/MarketingLayout';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+
+const DETAILS = [
+  { icon: Mail, label: 'Email', value: 'support@astridglobal.com' },
+  { icon: Phone, label: 'Phone', value: '+1 (555) 123-4567' },
+  {
+    icon: MapPin,
+    label: 'Address',
+    value: (
+      <>
+        123 Financial District
+        <br />
+        New York, NY 10001
+        <br />
+        United States
+      </>
+    ),
+  },
+  {
+    icon: Clock,
+    label: 'Business hours',
+    value: (
+      <>
+        Monday - Friday: 9:00 AM - 6:00 PM EST
+        <br />
+        Saturday: 10:00 AM - 4:00 PM EST
+        <br />
+        Sunday: Closed
+      </>
+    ),
+  },
+];
 
 export default function Contact() {
+  const reduce = useReducedMotion();
+
+  const reveal = {
+    initial: { opacity: 0, y: reduce ? 0 : 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: '-80px' },
+    transition: { duration: 0.5, ease: [0, 0, 0.2, 1] as const },
+  };
+
   return (
-    <div className="homepage bg-dark text-white">
-      {/* Navigation */}
-      <nav className="navbar navbar-expand-lg container-fluid p-4">
-        <div className="container-fluid">
-          <div className="main-logo">
-            <Link to="/" className="d-block">
-              <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
-            </Link>
-          </div>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNavbar"
-            aria-controls="offcanvasNavbar"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="offcanvas offcanvas-end" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-            <div className="offcanvas-header">
-              <h5 className="offcanvas-title text-white" id="offcanvasNavbarLabel">Menu</h5>
-              <button type="button" className="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div className="offcanvas-body justify-content-lg-between">
-              <div className="main-menu text-center d-lg-flex align-items-center">
-                <ul className="menu-list list-unstyled d-lg-flex content-light m-0">
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold" to="/">Home</Link>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold" to="/about">About</Link>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold" to="/services">Services</Link>
-                  </li>
-                  <li className="menu-item text-uppercase">
-                    <Link className="fw-bold active" to="/contact">Contact</Link>
-                  </li>
-                </ul>
-              </div>
-              <div className="btn-wrap d-md-flex">
-                <Link to="/login" className="btn btn-normal btn-medium align-self-center text-uppercase btn-rounded login-btn">Log in</Link>
-                <Link to="/signup" className="btn btn-linear btn-medium align-self-center btn-rounded text-uppercase register-btn mt-3 mt-md-0">Register</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <MarketingLayout>
+      {/* Hero */}
+      <motion.section
+        className="flex flex-col items-center gap-6 py-20 text-center lg:py-28"
+        initial={{ opacity: 0, y: reduce ? 0 : 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
+      >
+        <span className="text-caption uppercase text-text-tertiary">Get in touch</span>
+        <h1 className="max-w-3xl text-balance text-display">Contact us</h1>
+        <p className="max-w-2xl text-balance text-body text-text-secondary">
+          Have a question about trading or your account? Our team is here to help.
+        </p>
+      </motion.section>
 
-      {/* Contact Section */}
-      <section className="padding-large">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12 text-center">
-              <h1 className="display-4 mb-4">Contact us</h1>
-              <p className="lead mb-5">
-                Have a question about trading or your account? Our team is here to help.
-              </p>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="contact-info p-4 border-set-bold border-rounded-20 mb-4">
-                <h3 className="mb-4">Get in touch</h3>
-                <div className="contact-item mb-3">
-                  <h5>Email</h5>
-                  <p>support@astridglobal.com</p>
-                </div>
-                <div className="contact-item mb-3">
-                  <h5>Phone</h5>
-                  <p>+1 (555) 123-4567</p>
-                </div>
-                <div className="contact-item mb-3">
-                  <h5>Address</h5>
-                  <p>123 Financial District<br />New York, NY 10001<br />United States</p>
-                </div>
-                <div className="contact-item">
-                  <h5>Business hours</h5>
-                  <p>Monday - Friday: 9:00 AM - 6:00 PM EST<br />Saturday: 10:00 AM - 4:00 PM EST<br />Sunday: Closed</p>
+      {/* Contact grid */}
+      <motion.section className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-2 lg:py-20" {...reveal}>
+        {/* Details */}
+        <Card className="flex flex-col gap-6 p-8">
+          <h2 className="text-h3 text-text-primary">Get in touch</h2>
+          <div className="flex flex-col gap-6">
+            {DETAILS.map(({ icon: Icon, label, value }) => (
+              <div key={label} className="flex gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-interactive/10">
+                  <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <div className="flex flex-col gap-1">
+                  <p className="text-caption uppercase text-text-tertiary">{label}</p>
+                  <p className="text-body-sm text-text-secondary">{value}</p>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6">
-              <div className="contact-form p-4 border-set-bold border-rounded-20">
-                <h3 className="mb-4">Send a message</h3>
-                <form>
-                  <div className="mb-3">
-                    <input type="text" className="form-control bg-dark text-white border-secondary" placeholder="Your name" aria-label="Your name" />
-                  </div>
-                  <div className="mb-3">
-                    <input type="email" className="form-control bg-dark text-white border-secondary" placeholder="Your email" aria-label="Your email" />
-                  </div>
-                  <div className="mb-3">
-                    <input type="text" className="form-control bg-dark text-white border-secondary" placeholder="Subject" aria-label="Subject" />
-                  </div>
-                  <div className="mb-3">
-                    <textarea className="form-control bg-dark text-white border-secondary" rows={5} placeholder="How can we help?" aria-label="Message"></textarea>
-                  </div>
-                  <button type="submit" className="btn btn-linear btn-medium text-uppercase btn-rounded w-100">Send message</button>
-                </form>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
+        </Card>
 
-      {/* Footer */}
-      <footer id="footer" className="padding-large">
-        <div className="container">
-          <div className="row d-flex flex-wrap justify-content-between">
-            <div className="col-sm-6 col-lg-4">
-              <div className="footer-item item-001">
-                <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
-                <p>Astrid Global brings crypto trading and wealth management together in one place, with professional guidance you can rely on.</p>
-              </div>
+        {/* Form */}
+        <Card className="flex flex-col gap-6 p-8">
+          <h2 className="text-h3 text-text-primary">Send a message</h2>
+          <form className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="contact-name">Name</Label>
+              <Input id="contact-name" type="text" placeholder="Your name" />
             </div>
-            <div className="col-sm-6 col-lg-2">
-              <div className="footer-item item-002 content-light">
-                <h4 className="widget-title">About</h4>
-                <ul className="footer-menu list-unstyled text-uppercase">
-                  <li><Link to="/about">About us</Link></li>
-                  <li><Link to="/services">Services</Link></li>
-                </ul>
-              </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="contact-email">Email</Label>
+              <Input id="contact-email" type="email" placeholder="you@example.com" />
             </div>
-            <div className="col-sm-6 col-lg-2">
-              <div className="footer-item item-003 content-light">
-                <h4 className="widget-title">Company</h4>
-                <ul className="footer-menu list-unstyled text-uppercase">
-                  <li><Link to="/security">Security</Link></li>
-                </ul>
-              </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="contact-subject">Subject</Label>
+              <Input id="contact-subject" type="text" placeholder="Subject" />
             </div>
-            <div className="col-sm-6 col-lg-2">
-              <div className="footer-item item-004 content-light">
-                <h4 className="widget-title">Support</h4>
-                <ul className="footer-menu list-unstyled text-uppercase">
-                  <li><Link to="/contact">Contact us</Link></li>
-                </ul>
-              </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="contact-message">Message</Label>
+              <Textarea id="contact-message" rows={5} placeholder="How can we help?" />
             </div>
-          </div>
-        </div>
-      </footer>
-      <hr />
-      <div id="footer-bottom">
-        <div className="container">
-          <div className="row text-center">
-            <p>© 2024 Astrid Global Ltd. All rights reserved.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+            <Button type="submit" variant="primary" size="lg" className="w-full">
+              Send message
+            </Button>
+          </form>
+        </Card>
+      </motion.section>
+    </MarketingLayout>
   );
 }

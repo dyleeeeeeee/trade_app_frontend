@@ -7,15 +7,13 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { tradingAPI } from '@/lib/api';
 import { toast } from 'sonner';
-import { 
-  Users, 
-  TrendingUp,
-  Star,
+import {
+  Users,
   Copy,
   Loader2,
   UserCheck,
-  DollarSign,
-  Award
+  Award,
+  ArrowUpRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -105,194 +103,233 @@ export default function CopyTrading() {
     }
   ];
 
+  const riskBadgeVariant = (risk: string) => {
+    switch (risk) {
+      case 'Low':
+        return 'success' as const;
+      case 'Medium':
+        return 'warning' as const;
+      case 'High':
+        return 'error' as const;
+      default:
+        return 'neutral' as const;
+    }
+  };
+
+  const totalAllocated = subscriptions.reduce(
+    (sum: number, sub: any) => sum + (sub.allocation || 0),
+    0,
+  );
+
+  const summaryStats = [
+    {
+      label: 'Traders followed',
+      value: `${subscriptions.length}`,
+      hint: 'Active right now',
+      tone: 'neutral' as const,
+    },
+    {
+      label: 'Portfolio allocated',
+      value: `${totalAllocated}%`,
+      hint: 'Across followed traders',
+      tone: 'neutral' as const,
+    },
+    {
+      label: 'Average return',
+      value: '+15.3%',
+      hint: "Past 30 days. Past results don't guarantee future returns.",
+      tone: 'success' as const,
+    },
+  ];
+
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Copy trading</h1>
-          <p className="text-muted-foreground mt-1">Follow experienced traders and mirror their trades automatically.</p>
-        </div>
+        <header className="flex flex-col gap-1">
+          <p className="text-caption uppercase text-text-tertiary">Social investing</p>
+          <h1 className="text-h1">Copy trading</h1>
+          <p className="text-body text-text-secondary">
+            Follow experienced traders and mirror their trades automatically.
+          </p>
+        </header>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Traders followed
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{subscriptions.length}</div>
-              <p className="text-xs text-muted-foreground mt-1">Active right now</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Portfolio allocated
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {subscriptions.reduce((sum: number, sub: any) => sum + (sub.allocation || 0), 0)}%
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Across followed traders</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Average return
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-success">+15.3%</div>
-              <p className="text-xs text-muted-foreground mt-1">Past 30 days. Past results don't guarantee future returns.</p>
-            </CardContent>
-          </Card>
-        </div>
+        <section
+          className="grid grid-cols-1 gap-6 md:grid-cols-3"
+          aria-label="Copy trading summary"
+        >
+          {summaryStats.map((stat) => (
+            <Card key={stat.label} interactive className="p-6">
+              <p className="text-caption uppercase text-text-tertiary">{stat.label}</p>
+              <p
+                className={cn(
+                  'mt-4 font-mono tabular-nums text-h2',
+                  stat.tone === 'success' ? 'text-feedback-success' : 'text-text-primary',
+                )}
+              >
+                {stat.value}
+              </p>
+              <p className="mt-2 text-body-sm text-text-tertiary">{stat.hint}</p>
+            </Card>
+          ))}
+        </section>
 
         {/* Top Traders */}
-        <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Award className="h-5 w-5 text-warning" />
-              <span>Top traders</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {topTraders.map((trader) => (
-                <Card 
-                  key={trader.id}
-                  className="bg-slate-900/40 border-slate-700/30 hover:bg-slate-900/70 transition-all"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-br", trader.gradient)}>
-                          {trader.initials}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">{trader.name}</p>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <Badge 
-                              variant="secondary" 
-                              className={cn(
-                                "text-xs",
-                                trader.risk === 'Low' && "bg-success/20 text-success",
-                                trader.risk === 'Medium' && "bg-warning/20 text-warning",
-                                trader.risk === 'High' && "bg-loss/20 text-loss"
-                              )}
-                            >
-                              {trader.risk} risk
-                            </Badge>
-                          </div>
-                        </div>
+        <section className="flex flex-col gap-5" aria-label="Top traders">
+          <div className="flex items-center gap-2">
+            <span
+              className="flex h-9 w-9 items-center justify-center rounded-xl bg-feedback-warning/15"
+              aria-hidden="true"
+            >
+              <Award className="h-5 w-5 text-feedback-warning" strokeWidth={1.5} />
+            </span>
+            <h2 className="text-h3">Top traders</h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {topTraders.map((trader) => (
+              <Card key={trader.id} interactive className="flex flex-col p-6">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-interactive/15 text-body-sm font-semibold text-interactive"
+                    aria-hidden="true"
+                  >
+                    {trader.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-body font-semibold text-text-primary">
+                      {trader.name}
+                    </p>
+                    <div className="mt-1.5">
+                      <Badge variant={riskBadgeVariant(trader.risk)}>
+                        {trader.risk} risk
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <dl className="mt-6 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <dt className="text-body-sm text-text-tertiary">Win rate</dt>
+                    <dd className="font-mono tabular-nums text-body-sm font-medium text-text-primary">
+                      {trader.winRate}%
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-body-sm text-text-tertiary">Total return</dt>
+                    <dd className="flex items-center gap-1 font-mono tabular-nums text-body-sm font-medium text-feedback-success">
+                      <ArrowUpRight className="h-3.5 w-3.5" />
+                      +{trader.totalReturn}%
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-body-sm text-text-tertiary">Monthly</dt>
+                    <dd className="font-mono tabular-nums text-body-sm font-medium text-feedback-success">
+                      +{trader.monthlyReturn}%
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-body-sm text-text-tertiary">Followers</dt>
+                    <dd className="font-mono tabular-nums text-body-sm font-medium text-text-primary">
+                      {trader.followers.toLocaleString()}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div className="mt-6">
+                  {selectedTrader === trader.id ? (
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-2">
+                        <Label htmlFor={`allocation-${trader.id}`}>
+                          Portfolio to allocate (%)
+                        </Label>
+                        <Input
+                          id={`allocation-${trader.id}`}
+                          type="number"
+                          min="1"
+                          max="100"
+                          placeholder="e.g. 10"
+                          value={allocation}
+                          onChange={(e) => setAllocation(e.target.value)}
+                          aria-label={`Percentage of your portfolio to allocate to ${trader.name}`}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            setSelectedTrader(null);
+                            setAllocation('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => handleSubscribe(trader.id)}
+                          disabled={loading || !allocation}
+                        >
+                          {loading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            'Start following'
+                          )}
+                        </Button>
                       </div>
                     </div>
-
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Win rate</span>
-                        <span className="font-medium text-foreground">{trader.winRate}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Total return</span>
-                        <span className="font-medium text-success">+{trader.totalReturn}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Monthly</span>
-                        <span className="font-medium text-foreground">+{trader.monthlyReturn}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Followers</span>
-                        <span className="font-medium text-foreground">{trader.followers}</span>
-                      </div>
-                    </div>
-
-                    {selectedTrader === trader.id ? (
-                      <div className="space-y-3">
-                        <div className="space-y-2">
-                          <Label htmlFor={`allocation-${trader.id}`}>Portfolio to allocate (%)</Label>
-                          <Input
-                            id={`allocation-${trader.id}`}
-                            type="number"
-                            min="1"
-                            max="100"
-                            placeholder="e.g. 10"
-                            value={allocation}
-                            onChange={(e) => setAllocation(e.target.value)}
-                            className="bg-background/50"
-                            aria-label={`Percentage of your portfolio to allocate to ${trader.name}`}
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedTrader(null);
-                              setAllocation('');
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={() => handleSubscribe(trader.id)}
-                            disabled={loading || !allocation}
-                            className="bg-gradient-primary hover:shadow-glow"
-                          >
-                            {loading ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              'Start following'
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <Button
-                        onClick={() => setSelectedTrader(trader.id)}
-                        className="w-full bg-gradient-primary hover:shadow-glow"
-                        aria-label={`Follow ${trader.name}`}
-                      >
-                        <Copy className="mr-2 h-4 w-4" />
-                        Follow trader
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                  ) : (
+                    <Button
+                      onClick={() => setSelectedTrader(trader.id)}
+                      className="w-full"
+                      aria-label={`Follow ${trader.name}`}
+                    >
+                      <Copy className="mr-2 h-4 w-4" />
+                      Follow trader
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
 
         {/* Active Subscriptions */}
         {subscriptions.length > 0 ? (
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <UserCheck className="h-5 w-5" />
+          <Card className="p-6">
+            <CardHeader className="p-0">
+              <CardTitle className="flex items-center gap-2">
+                <UserCheck className="h-5 w-5 text-interactive" strokeWidth={1.5} />
                 <span>Traders you follow</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <CardContent className="p-0 pt-6">
+              <div className="flex flex-col gap-3">
                 {subscriptions.map((sub: any, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center text-xs font-bold text-white">T</div>
+                  <div
+                    key={index}
+                    className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-interactive/15 text-caption font-semibold text-interactive"
+                        aria-hidden="true"
+                      >
+                        T
+                      </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">
+                        <p className="text-body-sm font-medium text-text-primary">
                           Trader {sub.trader_id}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-mono tabular-nums text-caption text-text-tertiary">
                           {sub.allocation}% of your portfolio
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" aria-label={`Stop following trader ${sub.trader_id}`}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      aria-label={`Stop following trader ${sub.trader_id}`}
+                    >
                       Unfollow
                     </Button>
                   </div>
@@ -301,12 +338,19 @@ export default function CopyTrading() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-            <CardContent className="p-8 text-center">
-              <Users className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
-              <p className="text-sm font-medium text-foreground">You're not following any traders yet</p>
-              <p className="text-xs text-muted-foreground mt-1">Pick a trader above to start copying their trades.</p>
-            </CardContent>
+          <Card className="p-10 text-center">
+            <span
+              className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04]"
+              aria-hidden="true"
+            >
+              <Users className="h-6 w-6 text-text-tertiary" strokeWidth={1.5} />
+            </span>
+            <p className="text-body font-medium text-text-primary">
+              You're not following any traders yet
+            </p>
+            <p className="mt-1 text-body-sm text-text-tertiary">
+              Pick a trader above to start copying their trades.
+            </p>
           </Card>
         )}
       </div>

@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { authAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, Loader2, ArrowLeft } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Loader2, ArrowLeft, MailCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const reduce = useReducedMotion();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,24 +34,31 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-4">
-      <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-border">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
+    <div className="flex min-h-screen items-center justify-center px-6 py-12">
+      <motion.div
+        className="relative w-full max-w-md"
+        initial={{ opacity: 0, y: reduce ? 0 : 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0, 0, 0.2, 1] }}
+      >
+        <div
+          className="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-primary opacity-[0.12] blur-3xl"
+          aria-hidden="true"
+        />
+        <Card className="p-8">
+          <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
+            <h2 className="text-h2">Reset your password</h2>
+            <p className="text-body-sm text-text-secondary">
+              {isSubmitted
+                ? 'Check your inbox for the reset link.'
+                : 'Enter your email and we\'ll send you a link to reset your password.'}
+            </p>
           </div>
-          <CardTitle className="text-2xl">Reset your password</CardTitle>
-          <CardDescription>
-            {isSubmitted
-              ? 'Check your inbox for the reset link.'
-              : 'Enter your email and we\'ll send you a link to reset your password.'
-            }
-          </CardDescription>
-        </CardHeader>
-        {!isSubmitted ? (
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
+
+          {!isSubmitted ? (
+            <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -58,49 +67,43 @@ export default function ForgotPassword() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-background/50"
                 />
               </div>
-            </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-primary hover:shadow-glow"
-                disabled={isLoading}
-              >
+
+              <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Sending…
                   </>
                 ) : (
                   'Send reset link'
                 )}
               </Button>
-              <Link 
-                to="/login" 
-                className="flex items-center justify-center text-sm text-muted-foreground hover:text-foreground"
+
+              <Link
+                to="/login"
+                className="flex items-center justify-center gap-2 text-body-sm text-text-secondary transition-colors hover:text-text-primary"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
                 Back to login
               </Link>
-            </CardFooter>
-          </form>
-        ) : (
-          <CardContent>
-            <div className="text-center space-y-4">
-              <p className="text-sm text-muted-foreground">
-                If an account exists for {email}, we've sent a reset link. Check your inbox.
+            </form>
+          ) : (
+            <div className="mt-8 flex flex-col items-center gap-6 text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-feedback-success/15">
+                <MailCheck className="h-6 w-6 text-feedback-success" strokeWidth={1.5} aria-hidden="true" />
+              </span>
+              <p className="text-body-sm text-text-secondary">
+                If an account exists for {email}, we&apos;ve sent a reset link. Check your inbox.
               </p>
-              <Link to="/login">
-                <Button className="w-full bg-gradient-primary hover:shadow-glow">
-                  Back to login
-                </Button>
-              </Link>
+              <Button asChild variant="primary" size="lg" className="w-full">
+                <Link to="/login">Back to login</Link>
+              </Button>
             </div>
-          </CardContent>
-        )}
-      </Card>
+          )}
+        </Card>
+      </motion.div>
     </div>
   );
 }

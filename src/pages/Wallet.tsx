@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,9 +16,9 @@ import {
 } from "@/components/ui/select";
 import { walletAPI } from '@/lib/api';
 import { toast } from 'sonner';
-import { 
-  Wallet as WalletIcon, 
-  ArrowUpRight, 
+import {
+  Wallet as WalletIcon,
+  ArrowUpRight,
   ArrowDownRight,
   Send,
   Clock,
@@ -30,6 +31,13 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 // import QRCode from 'react-qr-code'; // Will add when library is available
+
+const reveal = {
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-80px' },
+  transition: { duration: 0.5, ease: [0, 0, 0.2, 1] as [number, number, number, number] },
+};
 
 export default function Wallet() {
   const [balance, setBalance] = useState(0);
@@ -116,10 +124,10 @@ export default function Wallet() {
   };
 
   const handleWithdraw = async () => {
-    console.log('Submitting withdrawal:', { 
-      amount: withdrawAmount, 
-      network: withdrawalNetwork, 
-      address: withdrawalAddress 
+    console.log('Submitting withdrawal:', {
+      amount: withdrawAmount,
+      network: withdrawalNetwork,
+      address: withdrawalAddress
     });
     setLoading(true);
     try {
@@ -163,19 +171,19 @@ export default function Wallet() {
     switch (status) {
       case 'approved':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-caption font-semibold bg-feedback-success/10 text-feedback-success border border-feedback-success/20">
             <CheckCircle className="h-3 w-3" /> Approved
           </span>
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/20">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-caption font-semibold bg-interactive/10 text-interactive border border-interactive/20">
             <Clock className="h-3 w-3" /> Pending
           </span>
         );
       case 'rejected':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/15 text-red-400 border border-red-500/20">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-caption font-semibold bg-feedback-error/10 text-feedback-error border border-feedback-error/20">
             <XCircle className="h-3 w-3" /> Rejected
           </span>
         );
@@ -186,111 +194,132 @@ export default function Wallet() {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Wallet</h1>
-          <p className="text-muted-foreground mt-1">Add, withdraw, and send funds</p>
+        <div className="flex flex-col gap-1">
+          <span className="text-caption uppercase text-text-tertiary">Funds</span>
+          <h1 className="text-h1 text-text-primary">Wallet</h1>
+          <p className="text-body text-text-secondary">Add, withdraw, and send funds.</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <Card className="bg-destructive/10 border-destructive/20">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-destructive">{error}</p>
-                <Button variant="outline" size="sm" onClick={() => fetchWalletData()}>
-                  Retry
-                </Button>
-              </div>
-            </CardContent>
+          <Card className="border-feedback-error/20 bg-feedback-error/10 p-6">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-body-sm text-feedback-error">{error}</p>
+              <Button variant="secondary" size="sm" onClick={() => fetchWalletData()}>
+                Retry
+              </Button>
+            </div>
           </Card>
         )}
 
-        {/* Balance Card */}
-        <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm overflow-hidden relative">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-sm uppercase tracking-wider text-slate-400 font-medium">
-              <WalletIcon className="h-4 w-4" />
-              Available balance
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl md:text-5xl font-bold text-foreground font-mono tracking-tight">
-              {initialLoading ? (
-                <span className="shimmer inline-block h-12 w-48 rounded-lg" />
-              ) : (
-                <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                  ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        {/* Balance Hero — Apple Wallet card */}
+        <motion.div {...reveal}>
+          <Card className="glass-strong relative overflow-hidden p-8">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                    <WalletIcon className="h-5 w-5 text-interactive" />
+                  </div>
+                  <span className="text-caption uppercase text-text-tertiary">Available balance</span>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-feedback-success/10 px-3 py-1 text-caption font-semibold text-feedback-success">
+                  <ArrowUpRight className="h-3.5 w-3.5" /> Live
                 </span>
-              )}
+              </div>
+
+              <div className="font-mono tabular-nums text-5xl font-semibold tracking-tight text-text-primary md:text-6xl">
+                {initialLoading ? (
+                  <span className="shimmer inline-block h-14 w-56 rounded-xl bg-white/[0.06]" />
+                ) : (
+                  <>${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>
+                )}
+              </div>
+
+              <p className="text-caption text-text-tertiary">
+                Updated {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </p>
             </div>
-            <p className="text-xs text-slate-500 mt-3">
-              Updated {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-            </p>
-          </CardContent>
-        </Card>
+          </Card>
+        </motion.div>
 
         {/* Transactions Tabs */}
-        <Tabs defaultValue="deposit" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-900/60 border border-slate-700/40 p-1 rounded-xl">
-            <TabsTrigger value="deposit" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-400 rounded-lg font-semibold">Deposit</TabsTrigger>
-            <TabsTrigger value="withdraw" className="data-[state=active]:bg-orange-500/15 data-[state=active]:text-orange-400 rounded-lg font-semibold">Withdraw</TabsTrigger>
-            <TabsTrigger value="transfer" className="data-[state=active]:bg-blue-500/15 data-[state=active]:text-blue-400 rounded-lg font-semibold">Send</TabsTrigger>
-          </TabsList>
+        <motion.div {...reveal}>
+          <Tabs defaultValue="deposit" className="flex flex-col gap-6">
+            <TabsList className="grid w-full grid-cols-3 gap-1 rounded-full border border-white/[0.08] bg-white/[0.04] p-1">
+              <TabsTrigger
+                value="deposit"
+                className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
+              >
+                Deposit
+              </TabsTrigger>
+              <TabsTrigger
+                value="withdraw"
+                className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
+              >
+                Withdraw
+              </TabsTrigger>
+              <TabsTrigger
+                value="transfer"
+                className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
+              >
+                Send
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="deposit">
-            <div className="space-y-6">
-              {/* Deposit Instructions Modal */}
-              <Dialog open={depositModalOpen} onOpenChange={setDepositModalOpen}>
-                <DialogTrigger asChild>
-                  <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm cursor-pointer hover:shadow-glow">
-                    <CardHeader>
-                      <CardTitle className="flex items-center space-x-2">
-                        <ArrowDownRight className="h-5 w-5 text-success" />
+            <TabsContent value="deposit">
+              <div className="flex flex-col gap-6">
+                {/* Deposit Instructions Modal */}
+                <Dialog open={depositModalOpen} onOpenChange={setDepositModalOpen}>
+                  <DialogTrigger asChild>
+                    <Card interactive className="cursor-pointer p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/[0.08] bg-feedback-success/10">
+                          <ArrowDownRight className="h-5 w-5 text-feedback-success" />
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <h3 className="text-h3 text-text-primary">Add funds</h3>
+                          <p className="text-body-sm text-text-secondary">
+                            See where to send your deposit and how to track it.
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2 text-h3 text-text-primary">
+                        <QrCode className="h-5 w-5 text-interactive" />
                         <span>Add funds</span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">
-                        See where to send your deposit and how to track it.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center space-x-2">
-                      <QrCode className="h-5 w-5" />
-                      <span>Add funds</span>
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-4">
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-6">
+                      <p className="text-body-sm text-text-secondary">
                         Send crypto to the address below. Deposits usually confirm in 10 to 30 minutes.
                       </p>
-                      
+
                       {/* QR Code Placeholder - Will replace with actual QR when library is available */}
-                      <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 mb-4 mx-auto w-48 h-48 flex items-center justify-center">
-                        <div className="text-center">
-                          <QrCode className="h-12 w-12 mx-auto mb-2 text-gray-400" />
-                          <p className="text-xs text-gray-500">QR code</p>
-                          <p className="text-xs text-gray-400 mt-1">Scan to deposit</p>
+                      <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                        <div className="flex flex-col items-center gap-2 text-center">
+                          <QrCode className="h-12 w-12 text-text-tertiary" />
+                          <p className="text-caption text-text-secondary">QR code</p>
+                          <p className="text-caption text-text-tertiary">Scan to deposit</p>
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">Bitcoin address (BTC)</Label>
-                        <div className="flex items-center space-x-2 p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
-                          <code className="flex-1 text-sm font-mono break-all">
+                      <div className="flex flex-col gap-2">
+                        <Label>Bitcoin address (BTC)</Label>
+                        <div className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+                          <code className="flex-1 break-all font-mono text-body-sm text-text-primary">
                             {/* bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
                             bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw
                           </code>
                           <Button
                             variant="ghost"
-                            size="sm"
+                            size="icon-sm"
                             aria-label="Copy Bitcoin address"
                             onClick={() => {
                               navigator.clipboard.writeText('bc1qndh646ztj08nzmtshmsl5wmlq7kn7kad0vx8wl');
@@ -302,9 +331,9 @@ export default function Wallet() {
                         </div>
                       </div>
 
-                      <div className="space-y-2 mt-4">
-                        <Label className="text-sm font-medium">How to deposit</Label>
-                        <div className="text-left space-y-2 text-sm text-muted-foreground">
+                      <div className="flex flex-col gap-2">
+                        <Label>How to deposit</Label>
+                        <div className="flex flex-col gap-2 text-body-sm text-text-secondary">
                           <p>1. Copy the Bitcoin address above.</p>
                           <p>2. Send BTC from your wallet to it.</p>
                           <p>3. Wait for one confirmation, usually 10 to 30 minutes.</p>
@@ -312,233 +341,236 @@ export default function Wallet() {
                         </div>
                       </div>
 
-                      <div className="flex space-x-2 mt-6">
-                        <Button 
-                          variant="outline" 
+                      <div className="flex gap-3">
+                        <Button
+                          variant="secondary"
                           className="flex-1"
                           onClick={() => setDepositModalOpen(false)}
                         >
                           Done
                         </Button>
                         <Button
-                          className="flex-1 bg-success hover:bg-success/80"
+                          variant="primary"
+                          className="flex-1"
                           onClick={() => {
                             window.open('https://www.blockchain.com/explorer', '_blank');
                             toast.success('Opening blockchain explorer');
                           }}
                         >
-                          <ExternalLink className="h-4 w-4 mr-2" />
+                          <ExternalLink className="h-4 w-4" />
                           Track deposit
                         </Button>
                       </div>
                     </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogContent>
+                </Dialog>
 
-              {/* Deposit History */}
-              <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>Deposits</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {deposits.length > 0 ? (
-                      deposits.map((deposit: any, index: number) => (
-                        <div key={deposit.id || index} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
-                          <div className="flex items-center space-x-3">
-                            <div className="p-2 rounded-lg bg-success/10">
-                              <ArrowDownRight className="h-4 w-4 text-success" />
+                {/* Deposit History */}
+                <Card className="p-6">
+                  <div className="flex flex-col gap-4">
+                    <h3 className="text-h3 text-text-primary">Deposits</h3>
+                    <div className="flex flex-col gap-3">
+                      {deposits.length > 0 ? (
+                        deposits.map((deposit: any, index: number) => (
+                          <div key={deposit.id || index} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-feedback-success/10">
+                                <ArrowDownRight className="h-4 w-4 text-feedback-success" />
+                              </div>
+                              <div className="flex flex-col gap-0.5">
+                                <p className="font-mono tabular-nums text-body-sm font-medium text-text-primary">
+                                  ${deposit.amount}
+                                </p>
+                                <p className="text-caption text-text-tertiary">
+                                  {new Date(deposit.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm font-medium text-foreground">
-                                ${deposit.amount}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {new Date(deposit.created_at).toLocaleDateString()}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-xs px-2 py-1 rounded-full bg-success/20 text-success">
+                            <span className="rounded-full bg-feedback-success/10 px-2.5 py-1 text-caption font-semibold text-feedback-success">
                               Completed
                             </span>
                           </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-sm text-muted-foreground text-center py-4">
-                        No deposits yet. Once you add funds, they’ll show up here.
-                      </p>
-                    )}
+                        ))
+                      ) : (
+                        <p className="py-6 text-center text-body-sm text-text-tertiary">
+                          No deposits yet. Once you add funds, they’ll show up here.
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="withdraw">
+              <Card className="p-6">
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                      <ArrowUpRight className="h-5 w-5 text-feedback-error" />
+                    </div>
+                    <h3 className="text-h3 text-text-primary">Withdraw funds</h3>
+                  </div>
+
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="withdrawAmount">Amount (USD)</Label>
+                      <Input
+                        id="withdrawAmount"
+                        type="number"
+                        placeholder="0.00"
+                        value={withdrawAmount}
+                        onChange={(e) => setWithdrawAmount(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <Label>Network</Label>
+                      <Select value={withdrawalNetwork} onValueChange={setWithdrawalNetwork}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a network" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="btc">Bitcoin (BTC)</SelectItem>
+                          <SelectItem value="eth">Ethereum (ETH)</SelectItem>
+                          <SelectItem value="sol">Solana (SOL)</SelectItem>
+                          <SelectItem value="polygon">Polygon (MATIC)</SelectItem>
+                          <SelectItem value="usdt_trc20">USDT (TRC20)</SelectItem>
+                          <SelectItem value="usdt_erc20">USDT (ERC20)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="walletAddress">Wallet address</Label>
+                      <Input
+                        id="walletAddress"
+                        placeholder="Where to send your funds"
+                        value={withdrawalAddress}
+                        onChange={(e) => setWithdrawalAddress(e.target.value)}
+                      />
+                    </div>
+
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      onClick={handleWithdraw}
+                      disabled={loading || !withdrawAmount || !withdrawalNetwork || !withdrawalAddress}
+                      className="w-full"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Sending request
+                        </>
+                      ) : (
+                        'Request withdrawal'
+                      )}
+                    </Button>
+                    <p className="text-caption text-text-tertiary">
+                      Withdrawals are reviewed before they’re sent. This usually takes one to two business days.
+                    </p>
+                  </div>
+                </div>
               </Card>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="withdraw">
-            <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <ArrowUpRight className="h-5 w-5 text-loss" />
-                  <span>Withdraw funds</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="withdrawAmount">Amount (USD)</Label>
-                  <Input
-                    id="withdrawAmount"
-                    type="number"
-                    placeholder="0.00"
-                    value={withdrawAmount}
-                    onChange={(e) => setWithdrawAmount(e.target.value)}
-                    className="bg-slate-900/50 border-slate-700/50"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Network</Label>
-                  <Select value={withdrawalNetwork} onValueChange={setWithdrawalNetwork}>
-                    <SelectTrigger className="bg-slate-900/50 border-slate-700/50">
-                      <SelectValue placeholder="Choose a network" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="btc">Bitcoin (BTC)</SelectItem>
-                      <SelectItem value="eth">Ethereum (ETH)</SelectItem>
-                      <SelectItem value="sol">Solana (SOL)</SelectItem>
-                      <SelectItem value="polygon">Polygon (MATIC)</SelectItem>
-                      <SelectItem value="usdt_trc20">USDT (TRC20)</SelectItem>
-                      <SelectItem value="usdt_erc20">USDT (ERC20)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <TabsContent value="transfer">
+              <Card className="p-6">
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-interactive/10">
+                      <Send className="h-5 w-5 text-interactive" />
+                    </div>
+                    <h3 className="text-h3 text-text-primary">Send funds</h3>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="walletAddress">Wallet address</Label>
-                  <Input
-                    id="walletAddress"
-                    placeholder="Where to send your funds"
-                    value={withdrawalAddress}
-                    onChange={(e) => setWithdrawalAddress(e.target.value)}
-                    className="bg-slate-900/50 border-slate-700/50"
-                  />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="recipient">Recipient email</Label>
+                      <Input
+                        id="recipient"
+                        type="email"
+                        placeholder="recipient@example.com"
+                        value={transferRecipient}
+                        onChange={(e) => setTransferRecipient(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="transferAmount">Amount (USD)</Label>
+                      <Input
+                        id="transferAmount"
+                        type="number"
+                        placeholder="0.00"
+                        value={transferAmount}
+                        onChange={(e) => setTransferAmount(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      onClick={handleTransfer}
+                      disabled={loading || !transferRecipient || !transferAmount}
+                      className="w-full"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Sending
+                        </>
+                      ) : (
+                        'Send funds'
+                      )}
+                    </Button>
+                  </div>
                 </div>
-
-                <Button 
-                  onClick={handleWithdraw}
-                  disabled={loading || !withdrawAmount || !withdrawalNetwork || !withdrawalAddress}
-                  className="w-full bg-gradient-primary hover:shadow-glow"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending request
-                    </>
-                  ) : (
-                    'Request withdrawal'
-                  )}
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  Withdrawals are reviewed before they’re sent. This usually takes one to two business days.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="transfer">
-            <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Send className="h-5 w-5 text-primary" />
-                  <span>Send funds</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="recipient">Recipient email</Label>
-                  <Input
-                    id="recipient"
-                    type="email"
-                    placeholder="recipient@example.com"
-                    value={transferRecipient}
-                    onChange={(e) => setTransferRecipient(e.target.value)}
-                    className="bg-slate-900/50 border-slate-700/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="transferAmount">Amount (USD)</Label>
-                  <Input
-                    id="transferAmount"
-                    type="number"
-                    placeholder="0.00"
-                    value={transferAmount}
-                    onChange={(e) => setTransferAmount(e.target.value)}
-                    className="bg-slate-900/50 border-slate-700/50"
-                  />
-                </div>
-                <Button 
-                  onClick={handleTransfer}
-                  disabled={loading || !transferRecipient || !transferAmount}
-                  className="w-full bg-gradient-primary hover:shadow-glow"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending
-                    </>
-                  ) : (
-                    'Send funds'
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </motion.div>
 
         {/* Withdrawal History */}
-        <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle>Withdrawals</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {withdrawals.length > 0 ? (
-                withdrawals.map((withdrawal: any, index: number) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
-                    <div className="flex items-center space-x-3">
-                      {getStatusBadge(withdrawal.status)}
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          ${withdrawal.amount}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {withdrawal.network ? withdrawal.network.toUpperCase() : 'Unknown'} • {withdrawal.wallet_address ? `${withdrawal.wallet_address.substring(0, 6)}...` : ''}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(withdrawal.created_at).toLocaleDateString()}
-                        </p>
+        <motion.div {...reveal}>
+          <Card className="p-6">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-h3 text-text-primary">Withdrawals</h3>
+              <div className="flex flex-col gap-3">
+                {withdrawals.length > 0 ? (
+                  withdrawals.map((withdrawal: any, index: number) => (
+                    <div key={index} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                      <div className="flex items-center gap-3">
+                        {getStatusBadge(withdrawal.status)}
+                        <div className="flex flex-col gap-0.5">
+                          <p className="font-mono tabular-nums text-body-sm font-medium text-text-primary">
+                            ${withdrawal.amount}
+                          </p>
+                          <p className="text-caption text-text-tertiary">
+                            {withdrawal.network ? withdrawal.network.toUpperCase() : 'Unknown'} • {withdrawal.wallet_address ? `${withdrawal.wallet_address.substring(0, 6)}...` : ''}
+                          </p>
+                          <p className="text-caption text-text-tertiary">
+                            {new Date(withdrawal.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
+                      <span className={cn(
+                        "rounded-full px-2.5 py-1 text-caption font-semibold capitalize",
+                        withdrawal.status === 'approved' && "bg-feedback-success/10 text-feedback-success",
+                        withdrawal.status === 'pending' && "bg-interactive/10 text-interactive",
+                        withdrawal.status === 'rejected' && "bg-feedback-error/10 text-feedback-error"
+                      )}>
+                        {withdrawal.status}
+                      </span>
                     </div>
-                    <span className={cn(
-                      "text-xs px-2 py-1 rounded-full",
-                      withdrawal.status === 'approved' && "bg-success/20 text-success",
-                      withdrawal.status === 'pending' && "bg-warning/20 text-warning",
-                      withdrawal.status === 'rejected' && "bg-loss/20 text-loss"
-                    )}>
-                      {withdrawal.status}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  No withdrawals yet. When you withdraw, you’ll see it here.
-                </p>
-              )}
+                  ))
+                ) : (
+                  <p className="py-6 text-center text-body-sm text-text-tertiary">
+                    No withdrawals yet. When you withdraw, you’ll see it here.
+                  </p>
+                )}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </Card>
+        </motion.div>
       </div>
     </Layout>
   );
