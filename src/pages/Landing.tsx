@@ -42,13 +42,16 @@ export default function Landing() {
   };
 
   return (
-    <div id="top" className="min-h-screen bg-surface-base text-text-primary">
-      {/* ---- Glass navigation ---- */}
-      <header className="glass sticky top-0 z-50 border-b border-hairline/[0.08]">
-        <nav className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6 lg:px-8" aria-label="Primary">
+    <div id="top" className="min-h-screen text-text-primary">
+      {/* ---- Floating glass pill nav ---- */}
+      <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+        <nav
+          className="glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
+          aria-label="Primary"
+        >
           <Link to="/" className="flex items-center gap-2">
-            <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-8 w-auto" />
-            <span className="text-body font-semibold tracking-tight">Astrid Global</span>
+            <img src="/images/main-logo.png" alt="" className="h-6 w-auto" aria-hidden="true" />
+            <span className="text-body-sm font-semibold tracking-tight">Astrid Global</span>
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -57,7 +60,7 @@ export default function Landing() {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className="rounded-lg px-3 py-2 text-body-sm font-medium text-text-secondary transition-colors duration-micro hover:bg-surface-raised hover:text-text-primary"
+                  className="rounded-full px-3.5 py-1.5 text-body-sm font-medium text-text-secondary transition-colors duration-micro hover:bg-white/[0.06] hover:text-text-primary"
                 >
                   {link.label}
                 </Link>
@@ -65,7 +68,7 @@ export default function Landing() {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="rounded-lg px-3 py-2 text-body-sm font-medium text-text-secondary transition-colors duration-micro hover:bg-surface-raised hover:text-text-primary"
+                  className="rounded-full px-3.5 py-1.5 text-body-sm font-medium text-text-secondary transition-colors duration-micro hover:bg-white/[0.06] hover:text-text-primary"
                 >
                   {link.label}
                 </a>
@@ -83,7 +86,7 @@ export default function Landing() {
           </div>
 
           <button
-            className="flex h-11 w-11 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface-raised hover:text-text-primary md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-white/[0.06] hover:text-text-primary md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -91,45 +94,46 @@ export default function Landing() {
             {mobileOpen ? <X className="h-5 w-5" strokeWidth={1.5} /> : <Menu className="h-5 w-5" strokeWidth={1.5} />}
           </button>
         </nav>
-
-        {mobileOpen && (
-          <div className="glass-strong border-t border-hairline/[0.08] px-6 py-4 md:hidden">
-            <div className="flex flex-col gap-1">
-              {NAV_LINKS.map((link) =>
-                link.to ? (
-                  <Link
-                    key={link.label}
-                    to={link.to}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-3 text-body-sm font-medium text-text-secondary hover:bg-surface-raised hover:text-text-primary"
-                  >
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-3 text-body-sm font-medium text-text-secondary hover:bg-surface-raised hover:text-text-primary"
-                  >
-                    {link.label}
-                  </a>
-                ),
-              )}
-              <div className="mt-3 flex gap-2 border-t border-hairline/[0.08] pt-4">
-                <Button asChild variant="secondary" size="md" className="flex-1">
-                  <Link to="/login" onClick={() => setMobileOpen(false)}>Log in</Link>
-                </Button>
-                <Button asChild variant="primary" size="md" className="flex-1">
-                  <Link to="/signup" onClick={() => setMobileOpen(false)}>Get started</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
-      <main className="mx-auto max-w-[1200px] px-6 lg:px-8">
+      {/* Mobile menu — floating glass sheet under the pill */}
+      {mobileOpen && (
+        <div className="fixed inset-x-4 top-20 z-50 md:hidden">
+          <div className="glass-strong flex flex-col gap-1 rounded-2xl p-3 shadow-elevation-4">
+            {NAV_LINKS.map((link) =>
+              link.to ? (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-3 py-3 text-body-sm font-medium text-text-secondary hover:bg-white/[0.06] hover:text-text-primary"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-3 py-3 text-body-sm font-medium text-text-secondary hover:bg-white/[0.06] hover:text-text-primary"
+                >
+                  {link.label}
+                </a>
+              ),
+            )}
+            <div className="mt-2 flex gap-2 border-t border-white/[0.08] pt-3">
+              <Button asChild variant="secondary" size="md" className="flex-1">
+                <Link to="/login" onClick={() => setMobileOpen(false)}>Log in</Link>
+              </Button>
+              <Button asChild variant="primary" size="md" className="flex-1">
+                <Link to="/signup" onClick={() => setMobileOpen(false)}>Get started</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="mx-auto max-w-[1200px] px-6 pt-28 lg:px-8">
         {/* ---- Hero ---- */}
         <section className="grid grid-cols-1 items-center gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-32">
           <motion.div
@@ -138,7 +142,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
           >
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-hairline/[0.08] bg-surface-raised px-3 py-1 text-caption uppercase text-text-secondary">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-caption uppercase text-text-secondary backdrop-blur-xl">
               <Sparkles className="h-3.5 w-3.5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
               Professional crypto trading platform
             </span>
