@@ -151,14 +151,26 @@ export default function Wallet() {
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="h-4 w-4 text-success" />;
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+            <CheckCircle className="h-3 w-3" /> Approved
+          </span>
+        );
       case 'pending':
-        return <Clock className="h-4 w-4 text-warning" />;
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/20">
+            <Clock className="h-3 w-3" /> Pending
+          </span>
+        );
       case 'rejected':
-        return <XCircle className="h-4 w-4 text-loss" />;
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/15 text-red-400 border border-red-500/20">
+            <XCircle className="h-3 w-3" /> Rejected
+          </span>
+        );
       default:
         return null;
     }
@@ -188,29 +200,36 @@ export default function Wallet() {
         )}
 
         {/* Balance Card */}
-        <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <WalletIcon className="h-5 w-5" />
-              <span>Available Balance</span>
+        <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-sm uppercase tracking-wider text-slate-400 font-medium">
+              <WalletIcon className="h-4 w-4" />
+              Available Balance
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-foreground">
-              {initialLoading ? '...' : `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            <div className="text-4xl md:text-5xl font-bold text-foreground font-mono tracking-tight">
+              {initialLoading ? (
+                <span className="shimmer inline-block h-12 w-48 rounded-lg" />
+              ) : (
+                <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                  ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              Last updated: {new Date().toLocaleString()}
+            <p className="text-xs text-slate-500 mt-3">
+              Last updated: {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
             </p>
           </CardContent>
         </Card>
 
         {/* Transactions Tabs */}
         <Tabs defaultValue="deposit" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 bg-card">
-            <TabsTrigger value="deposit">Deposit</TabsTrigger>
-            <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
-            <TabsTrigger value="transfer">Transfer</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 bg-slate-900/60 border border-slate-700/40 p-1 rounded-xl">
+            <TabsTrigger value="deposit" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-400 rounded-lg font-semibold">Deposit</TabsTrigger>
+            <TabsTrigger value="withdraw" className="data-[state=active]:bg-orange-500/15 data-[state=active]:text-orange-400 rounded-lg font-semibold">Withdraw</TabsTrigger>
+            <TabsTrigger value="transfer" className="data-[state=active]:bg-blue-500/15 data-[state=active]:text-blue-400 rounded-lg font-semibold">Transfer</TabsTrigger>
           </TabsList>
 
           <TabsContent value="deposit">
@@ -480,7 +499,7 @@ export default function Wallet() {
                 withdrawals.map((withdrawal: any, index: number) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      {getStatusIcon(withdrawal.status)}
+                      {getStatusBadge(withdrawal.status)}
                       <div>
                         <p className="text-sm font-medium text-foreground">
                           ${withdrawal.amount}

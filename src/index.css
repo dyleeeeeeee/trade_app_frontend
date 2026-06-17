@@ -50,6 +50,20 @@ All colors MUST be HSL.
     --loss: 0 84% 60%;
     --neutral: 217 33% 50%;
 
+    /* Asset brand colors */
+    --brand-btc: 33 100% 50%;
+    --brand-eth: 240 60% 55%;
+    --brand-aapl: 0 0% 65%;
+    --brand-googl: 217 89% 61%;
+    --brand-nvda: 84 100% 36%;
+    --brand-tsla: 0 72% 51%;
+    --brand-meta: 214 89% 52%;
+    --brand-amzn: 33 100% 50%;
+    --brand-spacex: 0 0% 90%;
+
+    /* Typography */
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
     --gradient-dark: linear-gradient(180deg, hsl(222 47% 11%), hsl(217 47% 8%));
@@ -135,6 +149,15 @@ All colors MUST be HSL.
   }
   100% {
     background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px var(--glow-color, hsl(217 91% 60% / 0.3));
+  }
+  50% {
+    box-shadow: 0 0 20px var(--glow-color, hsl(217 91% 60% / 0.5));
   }
 }
 

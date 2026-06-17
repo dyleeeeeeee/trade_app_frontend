@@ -4,6 +4,7 @@ import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { walletAPI, tradingAPI } from '@/lib/api';
+import { AssetLogo, getAssetColor } from '@/components/AssetLogo';
 import {
   Wallet,
   TrendingUp,
@@ -42,8 +43,9 @@ interface Subscription {
 
 interface PortfolioItem {
   asset: string;
+  symbol: string;
   allocation: number;
-  color: string;
+  brandColor: string;
 }
 
 export default function Dashboard() {
@@ -96,10 +98,10 @@ export default function Dashboard() {
     // Default allocations if no trades data
     if (!trades || trades.length === 0) {
       return [
-        { asset: 'Cash', allocation: Math.max(10, 100 - Math.min(totalBalance / 1000 * 20, 90)), color: 'bg-neutral' },
-        { asset: 'Bitcoin', allocation: Math.min(45, Math.max(0, totalBalance / 1000 * 15)), color: 'bg-warning' },
-        { asset: 'Ethereum', allocation: Math.min(30, Math.max(0, totalBalance / 1000 * 10)), color: 'bg-primary' },
-        { asset: 'Stocks', allocation: Math.min(15, Math.max(0, totalBalance / 1000 * 5)), color: 'bg-success' }
+        { asset: 'Cash', symbol: 'CASH', allocation: Math.max(10, 100 - Math.min(totalBalance / 1000 * 20, 90)), brandColor: '#64748b' },
+        { asset: 'Bitcoin', symbol: 'BTC/USD', allocation: Math.min(45, Math.max(0, totalBalance / 1000 * 15)), brandColor: '#F7931A' },
+        { asset: 'Ethereum', symbol: 'ETH/USD', allocation: Math.min(30, Math.max(0, totalBalance / 1000 * 10)), brandColor: '#627EEA' },
+        { asset: 'Stocks', symbol: 'NVDA', allocation: Math.min(15, Math.max(0, totalBalance / 1000 * 5)), brandColor: '#76B900' }
       ].filter(item => item.allocation > 0);
     }
 
@@ -112,12 +114,12 @@ export default function Dashboard() {
     const cashValue = totalBalance - btcValue - ethValue;
 
     const total = btcValue + ethValue + cashValue;
-    if (total === 0) return [{ asset: 'Cash', allocation: 100, color: 'bg-neutral' }];
+    if (total === 0) return [{ asset: 'Cash', symbol: 'CASH', allocation: 100, brandColor: '#64748b' }];
 
     return [
-      { asset: 'Bitcoin', allocation: Math.round((btcValue / total) * 100), color: 'bg-warning' },
-      { asset: 'Ethereum', allocation: Math.round((ethValue / total) * 100), color: 'bg-primary' },
-      { asset: 'Cash', allocation: Math.round((cashValue / total) * 100), color: 'bg-neutral' }
+      { asset: 'Bitcoin', symbol: 'BTC/USD', allocation: Math.round((btcValue / total) * 100), brandColor: '#F7931A' },
+      { asset: 'Ethereum', symbol: 'ETH/USD', allocation: Math.round((ethValue / total) * 100), brandColor: '#627EEA' },
+      { asset: 'Cash', symbol: 'CASH', allocation: Math.round((cashValue / total) * 100), brandColor: '#64748b' }
     ].filter(item => item.allocation > 0);
   };
 
@@ -445,55 +447,23 @@ export default function Dashboard() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="flex items-center justify-between p-3 bg-background/50 rounded-lg hover:bg-background/70 transition-colors"
+                      className="flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border border-slate-700/30 hover:bg-slate-900/70 transition-colors"
                     >
-                      <div className="flex items-center space-x-3 min-w-0 flex-1">
-                        <div className={cn(
-                          "p-2 rounded-lg flex-shrink-0",
-                          (trade.side === 'buy' || trade.pnl >= 0) ? "bg-success/10" : "bg-loss/10"
-                        )}>
-                          <TrendingUp className={cn(
-                            "h-4 w-4",
-                            (trade.side === 'buy' || trade.pnl >= 0) ? "text-success" : "text-loss"
-                          )} />
-                        </div>
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <AssetLogo symbol={trade.asset || trade.symbol || 'BTC/USD'} size={28} />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-foreground truncate">
-                            {trade.side ? trade.side.toUpperCase() : 'TRADE'} {trade.asset || trade.symbol || 'BTC/USD'}
+                          <p className="text-sm font-semibold text-foreground truncate">
+                            {trade.side ? trade.side.toUpperCase() : 'TRADE'} {(trade.asset || trade.symbol || 'BTC/USD').replace('/USD', '')}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {(() => {
                               try {
                                 const timestamp = trade.timestamp || trade.created_at;
                                 if (!timestamp) return 'Recently';
-
-                                // Handle different date formats
-                                let date;
-                                if (typeof timestamp === 'string') {
-                                  // Try ISO string first
-                                  date = new Date(timestamp);
-                                  if (isNaN(date.getTime())) {
-                                    // Try parsing as timestamp number
-                                    date = new Date(parseInt(timestamp));
-                                  }
-                                  if (isNaN(date.getTime())) {
-                                    return 'Recently';
-                                  }
-                                } else if (typeof timestamp === 'number') {
-                                  date = new Date(timestamp);
-                                } else {
-                                  date = new Date(timestamp);
-                                }
-
-                                if (isNaN(date.getTime())) {
-                                  return 'Recently';
-                                }
-
-                                return date.toLocaleTimeString([], {
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                });
-                              } catch (error) {
+                                const date = new Date(typeof timestamp === 'string' ? timestamp : Number(timestamp));
+                                if (isNaN(date.getTime())) return 'Recently';
+                                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                              } catch {
                                 return 'Recently';
                               }
                             })()}
@@ -502,14 +472,14 @@ export default function Dashboard() {
                       </div>
                       <div className="text-right flex-shrink-0 ml-4">
                         <p className={cn(
-                          "text-sm font-medium",
-                          (trade.side === 'buy' || (trade.pnl || 0) >= 0) ? "text-success" : "text-loss"
+                          "text-sm font-bold font-mono",
+                          (trade.side === 'buy' || (trade.pnl || 0) >= 0) ? "text-emerald-400" : "text-red-400"
                         )}>
                           {(trade.side === 'buy' || (trade.pnl || 0) >= 0) ? '+' : '-'}$
                           {Math.abs(trade.pnl || trade.profit_loss || Math.random() * 1000).toFixed(2)}
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          {(trade.size || Math.random() * 10).toFixed(4)} {trade.asset?.split('/')[0] || 'BTC'}
+                        <p className="text-xs text-muted-foreground font-mono">
+                          {(trade.size || Math.random() * 10).toFixed(4)} {(trade.asset || 'BTC/USD').split('/')[0]}
                         </p>
                       </div>
                     </motion.div>
@@ -525,16 +495,16 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7, duration: 0.4 }}
           >
-            <Card className="bg-gradient-card border-border/50 backdrop-blur-sm h-full">
+            <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm h-full">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2 text-lg md:text-xl">
-                  <PieChart className="h-5 w-5 flex-shrink-0" />
+                  <PieChart className="h-5 w-5 flex-shrink-0 text-slate-400" />
                   <span>Portfolio Allocation</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4 md:space-y-6">
-                  {portfolioAllocation.map((item, index) => (
+                <div className="space-y-5">
+                  {portfolioAllocation.map((item: any, index: number) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, y: 10 }}
@@ -543,13 +513,21 @@ export default function Dashboard() {
                       className="space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-foreground">{item.asset}</span>
-                        <span className="text-sm text-muted-foreground font-medium">{item.allocation}%</span>
+                        <div className="flex items-center gap-2.5">
+                          {item.symbol !== 'CASH' && <AssetLogo symbol={item.symbol} size={20} />}
+                          {item.symbol === 'CASH' && (
+                            <div className="w-5 h-5 rounded-full bg-slate-600 flex items-center justify-center">
+                              <DollarSign className="h-3 w-3 text-slate-300" />
+                            </div>
+                          )}
+                          <span className="text-sm font-medium text-foreground">{item.asset}</span>
+                        </div>
+                        <span className="text-sm font-bold text-foreground font-mono">{item.allocation}%</span>
                       </div>
-                      <div className="w-full bg-background/50 rounded-full h-2 md:h-3 overflow-hidden">
+                      <div className="w-full bg-slate-900/60 rounded-full h-2.5 overflow-hidden">
                         <motion.div
-                          className={cn("h-full rounded-full transition-all duration-1000", item.color)}
-                          style={{ width: `${item.allocation}%` }}
+                          className="h-full rounded-full"
+                          style={{ width: `${item.allocation}%`, backgroundColor: item.brandColor }}
                           initial={{ width: 0 }}
                           animate={{ width: `${item.allocation}%` }}
                           transition={{ delay: 1 + index * 0.1, duration: 0.8, ease: "easeOut" }}

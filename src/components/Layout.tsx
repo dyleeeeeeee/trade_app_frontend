@@ -45,7 +45,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gradient-dark">
       {/* Navigation */}
-      <nav className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-50">
+      <nav className="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-xl sticky top-0 z-50 shadow-[0_1px_0_rgba(99,102,241,0.08)]">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -69,10 +69,10 @@ export function Layout({ children }: LayoutProps) {
                       <Link
                         to={item.path}
                         className={cn(
-                          "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all btn-animated focus-ring",
+                          "flex items-center space-x-2 px-3.5 py-2 rounded-lg transition-all focus-ring",
                           isActive
-                            ? "bg-primary/10 text-primary shadow-lg"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md"
+                            ? "bg-blue-500/10 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)]"
+                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
                         )}
                       >
                         <Icon className="h-4 w-4" />
