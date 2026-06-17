@@ -7,14 +7,14 @@ import {
   TrendingUp,
   Users,
   LogOut,
-  User,
   Shield,
+  Layers,
   Menu,
-  X
+  X,
 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,6 +23,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const reduce = useReducedMotion();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = useMemo(() => {
@@ -31,8 +32,8 @@ export function Layout({ children }: LayoutProps) {
       { path: '/wallet', label: 'Wallet', icon: Wallet },
       { path: '/trading', label: 'Trading', icon: TrendingUp },
       { path: '/copy-trading', label: 'Copy Trading', icon: Users },
+      { path: '/strategies', label: 'Strategies', icon: Layers },
       { path: '/kyc', label: 'KYC', icon: Shield },
-      { path: '/strategies', label: 'Strategies', icon: TrendingUp },
     ];
 
     if (user?.role === 'admin') {
@@ -42,151 +43,125 @@ export function Layout({ children }: LayoutProps) {
     return baseItems;
   }, [user?.role]);
 
-  return (
-    <div className="min-h-screen bg-gradient-dark">
-      {/* Navigation */}
-      <nav className="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-xl sticky top-0 z-50 shadow-[0_1px_0_rgba(99,102,241,0.08)]">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-8">
-              <Link to="/dashboard" className="flex items-center space-x-2">
-                <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-8 w-auto" />
-                <span className="text-xl font-bold text-foreground">Astrid Global</span>
-              </Link>
+  const initials = user?.email?.[0]?.toUpperCase() ?? 'A';
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-1">
+  return (
+    <div className="min-h-screen">
+      {/* Topbar — glass, sticky. Level-1 shadow signals layering above content. */}
+      <header className="glass sticky top-0 z-50 border-b border-hairline/[0.08] shadow-elevation-1">
+        <nav className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-8" aria-label="Primary">
+          {/* Brand + desktop nav */}
+          <div className="flex items-center gap-8">
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base"
+            >
+              <img src="/images/main-logo.png" alt="" className="h-7 w-auto" aria-hidden="true" />
+              <span className="text-body font-semibold tracking-tight text-text-primary">Astrid Global</span>
+            </Link>
+
+            <div className="hidden items-center gap-1 md:flex">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={cn(
+                      'relative flex h-11 items-center gap-2 rounded-lg px-3 text-body-sm font-medium',
+                      'transition-[color,background-color] duration-micro ease-standard',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base',
+                      'active:scale-[0.98]',
+                      isActive
+                        ? 'bg-interactive/10 text-interactive'
+                        : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary',
+                    )}
+                  >
+                    <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                    <span>{item.label}</span>
+                    {isActive && (
+                      <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-interactive" aria-hidden="true" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* User cluster */}
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-3 md:flex">
+              <div className="flex items-center gap-2">
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-interactive/15 text-caption font-semibold text-interactive"
+                  aria-hidden="true"
+                >
+                  {initials}
+                </span>
+                <span className="max-w-[180px] truncate text-body-sm text-text-secondary">{user?.email}</span>
+                {user?.role === 'admin' && (
+                  <span className="rounded-full bg-interactive/15 px-2 py-0.5 text-caption font-medium text-interactive">
+                    Admin
+                  </span>
+                )}
+              </div>
+              <Button variant="ghost" size="sm" onClick={logout}>
+                <LogOut className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                Logout
+              </Button>
+            </div>
+
+            {/* Mobile toggle — 44px touch target */}
+            <button
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface-raised hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base md:hidden"
+              onClick={() => setIsMobileMenuOpen((v) => !v)}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" strokeWidth={1.5} /> : <Menu className="h-5 w-5" strokeWidth={1.5} />}
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              id="mobile-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: reduce ? 0 : 0.24, ease: [0, 0, 0.2, 1] }}
+              className="overflow-hidden border-t border-hairline/[0.08] glass-strong md:hidden"
+            >
+              <div className="space-y-1 px-6 py-4">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
                   return (
-                    <motion.div
+                    <Link
                       key={item.path}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      to={item.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={cn(
+                        'flex h-11 items-center gap-3 rounded-lg px-3 text-body-sm font-medium transition-colors duration-micro',
+                        isActive
+                          ? 'bg-interactive/10 text-interactive'
+                          : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary',
+                      )}
                     >
-                      <Link
-                        to={item.path}
-                        className={cn(
-                          "flex items-center space-x-2 px-3.5 py-2 rounded-lg transition-all focus-ring",
-                          isActive
-                            ? "bg-blue-500/10 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)]"
-                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
-                        )}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span className="text-sm font-medium">{item.label}</span>
-                      </Link>
-                    </motion.div>
+                      <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+                      <span>{item.label}</span>
+                    </Link>
                   );
                 })}
-              </div>
-            </div>
 
-            {/* User Menu */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-sm">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-foreground">{user?.email}</span>
-                  {user?.role === 'admin' && (
-                    <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full">
-                      Admin
-                    </span>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={logout}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
-              </div>
-
-              {/* Mobile menu button */}
-              <button
-                className="md:hidden p-2"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="mobile-menu"
-                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-              >
-                {isMobileMenuOpen ? (
-                  <X className="h-6 w-6 text-foreground" />
-                ) : (
-                  <Menu className="h-6 w-6 text-foreground" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="md:hidden border-t border-border bg-card/95 backdrop-blur-xl"
-            >
-              <div className="px-4 py-4 space-y-3">
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.2 }}
-                  className="stagger-children"
-                >
-                  {navItems.map((item, index) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.path;
-                    return (
-                      <motion.div
-                        key={item.path}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
-                      >
-                        <Link
-                          to={item.path}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={cn(
-                            "flex items-center space-x-3 px-4 py-3 rounded-lg transition-all btn-animated",
-                            isActive
-                              ? "bg-primary/10 text-primary shadow-lg"
-                              : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md"
-                          )}
-                        >
-                          <Icon className="h-5 w-5" />
-                          <span className="font-medium">{item.label}</span>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.2 }}
-                  className="pt-4 border-t border-border space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-foreground truncate max-w-[150px]">{user?.email}</span>
-                    </div>
-                    {user?.role === 'admin' && (
-                      <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full animate-pulse-soft">
-                        Admin
-                      </span>
-                    )}
-                  </div>
+                <div className="mt-3 flex items-center justify-between border-t border-hairline/[0.08] pt-4">
+                  <span className="max-w-[200px] truncate text-body-sm text-text-secondary">{user?.email}</span>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -194,29 +169,19 @@ export function Layout({ children }: LayoutProps) {
                       logout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full justify-start text-muted-foreground hover:text-foreground btn-animated"
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
+                    <LogOut className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
                     Logout
                   </Button>
-                </motion.div>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </header>
 
-      {/* Main Content */}
-      <main className="flex-1 mobile-safe">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-          className="py-6 md:py-8"
-        >
-          {children}
-        </motion.div>
-      </main>
+      {/* Main content — 1200px max, 32px outer margin (48px wide) */}
+      <main className="mx-auto max-w-[1200px] px-8 py-8">{children}</main>
     </div>
   );
 }

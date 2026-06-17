@@ -48,12 +48,18 @@ export default function Wallet() {
 
   useEffect(() => {
     fetchWalletData();
+    // Keep the balance live without re-triggering the full-page loader.
+    const interval = setInterval(() => fetchWalletData({ silent: true }), 15_000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchWalletData = async () => {
+  const fetchWalletData = async ({ silent = false }: { silent?: boolean } = {}) => {
     try {
-      setInitialLoading(true);
-      setError(null);
+      if (!silent) {
+        setInitialLoading(true);
+        setError(null);
+      }
 
       const [balanceRes, withdrawalsRes, depositsRes] = await Promise.all([
         walletAPI.getBalance(),
@@ -95,10 +101,12 @@ export default function Wallet() {
       }
     } catch (error) {
       console.error('Failed to fetch wallet data:', error);
-      setError('Network error. Please check your connection and try again.');
-      toast.error('Network error. Please check your connection.');
+      if (!silent) {
+        setError('Network error. Please check your connection and try again.');
+        toast.error('Network error. Please check your connection.');
+      }
     } finally {
-      setInitialLoading(false);
+      if (!silent) setInitialLoading(false);
     }
   };
 
@@ -191,7 +199,7 @@ export default function Wallet() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <p className="text-destructive">{error}</p>
-                <Button variant="outline" size="sm" onClick={fetchWalletData}>
+                <Button variant="outline" size="sm" onClick={() => fetchWalletData()}>
                   Retry
                 </Button>
               </div>

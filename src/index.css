@@ -2,292 +2,377 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* ============================================================================
+   DESIGN TOKENS — single source of truth.
+   "Modern Fluent Glass + Soft Neo-Depth" grounded in Apple's reduction.
+
+   Layering: PRIMITIVES (raw scales, never used in components) feed SEMANTIC
+   tokens (what components consume). Every component references a semantic
+   token — never a primitive, never a raw hex. All colors are HSL triplets so
+   Tailwind can compose alpha: hsl(var(--token) / <alpha>).
+
+   Theme: dark is the shipping theme and lives on :root. Light is fully
+   defined under .light for parity. Dark mode lightens surfaces as elevation
+   rises (Apple's model) rather than deepening them.
+   ============================================================================ */
 
 @layer base {
   :root {
-    /* Dark fintech theme */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* ---- PRIMITIVES — gray scale (cool neutral, perceptually stepped) ---- */
+    --gray-50: 210 40% 98%;
+    --gray-100: 214 32% 91%;
+    --gray-200: 213 27% 84%;
+    --gray-300: 215 20% 65%;
+    --gray-400: 217 16% 52%;
+    --gray-500: 217 19% 38%;
+    --gray-600: 217 24% 27%;
+    --gray-700: 218 28% 19%;
+    --gray-800: 220 30% 13%;
+    --gray-900: 222 32% 9%;
+    --gray-950: 224 36% 6%;
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+    /* ---- PRIMITIVES — brand hue (blue, 9 lightness steps) ---- */
+    --brand-100: 214 95% 93%;
+    --brand-200: 213 97% 87%;
+    --brand-300: 212 96% 78%;
+    --brand-400: 213 94% 68%;
+    --brand-500: 217 91% 60%;
+    --brand-600: 221 83% 53%;
+    --brand-700: 224 76% 48%;
+    --brand-800: 226 71% 40%;
+    --brand-900: 224 64% 33%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    /* ====================================================================
+       SEMANTIC TOKENS — DARK (shipping theme)
+       ==================================================================== */
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
+    /* Surfaces — lighten as elevation rises */
+    --surface-sunken: 224 38% 5%;
+    --surface-base: 222 34% 8%;
+    --surface-raised: 220 30% 12%;
+    --surface-overlay: 219 27% 16%;
+    --surface-glass: 220 30% 12%;        /* base hue for glass; alpha applied in utility */
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    /* Text — hierarchy by weight + opacity, not size */
+    --text-primary: 210 40% 98%;
+    --text-secondary: 215 20% 70%;
+    --text-tertiary: 217 16% 50%;
+    --text-inverse: 222 47% 11%;
 
-    --muted: 215 25% 27%;
-    --muted-foreground: 217 33% 70%;
+    /* Borders — hairlines that recede */
+    --border-subtle: 210 40% 98%;        /* used at ~8% alpha */
+    --border-default: 217 24% 24%;
+    --border-strong: 217 20% 34%;
 
-    --accent: 217 91% 60%;
-    --accent-foreground: 222 47% 11%;
+    /* Interactive — the single primary action color */
+    --interactive-default: 217 91% 60%;
+    --interactive-hover: 213 94% 68%;
+    --interactive-pressed: 221 83% 53%;
+    --interactive-foreground: 222 47% 11%;
+    --interactive-subtle: 217 91% 60%;   /* used at low alpha for tints */
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    /* Feedback */
+    --feedback-success: 152 69% 45%;
+    --feedback-success-foreground: 152 80% 96%;
+    --feedback-warning: 38 92% 55%;
+    --feedback-warning-foreground: 38 90% 12%;
+    --feedback-error: 0 84% 63%;
+    --feedback-error-foreground: 0 80% 97%;
+    --feedback-info: 213 94% 68%;
+    --feedback-info-foreground: 213 90% 12%;
 
-    --success: 142 71% 45%;
-    --success-foreground: 210 40% 98%;
+    /* Trading domain (semantic, accessibility-paired with icon/shape) */
+    --profit: 152 69% 45%;
+    --loss: 0 84% 63%;
+    --neutral: 217 16% 50%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 47% 11%;
+    /* ---- Elevation — Z-depth as spatial language ----
+       Dark mode: softened shadow opacity + a top inset highlight to simulate
+       light catching the upper edge of a raised surface. */
+    --shadow-1: 0 1px 2px hsl(224 40% 3% / 0.40), inset 0 1px 0 hsl(0 0% 100% / 0.04);
+    --shadow-2: 0 4px 16px hsl(224 40% 3% / 0.45), 0 2px 4px hsl(224 40% 3% / 0.30), inset 0 1px 0 hsl(0 0% 100% / 0.05);
+    --shadow-3: 0 8px 32px hsl(224 40% 3% / 0.50), 0 4px 8px hsl(224 40% 3% / 0.32), inset 0 1px 0 hsl(0 0% 100% / 0.06);
+    --shadow-4: 0 16px 48px hsl(224 40% 3% / 0.58), 0 8px 16px hsl(224 40% 3% / 0.36), inset 0 1px 0 hsl(0 0% 100% / 0.07);
+    --shadow-focus: 0 0 0 3px hsl(var(--interactive-default) / 0.35);
+    --shadow-glow: 0 0 0 1px hsl(var(--interactive-default) / 0.18), 0 8px 28px hsl(var(--interactive-default) / 0.18);
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
+    /* ---- Radius scale ---- */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-full: 9999px;
+    --radius: var(--radius-lg);          /* legacy alias */
 
-    --radius: 0.75rem;
+    /* ---- Typography ---- */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, 'Fira Code', monospace;
 
-    /* Trading specific colors */
-    --profit: 142 71% 45%;
-    --loss: 0 84% 60%;
-    --neutral: 217 33% 50%;
+    /* ---- Motion — Apple-derived easing. Acknowledge < 100ms, animate after ---- */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+    --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+    --duration-micro: 120ms;
+    --duration-interaction: 200ms;
+    --duration-layout: 280ms;
+    --duration-page: 440ms;
 
-    /* Asset brand colors */
-    --brand-btc: 33 100% 50%;
-    --brand-eth: 240 60% 55%;
-    --brand-aapl: 0 0% 65%;
-    --brand-googl: 217 89% 61%;
-    --brand-nvda: 84 100% 36%;
-    --brand-tsla: 0 72% 51%;
-    --brand-meta: 214 89% 52%;
-    --brand-amzn: 33 100% 50%;
-    --brand-spacex: 0 0% 90%;
+    /* ====================================================================
+       LEGACY shadcn ALIASES — remapped onto the semantic system so every
+       existing component improves without rewrites.
+       ==================================================================== */
+    --background: var(--surface-base);
+    --foreground: var(--text-primary);
+    --card: var(--surface-raised);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface-overlay);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--interactive-default);
+    --primary-foreground: var(--interactive-foreground);
+    --secondary: var(--surface-raised);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--surface-overlay);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--surface-overlay);
+    --accent-foreground: var(--text-primary);
+    --destructive: var(--feedback-error);
+    --destructive-foreground: var(--feedback-error-foreground);
+    --success: var(--feedback-success);
+    --success-foreground: var(--feedback-success-foreground);
+    --warning: var(--feedback-warning);
+    --warning-foreground: var(--feedback-warning-foreground);
+    --border: var(--border-default);
+    --input: var(--border-default);
+    --ring: var(--interactive-default);
 
-    /* Typography */
-    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
+    /* Subtle, directional elevation gradients — never decorative, max 12% */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--brand-500)), hsl(var(--brand-600)));
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100% / 0.04), hsl(0 0% 100% / 0));
+    --gradient-page: radial-gradient(120% 80% at 50% -10%, hsl(var(--brand-900) / 0.18), transparent 60%);
+    /* legacy gradient aliases */
+    --gradient-dark: linear-gradient(180deg, hsl(var(--surface-base)), hsl(var(--surface-sunken)));
+    --gradient-card: linear-gradient(135deg, hsl(var(--surface-raised) / 0.9), hsl(var(--surface-raised) / 0.6));
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-dark: linear-gradient(180deg, hsl(222 47% 11%), hsl(217 47% 8%));
-    --gradient-card: linear-gradient(135deg, hsl(217 33% 17% / 0.8), hsl(217 33% 14% / 0.9));
+    color-scheme: dark;
+  }
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1);
-    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
+  /* ---- LIGHT theme (full parity; toggle via `.light` on <html>) ---- */
+  .light {
+    --surface-sunken: 220 24% 94%;
+    --surface-base: 210 40% 98%;
+    --surface-raised: 0 0% 100%;
+    --surface-overlay: 0 0% 100%;
+    --surface-glass: 0 0% 100%;
 
-    /* Animations */
-    --transition-fast: all 0.15s ease;
-    --transition-base: all 0.2s ease;
-    --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --text-primary: 222 47% 11%;
+    --text-secondary: 217 19% 35%;
+    --text-tertiary: 217 16% 55%;
+    --text-inverse: 210 40% 98%;
 
-    /* Enhanced animations */
-    --animation-fade-in: fadeIn 0.5s ease-in-out;
-    --animation-slide-up: slideUp 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-    --animation-slide-in-right: slideInRight 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-    --animation-scale-in: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    --animation-pulse-soft: pulseSoft 2s infinite;
+    --border-subtle: 222 47% 11%;        /* used at ~8% alpha */
+    --border-default: 214 24% 88%;
+    --border-strong: 214 20% 78%;
+
+    --interactive-default: 221 83% 53%;
+    --interactive-hover: 217 91% 60%;
+    --interactive-pressed: 224 76% 48%;
+    --interactive-foreground: 0 0% 100%;
+    --interactive-subtle: 221 83% 53%;
+
+    --feedback-success: 152 60% 38%;
+    --feedback-success-foreground: 152 80% 97%;
+    --feedback-warning: 33 90% 45%;
+    --feedback-warning-foreground: 38 90% 97%;
+    --feedback-error: 0 72% 51%;
+    --feedback-error-foreground: 0 80% 98%;
+    --feedback-info: 221 83% 53%;
+    --feedback-info-foreground: 213 90% 98%;
+
+    --profit: 152 60% 38%;
+    --loss: 0 72% 51%;
+    --neutral: 217 16% 55%;
+
+    --shadow-1: 0 1px 3px hsl(220 40% 20% / 0.08), 0 1px 2px hsl(220 40% 20% / 0.04);
+    --shadow-2: 0 4px 16px hsl(220 40% 20% / 0.10), 0 2px 4px hsl(220 40% 20% / 0.06);
+    --shadow-3: 0 8px 32px hsl(220 40% 20% / 0.14), 0 4px 8px hsl(220 40% 20% / 0.08);
+    --shadow-4: 0 16px 48px hsl(220 40% 20% / 0.18), 0 8px 16px hsl(220 40% 20% / 0.10);
+
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100% / 0.6), hsl(0 0% 100% / 0));
+    --gradient-page: radial-gradient(120% 80% at 50% -10%, hsl(var(--brand-200) / 0.5), transparent 60%);
+    --gradient-dark: linear-gradient(180deg, hsl(var(--surface-base)), hsl(var(--surface-sunken)));
+    --gradient-card: linear-gradient(135deg, hsl(var(--surface-raised)), hsl(var(--surface-base)));
+
+    color-scheme: light;
   }
 }
 
-/* Enhanced keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes pulseSoft {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-}
-
-@keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 8px var(--glow-color, hsl(217 91% 60% / 0.3));
-  }
-  50% {
-    box-shadow: 0 0 20px var(--glow-color, hsl(217 91% 60% / 0.5));
-  }
-}
-
-/* Smooth transitions for all interactive elements */
-@layer utilities {
-  * {
-    @apply transition-[var(--transition-fast)];
-  }
-
-  .smooth-transition {
-    @apply transition-all duration-300 ease-in-out;
-  }
-
-  .hover-lift {
-    @apply transform transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg;
-  }
-
-  .hover-glow {
-    @apply transition-all duration-300 hover:shadow-glow;
-  }
-
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:scale-[1.02];
-  }
-
-  /* Enhanced button animations */
-  .btn-animated {
-    @apply relative overflow-hidden transition-all duration-200;
-  }
-
-  .btn-animated::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full transition-transform duration-700;
-  }
-
-  .btn-animated:hover::before {
-    @apply translate-x-full;
-  }
-
-  /* Loading shimmer */
-  .shimmer {
-    @apply relative overflow-hidden bg-gradient-to-r from-muted via-muted/50 to-muted;
-    background-size: 200px 100%;
-    animation: shimmer 1.5s infinite;
-  }
-
-  .shimmer::after {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
-  }
-
-  /* Mobile-first responsive improvements */
-  .mobile-safe {
-    @apply px-4 sm:px-6 md:px-8;
-  }
-
-  /* Smooth page transitions */
-  .page-enter {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .page-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .page-exit {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .page-exit-active {
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  /* Enhanced mobile menu animations */
-  .mobile-menu-enter {
-    opacity: 0;
-    max-height: 0;
-    transform: translateY(-10px);
-  }
-
-  .mobile-menu-enter-active {
-    opacity: 1;
-    max-height: 500px;
-    transform: translateY(0);
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-  }
-
-  .mobile-menu-exit {
-    opacity: 1;
-    max-height: 500px;
-    transform: translateY(0);
-  }
-
-  .mobile-menu-exit-active {
-    opacity: 0;
-    max-height: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-  }
-
-  /* Card stagger animations */
-  .stagger-children > * {
-    animation: slideUp 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) both;
-  }
-
-  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
-  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
-  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
-  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
-  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
-  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
-
-  /* Enhanced focus states for accessibility */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
-  }
-}
-
+/* ============================================================================
+   BASE
+   ============================================================================ */
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border-default));
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--surface-base));
+    background-image: var(--gradient-page);
+    background-attachment: fixed;
+    color: hsl(var(--text-primary));
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    letter-spacing: -0.011em;
+  }
+
+  /* Typographic defaults — hierarchy by weight, tight optical tracking */
+  h1 { letter-spacing: -0.02em; }
+  h2 { letter-spacing: -0.015em; }
+  h3 { letter-spacing: -0.01em; }
+
+  /* Restyle, never remove, focus rings */
+  :focus-visible {
+    outline: none;
+  }
+
+  /* Custom scrollbars — recede until needed */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-strong) / 0.6);
+    border-radius: var(--radius-full);
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--border-strong)); background-clip: content-box; }
+
+  ::selection {
+    background: hsl(var(--interactive-default) / 0.28);
+  }
+}
+
+/* ============================================================================
+   COMPONENT UTILITIES
+   ============================================================================ */
+@layer components {
+  /* Glass — navigation, modals, floating panels only. Never nested. */
+  .glass {
+    background-color: hsl(var(--surface-glass) / 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+  .glass-strong {
+    background-color: hsl(var(--surface-glass) / 0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+  }
+
+  /* Hairline divider at the subtle-border token (~8% alpha) */
+  .divide-hairline > * + * {
+    border-top: 1px solid hsl(var(--border-subtle) / 0.08);
+  }
+}
+
+@layer utilities {
+  /* Content-area loading shimmer (1.5s sweep) */
+  .shimmer {
+    background-image: linear-gradient(
+      90deg,
+      hsl(var(--surface-overlay) / 0) 0%,
+      hsl(var(--text-primary) / 0.06) 50%,
+      hsl(var(--surface-overlay) / 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .text-balance { text-wrap: balance; }
+
+  /* ----------------------------------------------------------------------
+     LEGACY UTILITY COMPAT — existing pages reference these class names.
+     Remapped onto the new token system so behaviour (and focus a11y) is
+     preserved without rewriting every page. Prefer the tokens directly in
+     new code.
+     ---------------------------------------------------------------------- */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base;
+  }
+  .smooth-transition {
+    @apply transition-all duration-interaction ease-standard;
+  }
+  .hover-lift {
+    @apply transition-transform duration-interaction ease-standard hover:-translate-y-0.5 hover:shadow-elevation-2;
+  }
+  .hover-glow {
+    @apply transition-shadow duration-interaction ease-standard hover:shadow-glow;
+  }
+  .card-hover {
+    @apply transition-[transform,box-shadow,border-color] duration-interaction ease-standard hover:-translate-y-0.5 hover:shadow-elevation-2;
+  }
+  .btn-animated {
+    @apply relative overflow-hidden;
+  }
+  .mobile-safe {
+    @apply px-4 sm:px-6 md:px-8;
+  }
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+  .stagger-children > * {
+    animation: stagger-rise 0.4s var(--ease-decelerate) both;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.10s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
+}
+
+/* ============================================================================
+   KEYFRAMES — purposeful only
+   ============================================================================ */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes content-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes stagger-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================================
+   REDUCED MOTION — strip all non-essential motion to opacity/instant
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

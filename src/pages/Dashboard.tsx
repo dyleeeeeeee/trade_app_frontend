@@ -20,6 +20,8 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useStaggeredAnimation, useFluidHover } from '@/hooks/use-fluid-animations';
+import { usePrices } from '@/hooks/use-prices';
+import { LivePrice, PriceChange } from '@/components/LivePrice';
 
 interface Trade {
   id?: string;
@@ -57,8 +59,15 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Live market prices, polled every 15s and shared across the app.
+  const { data: prices } = usePrices();
+
   useEffect(() => {
     fetchDashboardData();
+    // Keep the wallet balance and trades live without a loading flicker.
+    const interval = setInterval(() => fetchDashboardData({ silent: true }), 15_000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getActiveTradesCount = () => {
@@ -170,10 +179,12 @@ export default function Dashboard() {
   const { containerVariants: tradesContainerVariants, itemVariants: tradesItemVariants } = useStaggeredAnimation(Math.min(trades.length, 3), { staggerChildren: 0.05 });
   const { containerVariants: portfolioContainerVariants, itemVariants: portfolioItemVariants } = useStaggeredAnimation(portfolioAllocation.length, { staggerChildren: 0.07 });
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async ({ silent = false }: { silent?: boolean } = {}) => {
     try {
-      setLoading(true);
-      setError(null);
+      if (!silent) {
+        setLoading(true);
+        setError(null);
+      }
 
       const [walletRes, tradesRes, subscriptionsRes] = await Promise.all([
         walletAPI.getBalance(),
@@ -217,10 +228,12 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
-      setError('Network error. Please check your connection and try again.');
-      toast.error('Network error. Please check your connection.');
+      if (!silent) {
+        setError('Network error. Please check your connection and try again.');
+        toast.error('Network error. Please check your connection.');
+      }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -261,7 +274,7 @@ export default function Dashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={fetchDashboardData}
+                      onClick={() => fetchDashboardData()}
                       className="border-red-500/30 hover:border-red-400 hover:bg-red-500/10 text-red-300 hover:text-red-200"
                     >
                       Retry
@@ -354,6 +367,59 @@ export default function Dashboard() {
                 </motion.div>
               );
             })}
+          </motion.div>
+
+          {/* Live Markets — polled every 15s */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mb-12 lg:mb-16"
+          >
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50">
+              <CardHeader className="flex flex-row items-center justify-between pb-3">
+                <CardTitle className="text-sm md:text-base font-medium text-gray-400 uppercase tracking-wide">
+                  Live Markets
+                </CardTitle>
+                <span className="flex items-center gap-2 text-caption text-gray-500">
+                  <span className="relative flex h-2 w-2" aria-hidden="true">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+                  </span>
+                  Real-time
+                </span>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+                  {(prices && prices.length > 0 ? prices.slice(0, 6) : Array.from({ length: 6 })).map(
+                    (asset: any, i: number) => (
+                      <div
+                        key={asset?.symbol ?? i}
+                        className="flex items-center gap-3 rounded-xl border border-slate-700/40 bg-slate-800/40 p-3"
+                      >
+                        {asset ? (
+                          <>
+                            <AssetLogo symbol={asset.symbol} className="h-8 w-8 flex-shrink-0" />
+                            <div className="min-w-0">
+                              <p className="truncate text-xs font-semibold text-white">{asset.symbol}</p>
+                              <div className="flex items-center gap-1.5">
+                                <LivePrice
+                                  value={Number(asset.price)}
+                                  className="text-sm font-mono text-gray-200"
+                                />
+                                <PriceChange changePercent={asset.changePercent} />
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="h-8 w-full animate-pulse rounded-md bg-slate-700/50" />
+                        )}
+                      </div>
+                    ),
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
 
           {/* Quick Actions */}

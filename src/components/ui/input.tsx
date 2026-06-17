@@ -1,34 +1,28 @@
 import * as React from "react";
-import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Input — 40px standard. Border shifts to interactive on focus with a 3px
+ * focus glow. Error state sets `aria-invalid` and recolors border + glow.
+ * Labels live above the field (Label component), never floating inside.
+ */
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, ...props }, ref) => {
+  ({ className, type = "text", ...props }, ref) => {
     return (
-      <motion.input
-        type="text"
+      <input
+        type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm transition-all duration-200",
+          "flex h-10 w-full rounded-lg border border-line bg-surface-base px-3 py-2 text-body-sm text-text-primary",
+          "transition-[border-color,box-shadow] duration-micro ease-standard",
+          "placeholder:text-text-tertiary",
+          "file:border-0 file:bg-transparent file:text-body-sm file:font-medium file:text-text-primary",
+          "focus-visible:outline-none focus-visible:border-interactive focus-visible:shadow-focus",
+          "disabled:cursor-not-allowed disabled:opacity-40",
+          "aria-[invalid=true]:border-feedback-error aria-[invalid=true]:focus-visible:shadow-[0_0_0_3px_hsl(var(--feedback-error)/0.25)]",
           className,
         )}
         ref={ref}
-        whileFocus={{
-          scale: 1.01,
-          boxShadow: "0 0 0 2px rgba(var(--primary), 0.2)",
-          transition: {
-            type: 'spring',
-            stiffness: 300,
-            damping: 25
-          }
-        }}
-        whileHover={{
-          boxShadow: "0 0 0 1px rgba(var(--primary), 0.1)",
-          transition: { duration: 0.2 }
-        }}
-        style={{
-          willChange: 'transform, box-shadow'
-        }}
         {...props}
       />
     );

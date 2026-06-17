@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PageTransition } from "@/components/PageTransition";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 import { Suspense, lazy, Component, ReactNode } from "react";
 
 // Error boundary component
@@ -29,26 +31,23 @@ class ErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <motion.div
-          className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="text-center space-y-4">
-            <div className="text-red-400 text-6xl">⚠️</div>
-            <h2 className="text-2xl font-bold text-white">Something went wrong</h2>
-            <p className="text-gray-400 max-w-md">
-              We encountered an error loading this page. Please try refreshing the page.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors"
+        <div className="flex min-h-screen items-center justify-center px-6">
+          <div className="flex max-w-md flex-col items-center text-center">
+            <div
+              className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl border border-feedback-error/30 bg-feedback-error/10"
+              aria-hidden="true"
             >
-              Refresh Page
-            </button>
+              <AlertTriangle className="h-8 w-8 text-feedback-error" strokeWidth={1.5} />
+            </div>
+            <h2 className="text-h2 text-text-primary">Something went wrong</h2>
+            <p className="mt-3 text-balance text-body text-text-secondary">
+              We hit an error loading this page. Refreshing usually clears it.
+            </p>
+            <Button variant="primary" size="md" className="mt-8" onClick={() => window.location.reload()}>
+              Refresh page
+            </Button>
           </div>
-        </motion.div>
+        </div>
       );
     }
 
@@ -76,58 +75,13 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Security = lazy(() => import("./pages/Security"));
 const Strategies = lazy(() => import("./pages/Strategies"));
 
-import { motion } from 'framer-motion';
 
 // Fluid loading spinner with advanced animations
+// Calm, deferent loading state — a single ring, no theatrics.
 const LoadingSpinner = () => (
-  <motion.div
-    className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.3 }}
-  >
-    <div className="relative">
-      {/* Outer ring */}
-      <motion.div
-        className="w-16 h-16 border-4 border-primary/20 rounded-full"
-        initial={{ scale: 0, rotate: 0 }}
-        animate={{ scale: 1, rotate: 360 }}
-        transition={{
-          scale: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
-          rotate: { duration: 2, repeat: Infinity, ease: 'linear' }
-        }}
-      />
-      {/* Inner ring */}
-      <motion.div
-        className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-      />
-      {/* Center dot */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 w-2 h-2 bg-primary rounded-full -translate-x-1/2 -translate-y-1/2"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 1, 0.5]
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      />
-      {/* Loading text */}
-      <motion.p
-        className="absolute top-20 left-1/2 -translate-x-1/2 text-gray-400 text-sm whitespace-nowrap"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.3 }}
-      >
-        Loading page...
-      </motion.p>
-    </div>
-  </motion.div>
+  <div className="flex min-h-screen items-center justify-center" role="status" aria-label="Loading">
+    <span className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-interactive" aria-hidden="true" />
+  </div>
 );
 
 const queryClient = new QueryClient();

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { TrendingUp } from 'lucide-react';
+import { usePrices } from '@/hooks/use-prices';
+import { LivePrice, PriceChange } from '@/components/LivePrice';
 
 // Declare iconify-icon for TypeScript
 declare global {
@@ -16,6 +18,11 @@ export default function Landing() {
   const [activeTab, setActiveTab] = useState('login');
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+
+  // Live market prices (polled every 15s). Feature BTC, ETH, and a top mover.
+  const { data: prices } = usePrices();
+  const bySymbol = (s: string) => prices?.find((p) => p.symbol === s);
+  const featured = [bySymbol('BTC/USD'), bySymbol('ETH/USD'), bySymbol('NVDA')].filter(Boolean);
 
   // Animation variants
   const fadeInUp = {
@@ -256,13 +263,13 @@ export default function Landing() {
             whileInView="animate"
             viewport={{ once: true }}
           >
-            {[
-              { name: 'Bitcoin', price: '31,020.564', symbol: 'BTC', icon: 'bitcoin' },
-              { name: 'Ethereum', price: '4.4668', symbol: 'ETH', icon: 'ethereum' },
-              { name: 'Ripple', price: '0.6549', symbol: 'XRP', icon: 'ripple' }
-            ].map((crypto, index) => (
+            {(featured.length > 0
+              ? featured
+              : // skeleton placeholders until the first poll resolves
+                [null, null, null]
+            ).map((asset, index) => (
               <motion.div
-                key={crypto.symbol}
+                key={asset?.symbol ?? index}
                 className="group"
                 whileHover={{ y: -8 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
@@ -273,15 +280,22 @@ export default function Landing() {
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <span className="text-2xl font-bold text-white">{crypto.symbol[0]}</span>
+                    <span className="text-2xl font-bold text-white">{asset ? asset.symbol[0] : '—'}</span>
                   </motion.div>
 
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-xl font-bold text-white mb-1">{crypto.name}</h3>
-                      <div className="text-2xl font-mono font-bold text-blue-400">
-                        {crypto.price} $
-                      </div>
+                      <h3 className="text-xl font-bold text-white mb-1">{asset?.name ?? 'Loading…'}</h3>
+                      {asset ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-2xl font-mono font-bold text-blue-400">
+                            <LivePrice value={Number(asset.price)} />
+                          </div>
+                          <PriceChange changePercent={asset.changePercent} />
+                        </div>
+                      ) : (
+                        <div className="mx-auto h-8 w-32 animate-pulse rounded-md bg-slate-700/50" />
+                      )}
                     </div>
 
                     <motion.div

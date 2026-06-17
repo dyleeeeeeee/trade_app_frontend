@@ -1,70 +1,64 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { motion, HTMLMotionProps } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Button — full state machine in pure CSS so motion respects
+ * `prefers-reduced-motion` for free and acknowledgment stays < 100ms.
+ *
+ * Default → Hover (lift one elevation + glow) → Active (press, scale 0.98,
+ * dim 4%) → Focus-visible (2px offset ring) → Disabled (opacity 0.4).
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 relative overflow-hidden",
+  [
+    "relative inline-flex items-center justify-center gap-2 whitespace-nowrap select-none align-middle",
+    "font-medium [&_svg]:pointer-events-none [&_svg]:shrink-0",
+    "transition-[transform,box-shadow,background-color,border-color,filter]",
+    "duration-micro ease-standard",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base",
+    "active:scale-[0.98] active:brightness-[0.96] active:[transition-duration:80ms] active:ease-accelerate",
+    "disabled:pointer-events-none disabled:opacity-40 disabled:active:scale-100 disabled:cursor-not-allowed",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-md",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/50",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-md",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        premium: "bg-gradient-primary text-primary-foreground hover:shadow-glow hover:opacity-90",
-        glass: "bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/70 hover:border-primary/30",
+        primary:
+          "bg-interactive text-interactive-foreground shadow-elevation-1 hover:bg-interactive-hover hover:shadow-glow",
+        secondary:
+          "bg-surface-raised text-text-primary border border-line shadow-elevation-1 hover:border-line-strong hover:shadow-elevation-2",
+        ghost:
+          "bg-transparent text-interactive hover:bg-surface-raised",
+        destructive:
+          "bg-feedback-error text-feedback-error-foreground shadow-elevation-1 hover:brightness-110 hover:shadow-elevation-2",
+        "destructive-ghost":
+          "bg-transparent text-feedback-error hover:bg-feedback-error/10",
+        link: "text-interactive underline-offset-4 hover:underline",
+        /* legacy aliases kept so existing pages don't break */
+        default:
+          "bg-interactive text-interactive-foreground shadow-elevation-1 hover:bg-interactive-hover hover:shadow-glow",
+        outline:
+          "bg-surface-raised text-text-primary border border-line shadow-elevation-1 hover:border-line-strong hover:shadow-elevation-2",
+        premium:
+          "bg-gradient-primary text-interactive-foreground shadow-elevation-1 hover:shadow-glow",
+        glass:
+          "glass border border-hairline/[0.10] text-text-primary hover:border-line",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        sm: "h-8 min-w-8 rounded-md px-3 text-body-sm [&_svg]:size-4",
+        md: "h-10 min-w-10 rounded-lg px-4 text-body-sm [&_svg]:size-5",
+        lg: "h-12 min-w-12 rounded-lg px-6 text-body [&_svg]:size-5",
+        "icon-sm": "h-8 w-8 rounded-md [&_svg]:size-4",
+        "icon": "h-10 w-10 rounded-lg [&_svg]:size-5",
+        "icon-lg": "h-12 w-12 rounded-lg [&_svg]:size-6",
+        /* legacy alias */
+        default: "h-10 min-w-10 rounded-lg px-4 text-body-sm [&_svg]:size-5",
       },
     },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
+    defaultVariants: { variant: "primary", size: "md" },
   },
 );
-
-// Fluid button animations
-const buttonMotionVariants = {
-  idle: {
-    scale: 1,
-    y: 0,
-  },
-  hover: {
-    scale: 1.02,
-    y: -1,
-    transition: {
-      type: 'spring',
-      stiffness: 400,
-      damping: 25,
-      mass: 0.8
-    }
-  },
-  tap: {
-    scale: 0.98,
-    y: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 600,
-      damping: 20,
-      mass: 0.5
-    }
-  },
-  disabled: {
-    scale: 1,
-    y: 0,
-    opacity: 0.5
-  }
-};
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -73,53 +67,10 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, disabled, ...props }, ref) => {
-    const Comp = asChild ? Slot : motion.button;
-
-    const motionProps: HTMLMotionProps<"button"> = {
-      variants: buttonMotionVariants,
-      initial: "idle",
-      whileHover: disabled ? undefined : "hover",
-      whileTap: disabled ? undefined : "tap",
-      animate: disabled ? "disabled" : "idle",
-      transition: {
-        type: 'spring',
-        stiffness: 300,
-        damping: 20,
-      },
-      style: {
-        willChange: 'transform',
-        backfaceVisibility: 'hidden'
-      }
-    };
-
-    if (asChild) {
-      return (
-        <Slot
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref}
-          {...props}
-        />
-      );
-    }
-
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
     return (
-      <motion.button
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        disabled={disabled}
-        {...motionProps}
-        {...props}
-      >
-        {/* Ripple effect */}
-        <motion.div
-          className="absolute inset-0 bg-white/20 rounded-md"
-          initial={{ scale: 0, opacity: 1 }}
-          whileTap={{ scale: 4, opacity: 0 }}
-          transition={{ duration: 0.4 }}
-        />
-        {props.children}
-      </motion.button>
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
     );
   },
 );
