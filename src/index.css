@@ -46,45 +46,45 @@
        SEMANTIC TOKENS — DARK (shipping theme)
        ==================================================================== */
 
-    /* Surfaces — lighten as elevation rises */
-    --surface-sunken: 224 38% 5%;
-    --surface-base: 222 34% 8%;
-    --surface-raised: 220 30% 12%;
-    --surface-overlay: 219 27% 16%;
-    --surface-glass: 220 30% 12%;        /* base hue for glass; alpha applied in utility */
+    /* Surfaces — deep navy / near-black. Glass is white-low-opacity (below). */
+    --surface-sunken: 224 50% 4%;
+    --surface-base: 223 45% 6%;
+    --surface-raised: 221 36% 10%;
+    --surface-overlay: 220 32% 14%;
+    --surface-glass: 0 0% 100%;          /* glass tints are white at low alpha */
 
     /* Text — hierarchy by weight + opacity, not size */
     --text-primary: 210 40% 98%;
-    --text-secondary: 215 20% 70%;
-    --text-tertiary: 217 16% 50%;
-    --text-inverse: 222 47% 11%;
+    --text-secondary: 214 18% 72%;
+    --text-tertiary: 216 14% 52%;
+    --text-inverse: 223 45% 6%;
 
-    /* Borders — hairlines that recede */
-    --border-subtle: 210 40% 98%;        /* used at ~8% alpha */
-    --border-default: 217 24% 24%;
-    --border-strong: 217 20% 34%;
+    /* Borders — soft light edges, not harsh strokes */
+    --border-subtle: 210 40% 100%;       /* white; used at ~8% alpha for light edges */
+    --border-default: 216 22% 22%;       /* gentle edge at full opacity */
+    --border-strong: 215 18% 34%;
 
-    /* Interactive — the single primary action color */
-    --interactive-default: 217 91% 60%;
-    --interactive-hover: 213 94% 68%;
-    --interactive-pressed: 221 83% 53%;
-    --interactive-foreground: 222 47% 11%;
-    --interactive-subtle: 217 91% 60%;   /* used at low alpha for tints */
+    /* Interactive — Apple system blue (#0A84FF) */
+    --interactive-default: 211 100% 52%;
+    --interactive-hover: 211 100% 62%;
+    --interactive-pressed: 214 90% 46%;
+    --interactive-foreground: 0 0% 100%;
+    --interactive-subtle: 211 100% 52%;  /* used at low alpha for tints */
 
-    /* Feedback */
-    --feedback-success: 152 69% 45%;
-    --feedback-success-foreground: 152 80% 96%;
-    --feedback-warning: 38 92% 55%;
-    --feedback-warning-foreground: 38 90% 12%;
-    --feedback-error: 0 84% 63%;
-    --feedback-error-foreground: 0 80% 97%;
-    --feedback-info: 213 94% 68%;
-    --feedback-info-foreground: 213 90% 12%;
+    /* Feedback — calibrated, never neon */
+    --feedback-success: 150 48% 50%;     /* muted emerald */
+    --feedback-success-foreground: 150 60% 96%;
+    --feedback-warning: 36 88% 58%;
+    --feedback-warning-foreground: 36 90% 12%;
+    --feedback-error: 4 72% 63%;         /* soft red */
+    --feedback-error-foreground: 4 80% 97%;
+    --feedback-info: 211 100% 62%;
+    --feedback-info-foreground: 211 90% 12%;
 
     /* Trading domain (semantic, accessibility-paired with icon/shape) */
-    --profit: 152 69% 45%;
-    --loss: 0 84% 63%;
-    --neutral: 217 16% 50%;
+    --profit: 150 48% 50%;
+    --loss: 4 72% 63%;
+    --neutral: 216 14% 52%;
 
     /* ---- Elevation — Z-depth as spatial language ----
        Dark mode: softened shadow opacity + a top inset highlight to simulate
@@ -149,7 +149,7 @@
     /* Subtle, directional elevation gradients — never decorative, max 12% */
     --gradient-primary: linear-gradient(135deg, hsl(var(--brand-500)), hsl(var(--brand-600)));
     --gradient-surface: linear-gradient(180deg, hsl(0 0% 100% / 0.04), hsl(0 0% 100% / 0));
-    --gradient-page: radial-gradient(120% 80% at 50% -10%, hsl(var(--brand-900) / 0.18), transparent 60%);
+    --gradient-page: radial-gradient(100% 60% at 50% -10%, hsl(var(--interactive-default) / 0.10), transparent 55%), radial-gradient(80% 50% at 85% 10%, hsl(265 80% 60% / 0.06), transparent 60%);
     /* legacy gradient aliases */
     --gradient-dark: linear-gradient(180deg, hsl(var(--surface-base)), hsl(var(--surface-sunken)));
     --gradient-card: linear-gradient(135deg, hsl(var(--surface-raised) / 0.9), hsl(var(--surface-raised) / 0.6));
@@ -261,16 +261,30 @@
    COMPONENT UTILITIES
    ============================================================================ */
 @layer components {
-  /* Glass — navigation, modals, floating panels only. Never nested. */
+  /* ---- Liquid Glass system ----
+     Glass = white at low opacity over the deep-navy base, heavy blur, and a
+     soft light edge (thin top highlight + hairline ring) — never harsh strokes.
+     Three tiers map to elevation. Never nest one glass tier inside another. */
   .glass {
-    background-color: hsl(var(--surface-glass) / 0.72);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background-color: hsl(0 0% 100% / 0.05);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.10);
+  }
+  .glass-tile {
+    background-color: hsl(0 0% 100% / 0.045);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+    box-shadow: var(--shadow-2), inset 0 1px 0 hsl(0 0% 100% / 0.08);
   }
   .glass-strong {
-    background-color: hsl(var(--surface-glass) / 0.85);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    background-color: hsl(0 0% 100% / 0.09);
+    backdrop-filter: blur(32px) saturate(160%);
+    -webkit-backdrop-filter: blur(32px) saturate(160%);
+    border: 1px solid hsl(0 0% 100% / 0.10);
+    box-shadow: var(--shadow-3), inset 0 1px 0 hsl(0 0% 100% / 0.12);
   }
 
   /* Hairline divider at the subtle-border token (~8% alpha) */

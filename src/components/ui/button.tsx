@@ -25,11 +25,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-interactive text-interactive-foreground shadow-elevation-1 hover:bg-interactive-hover hover:shadow-glow",
+          "bg-interactive text-interactive-foreground shadow-[0_4px_16px_hsl(var(--interactive-default)/0.32)] hover:bg-interactive-hover hover:shadow-glow",
         secondary:
-          "bg-surface-raised text-text-primary border border-line shadow-elevation-1 hover:border-line-strong hover:shadow-elevation-2",
+          "glass text-text-primary hover:bg-white/[0.10] hover:shadow-glow",
         ghost:
-          "bg-transparent text-interactive hover:bg-surface-raised",
+          "bg-transparent text-interactive hover:bg-white/[0.06]",
         destructive:
           "bg-feedback-error text-feedback-error-foreground shadow-elevation-1 hover:brightness-110 hover:shadow-elevation-2",
         "destructive-ghost":
@@ -37,23 +37,23 @@ const buttonVariants = cva(
         link: "text-interactive underline-offset-4 hover:underline",
         /* legacy aliases kept so existing pages don't break */
         default:
-          "bg-interactive text-interactive-foreground shadow-elevation-1 hover:bg-interactive-hover hover:shadow-glow",
+          "bg-interactive text-interactive-foreground shadow-[0_4px_16px_hsl(var(--interactive-default)/0.32)] hover:bg-interactive-hover hover:shadow-glow",
         outline:
-          "bg-surface-raised text-text-primary border border-line shadow-elevation-1 hover:border-line-strong hover:shadow-elevation-2",
+          "glass text-text-primary hover:bg-white/[0.10]",
         premium:
           "bg-gradient-primary text-interactive-foreground shadow-elevation-1 hover:shadow-glow",
         glass:
-          "glass border border-hairline/[0.10] text-text-primary hover:border-line",
+          "glass text-text-primary hover:bg-white/[0.10]",
       },
       size: {
-        sm: "h-8 min-w-8 rounded-md px-3 text-body-sm [&_svg]:size-4",
-        md: "h-10 min-w-10 rounded-lg px-4 text-body-sm [&_svg]:size-5",
-        lg: "h-12 min-w-12 rounded-lg px-6 text-body [&_svg]:size-5",
-        "icon-sm": "h-8 w-8 rounded-md [&_svg]:size-4",
-        "icon": "h-10 w-10 rounded-lg [&_svg]:size-5",
-        "icon-lg": "h-12 w-12 rounded-lg [&_svg]:size-6",
+        sm: "h-8 min-w-8 rounded-full px-3.5 text-body-sm [&_svg]:size-4",
+        md: "h-10 min-w-10 rounded-full px-5 text-body-sm [&_svg]:size-5",
+        lg: "h-12 min-w-12 rounded-full px-7 text-body [&_svg]:size-5",
+        "icon-sm": "h-8 w-8 rounded-full [&_svg]:size-4",
+        "icon": "h-10 w-10 rounded-full [&_svg]:size-5",
+        "icon-lg": "h-12 w-12 rounded-full [&_svg]:size-6",
         /* legacy alias */
-        default: "h-10 min-w-10 rounded-lg px-4 text-body-sm [&_svg]:size-5",
+        default: "h-10 min-w-10 rounded-full px-5 text-body-sm [&_svg]:size-5",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

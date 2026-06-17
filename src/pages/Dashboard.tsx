@@ -14,11 +14,13 @@ import {
   Activity,
   PieChart,
   Send,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { usePrices } from '@/hooks/use-prices';
 import { LivePrice, PriceChange } from '@/components/LivePrice';
+import { LiveMarketChart } from '@/components/LiveMarketChart';
 
 interface Trade {
   id?: string;
@@ -113,6 +115,25 @@ export default function Dashboard() {
   const recentTradesCount = getRecentTradesCount();
   const copyTradingStats = getCopyTradingStats();
   const portfolioAllocation = getPortfolioAllocation();
+
+  // Featured asset for the live chart + honest, data-derived market insights.
+  const featuredAsset = prices?.find((p) => p.symbol === 'BTC/USD') ?? prices?.[0];
+  const topMover = prices && prices.length
+    ? [...prices].sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))[0]
+    : undefined;
+  const insights = [
+    topMover && {
+      text: `${topMover.name} is the day's biggest move at ${topMover.changePercent >= 0 ? '+' : ''}${topMover.changePercent.toFixed(2)}%.`,
+    },
+    featuredAsset && {
+      text: `Bitcoin is ${featuredAsset.changePercent >= 0 ? 'up' : 'down'} ${Math.abs(featuredAsset.changePercent).toFixed(2)}% from its previous close.`,
+    },
+    {
+      text: profit >= 0
+        ? `Your portfolio is in profit by $${profit.toLocaleString('en-US', { maximumFractionDigits: 0 })}.`
+        : `Your portfolio is down $${Math.abs(profit).toLocaleString('en-US', { maximumFractionDigits: 0 })} — consider reviewing your positions.`,
+    },
+  ].filter(Boolean) as { text: string }[];
 
   const stats = [
     {
@@ -310,6 +331,48 @@ export default function Dashboard() {
             ))}
           </div>
         </Card>
+
+        {/* Live chart + AI insights */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <Card className="p-6 lg:col-span-2">
+            <h2 className="text-caption uppercase text-text-tertiary">Market trend</h2>
+            <div className="mt-4">
+              <LiveMarketChart asset={featuredAsset} />
+            </div>
+          </Card>
+
+          {/* AI insights — glass spotlight */}
+          <Card className="relative overflow-hidden p-6">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-interactive/20 blur-3xl" aria-hidden="true" />
+            <div className="relative flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-interactive/15">
+                  <Sparkles className="h-4 w-4 text-interactive" strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <h2 className="text-caption uppercase text-text-tertiary">Market insights</h2>
+              </div>
+              {featuredAsset ? (
+                <ul className="flex flex-col gap-3">
+                  {insights.map((insight, i) => (
+                    <li key={i} className="flex gap-2.5 text-body-sm text-text-secondary">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-interactive" aria-hidden="true" />
+                      {insight.text}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="h-4 w-full animate-pulse rounded bg-white/[0.06]" />
+                  ))}
+                </div>
+              )}
+              <p className="mt-1 text-caption text-text-tertiary">
+                Generated from live market data. Not financial advice.
+              </p>
+            </div>
+          </Card>
+        </div>
 
         {/* Quick Actions */}
         <Card className="p-6">

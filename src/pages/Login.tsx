@@ -25,11 +25,12 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center px-6 py-12">
       <motion.div
-        className="w-full max-w-md"
+        className="relative w-full max-w-md"
         initial={{ opacity: 0, y: reduce ? 0 : 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0, 0, 0.2, 1] }}
       >
+        <div className="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-primary opacity-[0.12] blur-3xl" aria-hidden="true" />
         <Card className="p-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
