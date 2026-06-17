@@ -10,6 +10,7 @@ import { tradingAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import { AssetLogo } from '@/components/AssetLogo';
 import { LivePrice, PriceChange } from '@/components/LivePrice';
+import { TradingViewChart } from '@/components/TradingViewChart';
 import {
   TrendingUp,
   TrendingDown,
@@ -34,7 +35,15 @@ interface AssetData {
 
 const EASE_GLASS = [0, 0, 0.2, 1] as const;
 
+const TIMEFRAMES = [
+  { label: '1H', value: '60' },
+  { label: '1D', value: 'D' },
+  { label: '1W', value: 'W' },
+  { label: '1M', value: 'M' },
+] as const;
+
 export default function Trading() {
+  const [chartInterval, setChartInterval] = useState<string>('D');
   const [trades, setTrades] = useState([]);
   const [loading, setLoading] = useState(false);
   const [orderType, setOrderType] = useState<'buy' | 'sell'>('buy');
@@ -234,8 +243,54 @@ export default function Trading() {
           })}
         </div>
 
-        {/* Trading Interface */}
+        {/* Chart + Order ticket */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* TradingView chart */}
+          <motion.div
+            className="lg:col-span-2"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, ease: EASE_GLASS }}
+          >
+            <Card className="flex h-full flex-col overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4">
+                <div className="flex items-center gap-3">
+                  {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={28} />}
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-h3 text-text-primary">{asset.replace('/USD', '')}</h2>
+                      {selectedAssetData && <PriceChange changePercent={selectedAssetData.changePercent} />}
+                    </div>
+                    <p className="text-caption text-text-tertiary">{selectedAssetData?.name}</p>
+                  </div>
+                </div>
+                <div
+                  className="flex items-center gap-1 rounded-full bg-white/[0.04] p-1"
+                  role="group"
+                  aria-label="Chart timeframe"
+                >
+                  {TIMEFRAMES.map((tf) => (
+                    <button
+                      key={tf.value}
+                      onClick={() => setChartInterval(tf.value)}
+                      aria-pressed={chartInterval === tf.value}
+                      className={cn(
+                        'rounded-full px-3 py-1 text-caption font-medium transition-colors duration-micro',
+                        chartInterval === tf.value
+                          ? 'bg-interactive/15 text-interactive'
+                          : 'text-text-secondary hover:text-text-primary',
+                      )}
+                    >
+                      {tf.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <TradingViewChart symbol={asset} interval={chartInterval} className="h-[420px] w-full" />
+            </Card>
+          </motion.div>
+
           {/* Order Form */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -352,16 +407,16 @@ export default function Trading() {
               </CardContent>
             </Card>
           </motion.div>
+        </div>
 
-          {/* Trade History */}
-          <motion.div
-            className="lg:col-span-2"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, ease: EASE_GLASS }}
-          >
-            <Card className="h-full">
+        {/* Trade History — full width */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, ease: EASE_GLASS }}
+        >
+          <Card className="h-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-5 w-5 text-text-tertiary" aria-hidden="true" />
@@ -416,7 +471,6 @@ export default function Trading() {
             </Card>
           </motion.div>
         </div>
-      </div>
     </Layout>
   );
 }
