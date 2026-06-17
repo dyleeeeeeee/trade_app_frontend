@@ -122,14 +122,14 @@ export default function Trading() {
       );
 
       if (response.ok) {
-        toast.success(`${orderType === 'buy' ? 'Buy' : 'Sell'} order placed successfully!`);
+        toast.success(`${orderType === 'buy' ? 'Buy' : 'Sell'} order placed`);
         setSize('');
         fetchTrades();
       } else {
-        toast.error('Failed to place order');
+        toast.error('We couldn’t place your order');
       }
     } catch (error) {
-      toast.error('Network error');
+      toast.error('Check your connection and try again');
     } finally {
       setLoading(false);
     }
@@ -144,7 +144,7 @@ export default function Trading() {
         <div className="flex items-end justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground tracking-tight">Markets</h1>
-            <p className="text-muted-foreground mt-1">Real-time prices and trading</p>
+            <p className="text-muted-foreground mt-1">Live prices. Buy and sell in a tap.</p>
           </div>
           {lastUpdated && (
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
@@ -181,6 +181,8 @@ export default function Trading() {
                     '--sel-color-dim': `${brandColor}33`,
                   } as React.CSSProperties}
                   onClick={() => setAsset(assetItem.symbol)}
+                  role="button"
+                  aria-label={`Select ${assetItem.name}`}
                 >
                   <CardContent className="p-3.5">
                     <div className="flex items-center gap-2.5 mb-3">
@@ -306,12 +308,12 @@ export default function Trading() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs uppercase tracking-wider text-muted-foreground">Market Price</Label>
+                  <Label className="text-xs uppercase tracking-wider text-muted-foreground">Market price</Label>
                   <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700/30">
                     {pricesLoading ? (
                       <div className="flex items-center space-x-2">
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Fetching...</span>
+                        <span className="text-sm text-muted-foreground">Loading price</span>
                       </div>
                     ) : (
                       <p className="text-xl font-bold text-foreground font-mono">
@@ -343,7 +345,7 @@ export default function Trading() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
+                      Placing order
                     </>
                   ) : (
                     <>
@@ -371,7 +373,7 @@ export default function Trading() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Activity className="h-5 w-5 text-muted-foreground" />
-                  Trade History
+                  Recent trades
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -416,7 +418,7 @@ export default function Trading() {
                       </div>
                       <p className="text-sm text-muted-foreground font-medium">No trades yet</p>
                       <p className="text-xs text-slate-600 mt-1">
-                        Place your first order to get started
+                        Place an order and it’ll appear here.
                       </p>
                     </div>
                   )}

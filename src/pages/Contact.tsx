@@ -56,17 +56,16 @@ export default function Contact() {
         <div className="container">
           <div className="row">
             <div className="col-md-12 text-center">
-              <h1 className="display-4 mb-4">Contact Us</h1>
+              <h1 className="display-4 mb-4">Contact us</h1>
               <p className="lead mb-5">
-                Get in touch with our expert team for personalized crypto and wealth management guidance.
-                We're here to help you navigate the world of digital finance.
+                Have a question about trading or your account? Our team is here to help.
               </p>
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
               <div className="contact-info p-4 border-set-bold border-rounded-20 mb-4">
-                <h3 className="mb-4">Get In Touch</h3>
+                <h3 className="mb-4">Get in touch</h3>
                 <div className="contact-item mb-3">
                   <h5>Email</h5>
                   <p>support@astridglobal.com</p>
@@ -80,28 +79,28 @@ export default function Contact() {
                   <p>123 Financial District<br />New York, NY 10001<br />United States</p>
                 </div>
                 <div className="contact-item">
-                  <h5>Business Hours</h5>
+                  <h5>Business hours</h5>
                   <p>Monday - Friday: 9:00 AM - 6:00 PM EST<br />Saturday: 10:00 AM - 4:00 PM EST<br />Sunday: Closed</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6">
               <div className="contact-form p-4 border-set-bold border-rounded-20">
-                <h3 className="mb-4">Send us a Message</h3>
+                <h3 className="mb-4">Send a message</h3>
                 <form>
                   <div className="mb-3">
-                    <input type="text" className="form-control bg-dark text-white border-secondary" placeholder="Your Name" />
+                    <input type="text" className="form-control bg-dark text-white border-secondary" placeholder="Your name" aria-label="Your name" />
                   </div>
                   <div className="mb-3">
-                    <input type="email" className="form-control bg-dark text-white border-secondary" placeholder="Your Email" />
+                    <input type="email" className="form-control bg-dark text-white border-secondary" placeholder="Your email" aria-label="Your email" />
                   </div>
                   <div className="mb-3">
-                    <input type="text" className="form-control bg-dark text-white border-secondary" placeholder="Subject" />
+                    <input type="text" className="form-control bg-dark text-white border-secondary" placeholder="Subject" aria-label="Subject" />
                   </div>
                   <div className="mb-3">
-                    <textarea className="form-control bg-dark text-white border-secondary" rows={5} placeholder="Your Message"></textarea>
+                    <textarea className="form-control bg-dark text-white border-secondary" rows={5} placeholder="How can we help?" aria-label="Message"></textarea>
                   </div>
-                  <button type="submit" className="btn btn-linear btn-medium text-uppercase btn-rounded w-100">Send Message</button>
+                  <button type="submit" className="btn btn-linear btn-medium text-uppercase btn-rounded w-100">Send message</button>
                 </form>
               </div>
             </div>
@@ -116,7 +115,7 @@ export default function Contact() {
             <div className="col-sm-6 col-lg-4">
               <div className="footer-item item-001">
                 <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
-                <p>Astrid Global Ltd is your trusted partner in crypto and wealth management, offering comprehensive financial solutions that combine innovative cryptocurrency services with professional wealth management expertise.</p>
+                <p>Astrid Global brings crypto trading and wealth management together in one place, with professional guidance you can rely on.</p>
               </div>
             </div>
             <div className="col-sm-6 col-lg-2">

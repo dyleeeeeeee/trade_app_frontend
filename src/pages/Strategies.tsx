@@ -92,15 +92,15 @@ export default function Strategies() {
         setStrategies(data.strategies);
       } else {
         toast({
-          title: "Error",
-          description: "Failed to load strategies",
+          title: "Couldn't load strategies",
+          description: "Something went wrong. Refresh to try again.",
           variant: "destructive"
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Network error loading strategies",
+        title: "Connection problem",
+        description: "Check your network and try again.",
         variant: "destructive"
       });
     } finally {
@@ -123,8 +123,8 @@ export default function Strategies() {
   const handleSubscribe = async (strategy: Strategy) => {
     if (!investmentAmount || parseFloat(investmentAmount) <= 0) {
       toast({
-        title: "Error",
-        description: "Please enter a valid investment amount",
+        title: "Enter an amount",
+        description: "Add how much you'd like to invest to continue.",
         variant: "destructive"
       });
       return;
@@ -133,8 +133,8 @@ export default function Strategies() {
     const amount = parseFloat(investmentAmount);
     if (amount < strategy.min_investment) {
       toast({
-        title: "Error",
-        description: `Minimum investment is $${strategy.min_investment}`,
+        title: "Amount too low",
+        description: `This strategy starts at $${strategy.min_investment}.`,
         variant: "destructive"
       });
       return;
@@ -142,8 +142,8 @@ export default function Strategies() {
 
     if (strategy.max_investment && amount > strategy.max_investment) {
       toast({
-        title: "Error",
-        description: `Maximum investment is $${strategy.max_investment}`,
+        title: "Amount too high",
+        description: `This strategy accepts up to $${strategy.max_investment}.`,
         variant: "destructive"
       });
       return;
@@ -154,8 +154,8 @@ export default function Strategies() {
       const response = await strategyAPI.subscribeToStrategy(strategy.id, amount);
       if (response.ok) {
         toast({
-          title: "Success",
-          description: `Successfully subscribed to ${strategy.name}!`,
+          title: "You're subscribed",
+          description: `${strategy.name} is now active in your portfolio.`,
         });
         setDialogOpen(false);
         setInvestmentAmount('');
@@ -165,15 +165,15 @@ export default function Strategies() {
       } else {
         const error = await response.json();
         toast({
-          title: "Error",
-          description: error.error || "Failed to subscribe",
+          title: "Couldn't subscribe",
+          description: error.error || "Something went wrong. Try again.",
           variant: "destructive"
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Network error during subscription",
+        title: "Connection problem",
+        description: "Check your network and try again.",
         variant: "destructive"
       });
     } finally {
@@ -186,23 +186,23 @@ export default function Strategies() {
       const response = await strategyAPI.unsubscribeFromStrategy(strategyId);
       if (response.ok) {
         toast({
-          title: "Success",
-          description: `Successfully unsubscribed from ${strategyName}`,
+          title: "Unsubscribed",
+          description: `You've left ${strategyName}.`,
         });
         fetchMyStrategies();
         fetchStrategies();
       } else {
         const error = await response.json();
         toast({
-          title: "Error",
-          description: error.error || "Failed to unsubscribe",
+          title: "Couldn't unsubscribe",
+          description: error.error || "Something went wrong. Try again.",
           variant: "destructive"
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Network error during unsubscription",
+        title: "Connection problem",
+        description: "Check your network and try again.",
         variant: "destructive"
       });
     }
@@ -249,7 +249,7 @@ export default function Strategies() {
               <Icon className="h-6 w-6 text-primary" />
             </div>
             <Badge variant={getRiskBadgeVariant(strategy.risk_level)}>
-              {strategy.risk_level.toUpperCase()} RISK
+              {strategy.risk_level} risk
             </Badge>
           </div>
           <CardTitle className="text-lg">{strategy.name}</CardTitle>
@@ -262,14 +262,14 @@ export default function Strategies() {
           <div className="h-32 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg flex items-center justify-center">
             <div className="text-center text-muted-foreground">
               <LineChart className="h-8 w-8 mx-auto mb-2" />
-              <p className="text-xs">Performance data coming soon</p>
+              <p className="text-xs">Performance history coming soon</p>
             </div>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="p-2 bg-background/50 rounded-lg">
-              <p className="text-xs text-muted-foreground">Daily ROI</p>
+              <p className="text-xs text-muted-foreground">Target daily ROI</p>
               <p className={cn(
                 "text-sm font-bold",
                 strategy.expected_roi > 1 ? "text-success" : "text-foreground"
@@ -278,7 +278,7 @@ export default function Strategies() {
               </p>
             </div>
             <div className="p-2 bg-background/50 rounded-lg">
-              <p className="text-xs text-muted-foreground">Min. Invest</p>
+              <p className="text-xs text-muted-foreground">Minimum</p>
               <p className="text-sm font-bold">${strategy.min_investment.toLocaleString()}</p>
             </div>
             <div className="p-2 bg-background/50 rounded-lg">
@@ -293,6 +293,7 @@ export default function Strategies() {
               variant="secondary"
               className="w-full"
               onClick={() => handleUnsubscribe(strategy.id, strategy.name)}
+              aria-label={`Unsubscribe from ${strategy.name}`}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
               Subscribed
@@ -305,6 +306,7 @@ export default function Strategies() {
                 setInvestmentAmount('');
                 setDialogOpen(true);
               }}
+              aria-label={`Subscribe to ${strategy.name}`}
             >
               Subscribe
             </Button>
@@ -332,9 +334,9 @@ export default function Strategies() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Investment Strategies</h1>
+          <h1 className="text-3xl font-bold text-foreground">Strategies</h1>
           <p className="text-muted-foreground mt-1">
-            Choose from our curated strategies powered by AI and quantitative analysis
+            Put your money to work with automated crypto and quant strategies.
           </p>
         </div>
 
@@ -344,7 +346,7 @@ export default function Strategies() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Target className="h-5 w-5" />
-                <span>My Active Strategies</span>
+                <span>Your strategies</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -360,13 +362,14 @@ export default function Strategies() {
                     <div className="space-y-1 text-sm">
                       <p className="text-muted-foreground">Invested: <span className="text-foreground font-medium">${strategy.invested_amount.toLocaleString()}</span></p>
                       <p className="text-muted-foreground">Earnings: <span className="text-success font-medium">+${strategy.total_earnings.toFixed(2)}</span></p>
-                      <p className="text-muted-foreground">Days Active: <span className="text-foreground font-medium">{strategy.days_active}</span></p>
+                      <p className="text-muted-foreground">Days active: <span className="text-foreground font-medium">{strategy.days_active}</span></p>
                     </div>
                     <Button 
                       variant="outline" 
                       size="sm"
                       className="w-full mt-3"
                       onClick={() => handleUnsubscribe(strategy.strategy_id, strategy.strategy_name)}
+                      aria-label={`Unsubscribe from ${strategy.strategy_name}`}
                     >
                       Unsubscribe
                     </Button>
@@ -382,7 +385,7 @@ export default function Strategies() {
           <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Strategies</p>
+                <p className="text-sm text-muted-foreground">Active strategies</p>
                 <p className="text-2xl font-bold">{myStrategies.length}</p>
               </div>
               <Target className="h-8 w-8 text-primary opacity-20" />
@@ -391,7 +394,7 @@ export default function Strategies() {
           <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Invested</p>
+                <p className="text-sm text-muted-foreground">Total invested</p>
                 <p className="text-2xl font-bold">
                   ${myStrategies.reduce((sum, s) => sum + s.invested_amount, 0).toLocaleString()}
                 </p>
@@ -402,7 +405,7 @@ export default function Strategies() {
           <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Earnings</p>
+                <p className="text-sm text-muted-foreground">Total earnings</p>
                 <p className="text-2xl font-bold text-success">
                   +${myStrategies.reduce((sum, s) => sum + s.total_earnings, 0).toFixed(2)}
                 </p>
@@ -413,7 +416,7 @@ export default function Strategies() {
           <Card className="p-4 bg-gradient-card backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg. Daily ROI</p>
+                <p className="text-sm text-muted-foreground">Avg. daily ROI</p>
                 <p className="text-2xl font-bold">
                   {myStrategies.length > 0 
                     ? (myStrategies.reduce((sum, s) => sum + s.expected_roi, 0) / myStrategies.length).toFixed(2)
@@ -431,28 +434,40 @@ export default function Strategies() {
           <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="crypto" className="flex items-center gap-2">
               <Bitcoin className="h-4 w-4" />
-              Crypto Strategies
+              Crypto
             </TabsTrigger>
             <TabsTrigger value="quant" className="flex items-center gap-2">
               <LineChart className="h-4 w-4" />
-              Quant Strategies
+              Quant
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="crypto" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {cryptoStrategies.map((strategy) => (
-                <StrategyCard key={strategy.id} strategy={strategy} />
-              ))}
-            </div>
+            {cryptoStrategies.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {cryptoStrategies.map((strategy) => (
+                  <StrategyCard key={strategy.id} strategy={strategy} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground py-8 text-center">
+                No crypto strategies available right now. Check back soon.
+              </p>
+            )}
           </TabsContent>
 
           <TabsContent value="quant" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {quantStrategies.map((strategy) => (
-                <StrategyCard key={strategy.id} strategy={strategy} />
-              ))}
-            </div>
+            {quantStrategies.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {quantStrategies.map((strategy) => (
+                  <StrategyCard key={strategy.id} strategy={strategy} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground py-8 text-center">
+                No quant strategies available right now. Check back soon.
+              </p>
+            )}
           </TabsContent>
         </Tabs>
 
@@ -467,26 +482,27 @@ export default function Strategies() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Subscribe to {selectedStrategy?.name}</DialogTitle>
+              <CardDescription>Choose how much to invest. You can unsubscribe anytime.</CardDescription>
             </DialogHeader>
             {selectedStrategy && (
               <div className="space-y-4">
                 <div className="p-4 bg-background/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">Strategy Details</p>
+                  <p className="text-sm text-muted-foreground mb-2">Strategy details</p>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-muted-foreground">Daily ROI</p>
+                      <p className="text-muted-foreground">Target daily ROI</p>
                       <p className="font-medium">{selectedStrategy.expected_roi.toFixed(2)}%</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Risk Level</p>
+                      <p className="text-muted-foreground">Risk level</p>
                       <p className="font-medium capitalize">{selectedStrategy.risk_level}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Min Investment</p>
+                      <p className="text-muted-foreground">Minimum</p>
                       <p className="font-medium">${selectedStrategy.min_investment.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Max Investment</p>
+                      <p className="text-muted-foreground">Maximum</p>
                       <p className="font-medium">
                         {selectedStrategy.max_investment ? `$${selectedStrategy.max_investment.toLocaleString()}` : 'No limit'}
                       </p>
@@ -495,7 +511,7 @@ export default function Strategies() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="investment">Investment Amount ($)</Label>
+                  <Label htmlFor="investment">Amount to invest ($)</Label>
                   <Input
                     id="investment"
                     type="number"
@@ -523,10 +539,10 @@ export default function Strategies() {
                     {subscribing === selectedStrategy.id ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Subscribing...
+                        Subscribing
                       </>
                     ) : (
-                      'Confirm Subscription'
+                      'Confirm and invest'
                     )}
                   </Button>
                 </div>

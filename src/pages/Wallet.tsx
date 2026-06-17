@@ -96,14 +96,14 @@ export default function Wallet() {
 
       // If all requests failed, show error
       if (!balanceRes.ok && !withdrawalsRes.ok && !depositsRes.ok) {
-        setError('Failed to load wallet data. Please try again.');
-        toast.error('Failed to load wallet data');
+        setError('We couldn’t load your wallet. Try again.');
+        toast.error('We couldn’t load your wallet');
       }
     } catch (error) {
       console.error('Failed to fetch wallet data:', error);
       if (!silent) {
-        setError('Network error. Please check your connection and try again.');
-        toast.error('Network error. Please check your connection.');
+        setError('Check your connection and try again.');
+        toast.error('Check your connection and try again');
       }
     } finally {
       if (!silent) setInitialLoading(false);
@@ -125,16 +125,16 @@ export default function Wallet() {
     try {
       const response = await walletAPI.withdraw(parseFloat(withdrawAmount), withdrawalNetwork, withdrawalAddress);
       if (response.ok) {
-        toast.success('Withdrawal request submitted');
+        toast.success('Withdrawal requested');
         setWithdrawAmount('');
         setWithdrawalNetwork('');
         setWithdrawalAddress('');
         fetchWalletData();
       } else {
-        toast.error('Withdrawal failed');
+        toast.error('We couldn’t submit your withdrawal');
       }
     } catch (error) {
-      toast.error('Network error');
+      toast.error('Check your connection and try again');
     } finally {
       setLoading(false);
     }
@@ -145,15 +145,15 @@ export default function Wallet() {
     try {
       const response = await walletAPI.transfer(transferRecipient, parseFloat(transferAmount));
       if (response.ok) {
-        toast.success('Transfer successful!');
+        toast.success('Transfer sent');
         setTransferRecipient('');
         setTransferAmount('');
         fetchWalletData();
       } else {
-        toast.error('Transfer failed');
+        toast.error('We couldn’t send your transfer');
       }
     } catch (error) {
-      toast.error('Network error');
+      toast.error('Check your connection and try again');
     } finally {
       setLoading(false);
     }
@@ -190,7 +190,7 @@ export default function Wallet() {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground">Wallet</h1>
-          <p className="text-muted-foreground mt-1">Manage your funds and transactions</p>
+          <p className="text-muted-foreground mt-1">Add, withdraw, and send funds</p>
         </div>
 
         {/* Error Message */}
@@ -213,7 +213,7 @@ export default function Wallet() {
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm uppercase tracking-wider text-slate-400 font-medium">
               <WalletIcon className="h-4 w-4" />
-              Available Balance
+              Available balance
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -227,7 +227,7 @@ export default function Wallet() {
               )}
             </div>
             <p className="text-xs text-slate-500 mt-3">
-              Last updated: {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              Updated {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
             </p>
           </CardContent>
         </Card>
@@ -237,7 +237,7 @@ export default function Wallet() {
           <TabsList className="grid w-full grid-cols-3 bg-slate-900/60 border border-slate-700/40 p-1 rounded-xl">
             <TabsTrigger value="deposit" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-400 rounded-lg font-semibold">Deposit</TabsTrigger>
             <TabsTrigger value="withdraw" className="data-[state=active]:bg-orange-500/15 data-[state=active]:text-orange-400 rounded-lg font-semibold">Withdraw</TabsTrigger>
-            <TabsTrigger value="transfer" className="data-[state=active]:bg-blue-500/15 data-[state=active]:text-blue-400 rounded-lg font-semibold">Transfer</TabsTrigger>
+            <TabsTrigger value="transfer" className="data-[state=active]:bg-blue-500/15 data-[state=active]:text-blue-400 rounded-lg font-semibold">Send</TabsTrigger>
           </TabsList>
 
           <TabsContent value="deposit">
@@ -249,12 +249,12 @@ export default function Wallet() {
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2">
                         <ArrowDownRight className="h-5 w-5 text-success" />
-                        <span>Deposit Funds</span>
+                        <span>Add funds</span>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground">
-                        Click here to view deposit instructions and generate payment details
+                        See where to send your deposit and how to track it.
                       </p>
                     </CardContent>
                   </Card>
@@ -263,37 +263,38 @@ export default function Wallet() {
                   <DialogHeader>
                     <DialogTitle className="flex items-center space-x-2">
                       <QrCode className="h-5 w-5" />
-                      <span>Deposit Instructions</span>
+                      <span>Add funds</span>
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div className="text-center">
                       <p className="text-sm text-muted-foreground mb-4">
-                        Send cryptocurrency to the address below. Deposits are usually confirmed within 10-30 minutes.
+                        Send crypto to the address below. Deposits usually confirm in 10 to 30 minutes.
                       </p>
                       
                       {/* QR Code Placeholder - Will replace with actual QR when library is available */}
                       <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 mb-4 mx-auto w-48 h-48 flex items-center justify-center">
                         <div className="text-center">
                           <QrCode className="h-12 w-12 mx-auto mb-2 text-gray-400" />
-                          <p className="text-xs text-gray-500">QR Code</p>
-                          <p className="text-xs text-gray-400 mt-1">Will show payment QR</p>
+                          <p className="text-xs text-gray-500">QR code</p>
+                          <p className="text-xs text-gray-400 mt-1">Scan to deposit</p>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium">Wallet Address (BTC)</Label>
+                        <Label className="text-sm font-medium">Bitcoin address (BTC)</Label>
                         <div className="flex items-center space-x-2 p-3 bg-slate-900/40 rounded-xl border border-slate-700/30">
                           <code className="flex-1 text-sm font-mono break-all">
                             {/* bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
                             bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw
                           </code>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
+                            aria-label="Copy Bitcoin address"
                             onClick={() => {
                               navigator.clipboard.writeText('bc1qndh646ztj08nzmtshmsl5wmlq7kn7kad0vx8wl');
-                              toast.success('Address copied to clipboard!');
+                              toast.success('Address copied');
                             }}
                           >
                             <Copy className="h-4 w-4" />
@@ -302,12 +303,12 @@ export default function Wallet() {
                       </div>
 
                       <div className="space-y-2 mt-4">
-                        <Label className="text-sm font-medium">Deposit Instructions</Label>
+                        <Label className="text-sm font-medium">How to deposit</Label>
                         <div className="text-left space-y-2 text-sm text-muted-foreground">
-                          <p>1. Copy the Bitcoin address above</p>
-                          <p>2. Send BTC from your wallet to this address</p>
-                          <p>3. Wait for 1 confirmation (usually 10-30 minutes)</p>
-                          <p>4. Funds will automatically appear in your balance</p>
+                          <p>1. Copy the Bitcoin address above.</p>
+                          <p>2. Send BTC from your wallet to it.</p>
+                          <p>3. Wait for one confirmation, usually 10 to 30 minutes.</p>
+                          <p>4. Your balance updates automatically.</p>
                         </div>
                       </div>
 
@@ -317,17 +318,17 @@ export default function Wallet() {
                           className="flex-1"
                           onClick={() => setDepositModalOpen(false)}
                         >
-                          Close
+                          Done
                         </Button>
-                        <Button 
+                        <Button
                           className="flex-1 bg-success hover:bg-success/80"
                           onClick={() => {
                             window.open('https://www.blockchain.com/explorer', '_blank');
-                            toast.success('Blockchain explorer opened!');
+                            toast.success('Opening blockchain explorer');
                           }}
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
-                          Track Payment
+                          Track deposit
                         </Button>
                       </div>
                     </div>
@@ -338,7 +339,7 @@ export default function Wallet() {
               {/* Deposit History */}
               <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
                 <CardHeader>
-                  <CardTitle>Deposit History</CardTitle>
+                  <CardTitle>Deposits</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -367,7 +368,7 @@ export default function Wallet() {
                       ))
                     ) : (
                       <p className="text-sm text-muted-foreground text-center py-4">
-                        No deposit history yet. Make your first deposit using the button above.
+                        No deposits yet. Once you add funds, they’ll show up here.
                       </p>
                     )}
                   </div>
@@ -381,7 +382,7 @@ export default function Wallet() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <ArrowUpRight className="h-5 w-5 text-loss" />
-                  <span>Withdraw Funds</span>
+                  <span>Withdraw funds</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -390,7 +391,7 @@ export default function Wallet() {
                   <Input
                     id="withdrawAmount"
                     type="number"
-                    placeholder="Enter amount"
+                    placeholder="0.00"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     className="bg-slate-900/50 border-slate-700/50"
@@ -401,7 +402,7 @@ export default function Wallet() {
                   <Label>Network</Label>
                   <Select value={withdrawalNetwork} onValueChange={setWithdrawalNetwork}>
                     <SelectTrigger className="bg-slate-900/50 border-slate-700/50">
-                      <SelectValue placeholder="Select network" />
+                      <SelectValue placeholder="Choose a network" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="btc">Bitcoin (BTC)</SelectItem>
@@ -415,10 +416,10 @@ export default function Wallet() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="walletAddress">Wallet Address</Label>
+                  <Label htmlFor="walletAddress">Wallet address</Label>
                   <Input
                     id="walletAddress"
-                    placeholder="Enter your wallet address"
+                    placeholder="Where to send your funds"
                     value={withdrawalAddress}
                     onChange={(e) => setWithdrawalAddress(e.target.value)}
                     className="bg-slate-900/50 border-slate-700/50"
@@ -433,14 +434,14 @@ export default function Wallet() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
+                      Sending request
                     </>
                   ) : (
-                    'Request Withdrawal'
+                    'Request withdrawal'
                   )}
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Withdrawals require admin approval and may take 1-2 business days.
+                  Withdrawals are reviewed before they’re sent. This usually takes one to two business days.
                 </p>
               </CardContent>
             </Card>
@@ -451,12 +452,12 @@ export default function Wallet() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Send className="h-5 w-5 text-primary" />
-                  <span>Transfer Funds</span>
+                  <span>Send funds</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="recipient">Recipient Email</Label>
+                  <Label htmlFor="recipient">Recipient email</Label>
                   <Input
                     id="recipient"
                     type="email"
@@ -471,7 +472,7 @@ export default function Wallet() {
                   <Input
                     id="transferAmount"
                     type="number"
-                    placeholder="Enter amount"
+                    placeholder="0.00"
                     value={transferAmount}
                     onChange={(e) => setTransferAmount(e.target.value)}
                     className="bg-slate-900/50 border-slate-700/50"
@@ -485,10 +486,10 @@ export default function Wallet() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
+                      Sending
                     </>
                   ) : (
-                    'Transfer'
+                    'Send funds'
                   )}
                 </Button>
               </CardContent>
@@ -499,7 +500,7 @@ export default function Wallet() {
         {/* Withdrawal History */}
         <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle>Withdrawal History</CardTitle>
+            <CardTitle>Withdrawals</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -532,7 +533,7 @@ export default function Wallet() {
                 ))
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  No withdrawal history yet
+                  No withdrawals yet. When you withdraw, you’ll see it here.
                 </p>
               )}
             </div>

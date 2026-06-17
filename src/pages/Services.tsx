@@ -56,78 +56,76 @@ export default function Services() {
         <div className="container">
           <div className="row">
             <div className="col-md-12 text-center">
-              <h1 className="display-4 mb-4">Our Services</h1>
+              <h1 className="display-4 mb-4">Services</h1>
               <p className="lead mb-5">
-                Comprehensive crypto and wealth management solutions designed to maximize your financial potential
-                and secure your future in the evolving digital economy.
+                Everything you need to trade crypto and manage your money, in one place.
               </p>
             </div>
           </div>
           <div className="row">
             <div className="col-md-6 mb-4">
               <div className="service-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3">Cryptocurrency Trading</h3>
+                <h3 className="mb-3">Crypto trading</h3>
                 <p className="mb-3">
-                  Advanced trading platform with real-time market data, multiple cryptocurrencies,
-                  and sophisticated trading tools for both beginners and experienced traders.
+                  Trade dozens of cryptocurrencies with live prices and the tools you need,
+                  whether you are just starting or trading every day.
                 </p>
                 <ul className="list-unstyled">
-                  <li>• Real-time market data</li>
-                  <li>• Multiple cryptocurrency pairs</li>
-                  <li>• Advanced charting tools</li>
-                  <li>• Mobile trading app</li>
+                  <li>• Live market data</li>
+                  <li>• Many trading pairs</li>
+                  <li>• Detailed charts</li>
+                  <li>• Trade from your phone</li>
                 </ul>
               </div>
             </div>
             <div className="col-md-6 mb-4">
               <div className="service-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3">Portfolio Management</h3>
+                <h3 className="mb-3">Portfolio management</h3>
                 <p className="mb-3">
-                  Professional wealth management services with personalized investment strategies,
-                  risk assessment, and ongoing portfolio optimization.
+                  Work with advisers on a plan built around your goals, with regular reviews
+                  to keep your portfolio on track.
                 </p>
                 <ul className="list-unstyled">
-                  <li>• Personalized investment plans</li>
-                  <li>• Risk assessment & management</li>
-                  <li>• Portfolio rebalancing</li>
+                  <li>• A plan built around you</li>
+                  <li>• Risk assessment</li>
+                  <li>• Regular rebalancing</li>
                   <li>• Performance tracking</li>
                 </ul>
               </div>
             </div>
             <div className="col-md-6 mb-4">
               <div className="service-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3">Copy Trading</h3>
+                <h3 className="mb-3">Copy trading</h3>
                 <p className="mb-3">
-                  Follow and replicate the strategies of successful traders. Learn from experts
-                  while building your own trading knowledge and experience.
+                  Follow experienced traders and mirror their moves automatically.
+                  Learn as you go and stay in control of your own account.
                 </p>
                 <ul className="list-unstyled">
-                  <li>• Follow expert traders</li>
-                  <li>• Automated trade replication</li>
+                  <li>• Follow proven traders</li>
+                  <li>• Mirror trades automatically</li>
                   <li>• Performance analytics</li>
-                  <li>• Risk management tools</li>
+                  <li>• Risk controls</li>
                 </ul>
               </div>
             </div>
             <div className="col-md-6 mb-4">
               <div className="service-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3">Security & Compliance</h3>
+                <h3 className="mb-3">Security and compliance</h3>
                 <p className="mb-3">
-                  Bank-grade security protocols and full regulatory compliance to protect your
-                  investments and ensure peace of mind.
+                  Strong security and full regulatory compliance keep your funds protected.
                 </p>
                 <ul className="list-unstyled">
                   <li>• Multi-signature wallets</li>
-                  <li>• Cold storage solutions</li>
-                  <li>• KYC/AML compliance</li>
-                  <li>• 24/7 security monitoring</li>
+                  <li>• Cold storage</li>
+                  <li>• KYC and AML checks</li>
+                  <li>• Round-the-clock monitoring</li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="row mt-5">
             <div className="col-md-12 text-center">
-              <Link to="/signup" className="btn btn-linear btn-large text-uppercase btn-rounded">Get Started Today</Link>
+              <Link to="/signup" className="btn btn-linear btn-large text-uppercase btn-rounded">Get started</Link>
             </div>
           </div>
         </div>
@@ -140,7 +138,7 @@ export default function Services() {
             <div className="col-sm-6 col-lg-4">
               <div className="footer-item item-001">
                 <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
-                <p>Astrid Global Ltd is your trusted partner in crypto and wealth management, offering comprehensive financial solutions that combine innovative cryptocurrency services with professional wealth management expertise.</p>
+                <p>Astrid Global brings crypto trading and wealth management together in one place, with professional guidance you can rely on.</p>
               </div>
             </div>
             <div className="col-sm-6 col-lg-2">

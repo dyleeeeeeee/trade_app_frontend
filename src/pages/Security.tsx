@@ -56,54 +56,54 @@ export default function Security() {
         <div className="container">
           <div className="row">
             <div className="col-md-12 text-center">
-              <h1 className="display-4 mb-4">Security & Compliance</h1>
+              <h1 className="display-4 mb-4">Security and compliance</h1>
               <p className="lead mb-5">
-                At Astrid Global Ltd, your security is our top priority. We employ bank-grade security measures
-                and maintain full regulatory compliance to protect your investments and personal information.
+                We protect your funds and personal information with strong encryption, independent audits,
+                and regulatory compliance. Here's how.
               </p>
             </div>
           </div>
           <div className="row">
             <div className="col-md-6 mb-4">
               <div className="security-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3 text-linear">🔐 Multi-Layer Security</h3>
+                <h3 className="mb-3 text-linear">🔐 Layered security</h3>
                 <p>
-                  Our platform utilizes multiple layers of security including encryption, multi-signature
-                  wallets, and cold storage solutions to ensure your assets remain safe.
+                  We protect your assets with encryption, multi-signature wallets, and cold storage,
+                  so no single point of failure can put your funds at risk.
                 </p>
                 <ul className="list-unstyled mt-3">
                   <li>• End-to-end encryption</li>
-                  <li>• Multi-signature technology</li>
-                  <li>• Cold storage for 95% of assets</li>
+                  <li>• Multi-signature wallets</li>
+                  <li>• 95% of assets in cold storage</li>
                   <li>• Two-factor authentication</li>
                 </ul>
               </div>
             </div>
             <div className="col-md-6 mb-4">
               <div className="security-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3 text-linear">⚖️ Regulatory Compliance</h3>
+                <h3 className="mb-3 text-linear">⚖️ Regulatory compliance</h3>
                 <p>
-                  We adhere to the highest regulatory standards and work with licensed financial institutions
-                  to ensure full compliance with international financial regulations.
+                  We work with licensed financial institutions and follow international financial
+                  regulations, including KYC and AML requirements.
                 </p>
                 <ul className="list-unstyled mt-3">
-                  <li>• KYC/AML compliance</li>
+                  <li>• KYC and AML compliance</li>
                   <li>• Licensed and regulated</li>
-                  <li>• Regular security audits</li>
+                  <li>• Regular independent audits</li>
                   <li>• Transparent reporting</li>
                 </ul>
               </div>
             </div>
             <div className="col-md-6 mb-4">
               <div className="security-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3 text-linear">👁️ 24/7 Monitoring</h3>
+                <h3 className="mb-3 text-linear">👁️ Round-the-clock monitoring</h3>
                 <p>
-                  Our dedicated security team monitors the platform around the clock, utilizing advanced
-                  threat detection systems to identify and prevent potential security risks.
+                  Our security team watches the platform 24/7. Automated threat detection flags
+                  unusual activity so we can act before it affects you.
                 </p>
                 <ul className="list-unstyled mt-3">
                   <li>• Real-time threat detection</li>
-                  <li>• Automated security alerts</li>
+                  <li>• Automated alerts</li>
                   <li>• Incident response team</li>
                   <li>• Regular penetration testing</li>
                 </ul>
@@ -111,10 +111,10 @@ export default function Security() {
             </div>
             <div className="col-md-6 mb-4">
               <div className="security-card p-4 border-set-bold border-rounded-20 h-100">
-                <h3 className="mb-3 text-linear">🛡️ Insurance Coverage</h3>
+                <h3 className="mb-3 text-linear">🛡️ Insurance coverage</h3>
                 <p>
-                  Your investments are protected by comprehensive insurance coverage, providing additional
-                  peace of mind and security for your crypto assets.
+                  Your crypto assets are backed by insurance that covers digital asset loss and
+                  cyber liability, for added protection beyond our own safeguards.
                 </p>
                 <ul className="list-unstyled mt-3">
                   <li>• Digital asset insurance</li>
@@ -128,18 +128,17 @@ export default function Security() {
           <div className="row mt-5">
             <div className="col-md-12">
               <div className="security-commitment p-4 border-set-bold border-rounded-20 text-center">
-                <h3 className="mb-3">Our Security Commitment</h3>
+                <h3 className="mb-3">Our security commitment</h3>
                 <p className="mb-4">
-                  Astrid Global Ltd is committed to maintaining the highest standards of security and compliance
-                  in the cryptocurrency and wealth management industry. We continuously invest in cutting-edge
-                  security technologies and regularly undergo independent security audits to ensure your assets
-                  are protected at all times.
+                  We hold ourselves to high standards of security and compliance across crypto and
+                  wealth management. We invest in current security technology and undergo independent
+                  audits to keep your assets protected.
                 </p>
                 <div className="row">
                   <div className="col-md-3">
                     <div className="stat-item">
                       <h4 className="text-linear">$0</h4>
-                      <p>Security Breaches</p>
+                      <p>Security breaches</p>
                     </div>
                   </div>
                   <div className="col-md-3">
@@ -151,13 +150,13 @@ export default function Security() {
                   <div className="col-md-3">
                     <div className="stat-item">
                       <h4 className="text-linear">24/7</h4>
-                      <p>Security Monitoring</p>
+                      <p>Security monitoring</p>
                     </div>
                   </div>
                   <div className="col-md-3">
                     <div className="stat-item">
                       <h4 className="text-linear">100%</h4>
-                      <p>Regulatory Compliant</p>
+                      <p>Regulatory compliant</p>
                     </div>
                   </div>
                 </div>
@@ -174,7 +173,7 @@ export default function Security() {
             <div className="col-sm-6 col-lg-4">
               <div className="footer-item item-001">
                 <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
-                <p>Astrid Global Ltd is your trusted partner in crypto and wealth management, offering comprehensive financial solutions that combine innovative cryptocurrency services with professional wealth management expertise.</p>
+                <p>Astrid Global Ltd brings together cryptocurrency services and professional wealth management to help you grow and protect your assets.</p>
               </div>
             </div>
             <div className="col-sm-6 col-lg-2">

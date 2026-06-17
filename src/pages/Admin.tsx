@@ -66,11 +66,11 @@ export default function Admin() {
     try {
       const response = await adminAPI.blockUser(userId, block);
       if (response.ok) {
-        toast.success(`User ${block ? 'blocked' : 'unblocked'} successfully`);
+        toast.success(`User ${block ? 'blocked' : 'unblocked'}`);
         fetchAdminData();
       }
     } catch (error) {
-      toast.error('Failed to update user status');
+      toast.error("Couldn't update this user. Try again.");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function Admin() {
         fetchAdminData();
       }
     } catch (error) {
-      toast.error('Failed to approve withdrawal');
+      toast.error("Couldn't approve this withdrawal. Try again.");
     } finally {
       setLoading(false);
     }
@@ -99,16 +99,16 @@ export default function Admin() {
       const response = await adminAPI.updateUserBalance(selectedUser.id, parseFloat(newBalance));
       if (response.ok) {
         const data = await response.json();
-        toast.success(`Balance updated from $${data.previous_balance} to $${data.new_balance}`);
+        toast.success(`Balance changed from $${data.previous_balance} to $${data.new_balance}`);
         setBalanceModalOpen(false);
         setNewBalance('');
         setSelectedUser(null);
         fetchAdminData();
       } else {
-        toast.error('Failed to update balance');
+        toast.error("Couldn't update the balance. Try again.");
       }
     } catch (error) {
-      toast.error('Failed to update balance');
+      toast.error("Couldn't update the balance. Try again.");
     } finally {
       setLoading(false);
     }
@@ -122,16 +122,16 @@ export default function Admin() {
       const response = await adminAPI.updateUserProfit(selectedUser.id, parseFloat(newProfit));
       if (response.ok) {
         const data = await response.json();
-        toast.success(`PNL updated from $${data.previous_profit} to $${data.new_profit}`);
+        toast.success(`P&L changed from $${data.previous_profit} to $${data.new_profit}`);
         setProfitModalOpen(false);
         setNewProfit('');
         setSelectedUser(null);
         fetchAdminData();
       } else {
-        toast.error('Failed to update PNL');
+        toast.error("Couldn't update P&L. Try again.");
       }
     } catch (error) {
-      toast.error('Failed to update PNL');
+      toast.error("Couldn't update P&L. Try again.");
     } finally {
       setLoading(false);
     }
@@ -155,8 +155,8 @@ export default function Admin() {
         <div className="flex items-center space-x-3">
           <Shield className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage users and platform operations</p>
+            <h1 className="text-3xl font-bold text-foreground">Admin</h1>
+            <p className="text-muted-foreground">Manage users and review withdrawals.</p>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ export default function Admin() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <DollarSign className="h-5 w-5" />
-              <span>Pending Withdrawals</span>
+              <span>Pending withdrawals</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -176,18 +176,22 @@ export default function Admin() {
                     <Clock className="h-5 w-5 text-warning" />
                     <div>
                       <p className="font-medium text-foreground">${withdrawal.amount}</p>
-                      <p className="text-sm text-muted-foreground">User: {withdrawal.user_email}</p>
+                      <p className="text-sm text-muted-foreground">{withdrawal.user_email}</p>
                     </div>
                   </div>
                   <Button
                     onClick={() => handleApproveWithdrawal(withdrawal.id)}
                     disabled={loading}
+                    aria-label={`Approve withdrawal of $${withdrawal.amount} for ${withdrawal.user_email}`}
                     className="bg-success hover:bg-success/80"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Approve'}
                   </Button>
                 </div>
               ))}
+              {withdrawals.filter((w: any) => w.status === 'pending').length === 0 && (
+                <p className="text-sm text-muted-foreground">No withdrawals waiting for review.</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -197,7 +201,7 @@ export default function Admin() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Users className="h-5 w-5" />
-              <span>User Management</span>
+              <span>Users</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -207,7 +211,7 @@ export default function Admin() {
                   <tr className="border-b border-border">
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Email</th>
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Balance</th>
-                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">PNL</th>
+                    <th className="text-left p-3 text-sm font-medium text-muted-foreground">P&L</th>
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Status</th>
                     <th className="text-left p-3 text-sm font-medium text-muted-foreground">Role</th>
                     <th className="text-right p-3 text-sm font-medium text-muted-foreground">Actions</th>
@@ -239,24 +243,27 @@ export default function Admin() {
                           size="sm"
                           onClick={() => openBalanceModal(user)}
                           disabled={loading}
+                          aria-label={`Edit balance for ${user.email}`}
                         >
                           <Edit className="h-4 w-4 mr-1" />
-                          Edit Balance
+                          Edit balance
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => openProfitModal(user)}
                           disabled={loading}
+                          aria-label={`Edit P&L for ${user.email}`}
                         >
                           <Edit className="h-4 w-4 mr-1" />
-                          Edit PNL
+                          Edit P&L
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleBlockUser(user.id, !user.blocked)}
                           disabled={loading}
+                          aria-label={`${user.blocked ? 'Unblock' : 'Block'} ${user.email}`}
                         >
                           {user.blocked ? 'Unblock' : 'Block'}
                         </Button>
@@ -265,6 +272,9 @@ export default function Admin() {
                   ))}
                 </tbody>
               </table>
+              {users.length === 0 && (
+                <p className="text-sm text-muted-foreground p-3">No users yet.</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -275,7 +285,7 @@ export default function Admin() {
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-2">
                 <DollarSign className="h-5 w-5" />
-                <span>Edit User Balance</span>
+                <span>Edit balance</span>
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
@@ -285,20 +295,20 @@ export default function Admin() {
                     <p className="text-sm text-muted-foreground">User</p>
                     <p className="font-medium">{selectedUser.email}</p>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Current Balance: <span className="text-success font-medium">
+                      Current balance: <span className="text-success font-medium">
                         ${selectedUser.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </span>
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="newBalance">New Balance (USD)</Label>
+                    <Label htmlFor="newBalance">New balance (USD)</Label>
                     <Input
                       id="newBalance"
                       type="number"
                       step="0.01"
                       min="0"
-                      placeholder="Enter new balance"
+                      placeholder="0.00"
                       value={newBalance}
                       onChange={(e) => setNewBalance(e.target.value)}
                       className="bg-background/50"
@@ -325,10 +335,10 @@ export default function Admin() {
                       {loading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Updating...
+                          Saving
                         </>
                       ) : (
-                        'Update Balance'
+                        'Save balance'
                       )}
                     </Button>
                   </div>
@@ -344,7 +354,7 @@ export default function Admin() {
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-2">
                 <DollarSign className="h-5 w-5" />
-                <span>Edit User PNL</span>
+                <span>Edit P&L</span>
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
@@ -354,19 +364,19 @@ export default function Admin() {
                     <p className="text-sm text-muted-foreground">User</p>
                     <p className="font-medium">{selectedUser.email}</p>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Current PNL: <span className="text-success font-medium">
+                      Current P&L: <span className="text-success font-medium">
                         ${selectedUser.profit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </span>
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="newProfit">New PNL (USD)</Label>
+                    <Label htmlFor="newProfit">New P&L (USD)</Label>
                     <Input
                       id="newProfit"
                       type="number"
                       step="0.01"
-                      placeholder="Enter new PNL"
+                      placeholder="0.00"
                       value={newProfit}
                       onChange={(e) => setNewProfit(e.target.value)}
                       className="bg-background/50"
@@ -393,10 +403,10 @@ export default function Admin() {
                       {loading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Updating...
+                          Saving
                         </>
                       ) : (
-                        'Update PNL'
+                        'Save P&L'
                       )}
                     </Button>
                   </div>

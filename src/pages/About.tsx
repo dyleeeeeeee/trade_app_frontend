@@ -56,27 +56,26 @@ export default function About() {
         <div className="container">
           <div className="row">
             <div className="col-md-12 text-center">
-              <h1 className="display-4 mb-4">About Astrid Global Ltd</h1>
+              <h1 className="display-4 mb-4">About Astrid Global</h1>
               <p className="lead mb-5">
-                Astrid Global Ltd is a premier crypto and wealth management company dedicated to empowering investors
-                with innovative financial solutions and expert guidance in the cryptocurrency market.
+                We help people trade and manage crypto with confidence. Astrid Global pairs a
+                straightforward trading platform with professional advice you can trust.
               </p>
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
-              <h3 className="mb-3">Our Mission</h3>
+              <h3 className="mb-3">Our mission</h3>
               <p>
-                To democratize wealth management by combining cutting-edge cryptocurrency trading platforms
-                with professional financial advisory services, making sophisticated investment strategies
-                accessible to investors worldwide.
+                Make serious investing simple. We bring trading tools and professional advice
+                together in one place, so good strategies are within reach for everyone.
               </p>
             </div>
             <div className="col-md-6">
-              <h3 className="mb-3">Our Vision</h3>
+              <h3 className="mb-3">Our vision</h3>
               <p>
-                To be the leading global platform where traditional wealth management meets innovative
-                cryptocurrency solutions, creating unprecedented opportunities for financial growth and security.
+                A platform where traditional wealth management and crypto work as one, giving you
+                clear ways to grow and protect what you earn.
               </p>
             </div>
           </div>
@@ -84,19 +83,19 @@ export default function About() {
             <div className="col-md-4 text-center">
               <div className="feature-card p-4 border-set-bold border-rounded-20 mb-4">
                 <h4>Expertise</h4>
-                <p>Decades of combined experience in finance and cryptocurrency markets</p>
+                <p>Decades of combined experience across finance and crypto markets.</p>
               </div>
             </div>
             <div className="col-md-4 text-center">
               <div className="feature-card p-4 border-set-bold border-rounded-20 mb-4">
                 <h4>Security</h4>
-                <p>Bank-grade security protocols protecting your investments</p>
+                <p>Strong protections keep your funds and data safe.</p>
               </div>
             </div>
             <div className="col-md-4 text-center">
               <div className="feature-card p-4 border-set-bold border-rounded-20 mb-4">
                 <h4>Innovation</h4>
-                <p>Cutting-edge technology driving the future of wealth management</p>
+                <p>Modern technology built for how people invest today.</p>
               </div>
             </div>
           </div>
@@ -110,7 +109,7 @@ export default function About() {
             <div className="col-sm-6 col-lg-4">
               <div className="footer-item item-001">
                 <img src="/images/main-logo.png" alt="Astrid Global Ltd" />
-                <p>Astrid Global Ltd is your trusted partner in crypto and wealth management, offering comprehensive financial solutions that combine innovative cryptocurrency services with professional wealth management expertise.</p>
+                <p>Astrid Global brings crypto trading and wealth management together in one place, with professional guidance you can rely on.</p>
               </div>
             </div>
             <div className="col-sm-6 col-lg-2">

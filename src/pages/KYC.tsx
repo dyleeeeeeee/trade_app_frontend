@@ -40,33 +40,33 @@ export default function KYC() {
     // Simulate API call
     setKycStatus('submitted');
     toast({
-      title: "KYC Documents Submitted",
-      description: "Your verification documents are being reviewed. This usually takes 1-2 business days.",
+      title: "Documents submitted",
+      description: "We're reviewing your details. This usually takes 1 to 2 business days, and we'll let you know when you're verified.",
     });
   };
 
   const kycSteps = [
     {
-      title: 'Personal Information',
-      description: 'Provide your basic details',
+      title: 'Your details',
+      description: 'Name, date of birth, nationality',
       icon: User,
       status: formData.fullName ? 'complete' : 'pending'
     },
     {
-      title: 'Identity Verification',
-      description: 'Upload government-issued ID',
+      title: 'Your ID',
+      description: 'A government-issued document',
       icon: CreditCard,
       status: formData.idNumber ? 'complete' : 'pending'
     },
     {
-      title: 'Address Proof',
-      description: 'Provide residential address',
+      title: 'Your address',
+      description: 'Where you live',
       icon: FileText,
       status: formData.address ? 'complete' : 'pending'
     },
     {
-      title: 'Selfie Verification',
-      description: 'Take a selfie with your ID',
+      title: 'A quick selfie',
+      description: 'To match your face to your ID',
       icon: Camera,
       status: 'pending'
     }
@@ -85,7 +85,7 @@ export default function KYC() {
         return (
           <div className="flex items-center gap-2 text-warning">
             <AlertCircle className="h-5 w-5" />
-            <span className="font-medium">Under Review</span>
+            <span className="font-medium">Under review</span>
           </div>
         );
       case 'rejected':
@@ -99,7 +99,7 @@ export default function KYC() {
         return (
           <div className="flex items-center gap-2 text-muted-foreground">
             <AlertCircle className="h-5 w-5" />
-            <span className="font-medium">Not Started</span>
+            <span className="font-medium">Not started</span>
           </div>
         );
     }
@@ -111,8 +111,8 @@ export default function KYC() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">KYC Verification</h1>
-            <p className="text-muted-foreground mt-1">Complete your identity verification to unlock all features</p>
+            <h1 className="text-3xl font-bold text-foreground">Verify your identity</h1>
+            <p className="text-muted-foreground mt-1">A few quick steps to confirm it's you. Your information stays private and encrypted.</p>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-lg border border-border">
             <Shield className="h-5 w-5 text-primary" />
@@ -125,7 +125,7 @@ export default function KYC() {
           <Alert className="border-warning/50 bg-warning/10">
             <AlertCircle className="h-4 w-4 text-warning" />
             <AlertDescription className="text-foreground">
-              Your KYC documents are under review. We'll notify you once the verification is complete.
+              Your details are under review. We'll let you know as soon as you're verified, usually within 1 to 2 business days.
             </AlertDescription>
           </Alert>
         )}
@@ -133,8 +133,8 @@ export default function KYC() {
         {/* Progress Steps */}
         <Card className="bg-gradient-card border-border/50 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle>Verification Progress</CardTitle>
-            <CardDescription>Complete all steps to verify your account</CardDescription>
+            <CardTitle>Your progress</CardTitle>
+            <CardDescription>Finish all four steps to get verified.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -179,12 +179,12 @@ export default function KYC() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                Personal Information
+                Your details
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="fullName">Full Name (as on ID)</Label>
+                <Label htmlFor="fullName">Full name (as shown on your ID)</Label>
                 <Input
                   id="fullName"
                   value={formData.fullName}
@@ -195,7 +195,7 @@ export default function KYC() {
                 />
               </div>
               <div>
-                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Label htmlFor="dateOfBirth">Date of birth</Label>
                 <Input
                   id="dateOfBirth"
                   type="date"
@@ -234,18 +234,18 @@ export default function KYC() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5" />
-                Identity Document
+                Your ID
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="idType">ID Type</Label>
+                <Label htmlFor="idType">Document type</Label>
                 <Select
                   value={formData.idType}
                   onValueChange={(value) => setFormData({ ...formData, idType: value })}
                 >
                   <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Select ID type" />
+                    <SelectValue placeholder="Choose a document" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="passport">Passport</SelectItem>
@@ -255,22 +255,27 @@ export default function KYC() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="idNumber">ID Number</Label>
+                <Label htmlFor="idNumber">Document number</Label>
                 <Input
                   id="idNumber"
                   value={formData.idNumber}
                   onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
-                  placeholder="Enter ID number"
+                  placeholder="The number on your document"
                   className="mt-1"
                   required
                 />
               </div>
               <div>
-                <Label>Upload ID Document</Label>
-                <div className="mt-1 p-8 border-2 border-dashed border-border rounded-lg text-center hover:border-primary/50 smooth-transition cursor-pointer">
+                <Label>Photo of your document</Label>
+                <div
+                  className="mt-1 p-8 border-2 border-dashed border-border rounded-lg text-center hover:border-primary/50 smooth-transition cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Upload a photo of your ID document"
+                >
                   <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
-                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
+                  <p className="text-sm text-muted-foreground">Drag a file here, or click to choose one</p>
+                  <p className="text-xs text-muted-foreground mt-1">PNG or JPG, up to 10 MB</p>
                 </div>
               </div>
             </CardContent>
@@ -281,12 +286,12 @@ export default function KYC() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                Residential Address
+                Your address
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="address">Street Address</Label>
+                <Label htmlFor="address">Street address</Label>
                 <Input
                   id="address"
                   value={formData.address}
@@ -309,7 +314,7 @@ export default function KYC() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="postalCode">Postal Code</Label>
+                  <Label htmlFor="postalCode">Postal code</Label>
                   <Input
                     id="postalCode"
                     value={formData.postalCode}
@@ -349,7 +354,7 @@ export default function KYC() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="h-5 w-5" />
-                Selfie Verification
+                A quick selfie
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -357,13 +362,18 @@ export default function KYC() {
                 <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Please take a clear selfie while holding your ID document next to your face.
+                    Hold your ID next to your face and take a clear photo. This confirms the document is yours.
                   </AlertDescription>
                 </Alert>
-                <div className="p-8 border-2 border-dashed border-border rounded-lg text-center hover:border-primary/50 smooth-transition cursor-pointer">
+                <div
+                  className="p-8 border-2 border-dashed border-border rounded-lg text-center hover:border-primary/50 smooth-transition cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Take or upload a selfie holding your ID"
+                >
                   <Camera className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">Click to open camera</p>
-                  <p className="text-xs text-muted-foreground mt-1">Or upload a photo</p>
+                  <p className="text-sm text-muted-foreground">Open your camera</p>
+                  <p className="text-xs text-muted-foreground mt-1">Or upload a photo instead</p>
                 </div>
               </div>
             </CardContent>
@@ -378,7 +388,7 @@ export default function KYC() {
               variant="premium"
               disabled={kycStatus === 'submitted' || kycStatus === 'verified'}
             >
-              {kycStatus === 'submitted' ? 'Documents Under Review' : 'Submit KYC Documents'}
+              {kycStatus === 'submitted' ? 'Under review' : 'Submit for verification'}
             </Button>
           </div>
         </form>

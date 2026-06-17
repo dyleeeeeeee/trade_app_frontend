@@ -19,8 +19,8 @@ export default function Profile() {
 
   const handleSave = () => {
     toast({
-      title: "Profile Updated",
-      description: "Your profile information has been saved successfully.",
+      title: "Profile saved",
+      description: "Your changes are saved.",
     });
   };
 
@@ -28,8 +28,8 @@ export default function Profile() {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Profile Settings</h1>
-          <p className="text-muted-foreground mt-1">Manage your account settings and preferences</p>
+          <h1 className="text-3xl font-bold">Profile</h1>
+          <p className="text-muted-foreground mt-1">Manage your account and preferences.</p>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
@@ -44,13 +44,13 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5" />
-                  Personal Information
+                  Personal information
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Full Name</Label>
+                    <Label>Full name</Label>
                     <Input value={profileData.fullName} onChange={(e) => setProfileData({...profileData, fullName: e.target.value})} />
                   </div>
                   <div>
@@ -66,7 +66,7 @@ export default function Profile() {
                     <Input value={profileData.country} onChange={(e) => setProfileData({...profileData, country: e.target.value})} />
                   </div>
                 </div>
-                <Button onClick={handleSave} variant="premium">Save Changes</Button>
+                <Button onClick={handleSave} variant="premium">Save changes</Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -76,23 +76,23 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Lock className="h-5 w-5" />
-                  Security Settings
+                  Password
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label>Current Password</Label>
-                  <Input type="password" placeholder="Enter current password" />
+                  <Label>Current password</Label>
+                  <Input type="password" placeholder="Current password" />
                 </div>
                 <div>
-                  <Label>New Password</Label>
-                  <Input type="password" placeholder="Enter new password" />
+                  <Label>New password</Label>
+                  <Input type="password" placeholder="New password" />
                 </div>
                 <div>
-                  <Label>Confirm Password</Label>
-                  <Input type="password" placeholder="Confirm new password" />
+                  <Label>Confirm new password</Label>
+                  <Input type="password" placeholder="Re-enter new password" />
                 </div>
-                <Button variant="premium">Update Password</Button>
+                <Button variant="premium">Update password</Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -102,11 +102,11 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bell className="h-5 w-5" />
-                  Notification Preferences
+                  Notifications
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Notification settings coming soon...</p>
+                <p className="text-muted-foreground">Notification settings aren't available yet. Check back soon.</p>
               </CardContent>
             </Card>
           </TabsContent>

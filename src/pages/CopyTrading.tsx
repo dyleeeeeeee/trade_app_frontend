@@ -44,7 +44,7 @@ export default function CopyTrading() {
 
   const handleSubscribe = async (traderId: string) => {
     if (!allocation) {
-      toast.error('Please enter an allocation percentage');
+      toast.error('Enter how much of your portfolio to allocate');
       return;
     }
 
@@ -52,15 +52,15 @@ export default function CopyTrading() {
     try {
       const response = await tradingAPI.subscribeToTrader(traderId, parseFloat(allocation));
       if (response.ok) {
-        toast.success('Successfully subscribed to trader!');
+        toast.success('You\'re now following this trader');
         setSelectedTrader(null);
         setAllocation('');
         fetchData();
       } else {
-        toast.error('Failed to subscribe');
+        toast.error('Couldn\'t follow this trader. Try again.');
       }
     } catch (error) {
-      toast.error('Network error');
+      toast.error('Connection problem. Check your network and try again.');
     } finally {
       setLoading(false);
     }
@@ -110,8 +110,8 @@ export default function CopyTrading() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Copy Trading</h1>
-          <p className="text-muted-foreground mt-1">Follow successful traders and copy their strategies</p>
+          <h1 className="text-3xl font-bold text-foreground">Copy trading</h1>
+          <p className="text-muted-foreground mt-1">Follow experienced traders and mirror their trades automatically.</p>
         </div>
 
         {/* Stats */}
@@ -119,36 +119,36 @@ export default function CopyTrading() {
           <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Subscriptions
+                Traders followed
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">{subscriptions.length}</div>
-              <p className="text-xs text-muted-foreground mt-1">Following traders</p>
+              <p className="text-xs text-muted-foreground mt-1">Active right now</p>
             </CardContent>
           </Card>
           <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Allocated
+                Portfolio allocated
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">
                 {subscriptions.reduce((sum: number, sub: any) => sum + (sub.allocation || 0), 0)}%
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Of portfolio</p>
+              <p className="text-xs text-muted-foreground mt-1">Across followed traders</p>
             </CardContent>
           </Card>
           <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Avg. Performance
+                Average return
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-success">+15.3%</div>
-              <p className="text-xs text-muted-foreground mt-1">This month</p>
+              <p className="text-xs text-muted-foreground mt-1">Past 30 days. Past results don't guarantee future returns.</p>
             </CardContent>
           </Card>
         </div>
@@ -158,7 +158,7 @@ export default function CopyTrading() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Award className="h-5 w-5 text-warning" />
-              <span>Top Traders</span>
+              <span>Top traders</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -186,7 +186,7 @@ export default function CopyTrading() {
                                 trader.risk === 'High' && "bg-loss/20 text-loss"
                               )}
                             >
-                              {trader.risk} Risk
+                              {trader.risk} risk
                             </Badge>
                           </div>
                         </div>
@@ -195,11 +195,11 @@ export default function CopyTrading() {
 
                     <div className="space-y-2 mb-4">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Win Rate</span>
+                        <span className="text-muted-foreground">Win rate</span>
                         <span className="font-medium text-foreground">{trader.winRate}%</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Total Return</span>
+                        <span className="text-muted-foreground">Total return</span>
                         <span className="font-medium text-success">+{trader.totalReturn}%</span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -215,16 +215,17 @@ export default function CopyTrading() {
                     {selectedTrader === trader.id ? (
                       <div className="space-y-3">
                         <div className="space-y-2">
-                          <Label htmlFor={`allocation-${trader.id}`}>Allocation %</Label>
+                          <Label htmlFor={`allocation-${trader.id}`}>Portfolio to allocate (%)</Label>
                           <Input
                             id={`allocation-${trader.id}`}
                             type="number"
                             min="1"
                             max="100"
-                            placeholder="Enter %"
+                            placeholder="e.g. 10"
                             value={allocation}
                             onChange={(e) => setAllocation(e.target.value)}
                             className="bg-background/50"
+                            aria-label={`Percentage of your portfolio to allocate to ${trader.name}`}
                           />
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -245,7 +246,7 @@ export default function CopyTrading() {
                             {loading ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                              'Confirm'
+                              'Start following'
                             )}
                           </Button>
                         </div>
@@ -254,9 +255,10 @@ export default function CopyTrading() {
                       <Button
                         onClick={() => setSelectedTrader(trader.id)}
                         className="w-full bg-gradient-primary hover:shadow-glow"
+                        aria-label={`Follow ${trader.name}`}
                       >
                         <Copy className="mr-2 h-4 w-4" />
-                        Copy Trader
+                        Follow trader
                       </Button>
                     )}
                   </CardContent>
@@ -267,12 +269,12 @@ export default function CopyTrading() {
         </Card>
 
         {/* Active Subscriptions */}
-        {subscriptions.length > 0 && (
+        {subscriptions.length > 0 ? (
           <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <UserCheck className="h-5 w-5" />
-                <span>Your Subscriptions</span>
+                <span>Traders you follow</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -286,16 +288,24 @@ export default function CopyTrading() {
                           Trader {sub.trader_id}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Allocation: {sub.allocation}%
+                          {sub.allocation}% of your portfolio
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" aria-label={`Stop following trader ${sub.trader_id}`}>
                       Unfollow
                     </Button>
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-sm">
+            <CardContent className="p-8 text-center">
+              <Users className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
+              <p className="text-sm font-medium text-foreground">You're not following any traders yet</p>
+              <p className="text-xs text-muted-foreground mt-1">Pick a trader above to start copying their trades.</p>
             </CardContent>
           </Card>
         )}

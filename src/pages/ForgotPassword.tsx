@@ -20,12 +20,12 @@ export default function ForgotPassword() {
       const response = await authAPI.forgotPassword(email);
       if (response.ok) {
         setIsSubmitted(true);
-        toast.success('Password reset email sent!');
+        toast.success('Reset link sent. Check your inbox.');
       } else {
-        toast.error('Failed to send reset email');
+        toast.error('We couldn\'t send the reset link. Try again.');
       }
     } catch (error) {
-      toast.error('Network error. Please try again.');
+      toast.error('Something went wrong. Check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -38,11 +38,11 @@ export default function ForgotPassword() {
           <div className="flex justify-center mb-4">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
           </div>
-          <CardTitle className="text-2xl">Reset Password</CardTitle>
+          <CardTitle className="text-2xl">Reset your password</CardTitle>
           <CardDescription>
-            {isSubmitted 
-              ? 'Check your email for reset instructions'
-              : 'Enter your email to receive a password reset link'
+            {isSubmitted
+              ? 'Check your inbox for the reset link.'
+              : 'Enter your email and we\'ll send you a link to reset your password.'
             }
           </CardDescription>
         </CardHeader>
@@ -74,7 +74,7 @@ export default function ForgotPassword() {
                     Sending...
                   </>
                 ) : (
-                  'Send Reset Email'
+                  'Send reset link'
                 )}
               </Button>
               <Link 
@@ -90,11 +90,11 @@ export default function ForgotPassword() {
           <CardContent>
             <div className="text-center space-y-4">
               <p className="text-sm text-muted-foreground">
-                We've sent a password reset link to {email}
+                If an account exists for {email}, we've sent a reset link. Check your inbox.
               </p>
               <Link to="/login">
                 <Button className="w-full bg-gradient-primary hover:shadow-glow">
-                  Return to Login
+                  Back to login
                 </Button>
               </Link>
             </div>
