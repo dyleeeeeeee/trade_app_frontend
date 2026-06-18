@@ -8,7 +8,9 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
-import { Suspense, lazy, Component, ReactNode } from "react";
+import { Suspense, lazy, Component, ReactNode, useEffect } from "react";
+import { GlassFilters } from "@/components/GlassFilters";
+import { initGlassRefraction } from "@/lib/glassSupport";
 
 // Error boundary component
 class ErrorBoundary extends Component<
@@ -75,6 +77,7 @@ const Services = lazy(() => import("./pages/Services"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Security = lazy(() => import("./pages/Security"));
 const Strategies = lazy(() => import("./pages/Strategies"));
+const GlassDemo = lazy(() => import("./pages/GlassDemo"));
 
 
 // Fluid loading spinner with advanced animations
@@ -87,9 +90,14 @@ const LoadingSpinner = () => (
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  // Enable the Chromium-only backdrop refraction where it's safe to.
+  useEffect(() => initGlassRefraction(), []);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <GlassFilters />
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -142,6 +150,7 @@ const App = () => (
                       <Admin />
                     </ProtectedRoute>
                   } />
+                  <Route path="/glass-demo" element={<GlassDemo />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
@@ -151,6 +160,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
