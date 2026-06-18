@@ -147,7 +147,7 @@ export default function KYC() {
             {/* Progress bar */}
             <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
               <div
-                className="h-full rounded-full bg-interactive transition-[width] duration-interaction ease-[cubic-bezier(0,0,0.2,1)]"
+                className="h-full rounded-full bg-interactive transition-[width] duration-interaction ease-decelerate"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
