@@ -257,7 +257,7 @@ export default function Trading() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, ease: EASE_GLASS }}
           >
-            <Card className="flex h-full flex-col overflow-hidden">
+            <Card className="liquid-glass flex h-full flex-col overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4">
                 <div className="flex items-center gap-3">
                   {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={28} />}
@@ -270,7 +270,7 @@ export default function Trading() {
                   </div>
                 </div>
                 <div
-                  className="flex items-center gap-1 rounded-full bg-white/[0.04] p-1"
+                  className="glass-inset flex items-center gap-1 rounded-full p-1"
                   role="group"
                   aria-label="Chart timeframe"
                 >
@@ -302,7 +302,7 @@ export default function Trading() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, ease: EASE_GLASS }}
           >
-            <Card className="lg:col-span-1">
+            <Card className="liquid-glass lg:col-span-1">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={24} />}
@@ -363,7 +363,7 @@ export default function Trading() {
 
                 <div className="flex flex-col gap-2">
                   <Label className="text-caption uppercase tracking-wider text-text-tertiary">Last price</Label>
-                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+                  <div className="glass-inset rounded-xl p-3">
                     {pricesLoading ? (
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin text-text-tertiary" aria-hidden="true" />

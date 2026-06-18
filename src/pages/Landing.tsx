@@ -46,7 +46,7 @@ export default function Landing() {
       {/* ---- Floating glass pill nav ---- */}
       <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
         <nav
-          className="glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
+          className="liquid-glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
           aria-label="Primary"
         >
           <Link to="/" className="flex items-center gap-2">
@@ -142,7 +142,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
           >
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-caption uppercase text-text-secondary backdrop-blur-xl">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full glass-inset px-3 py-1 text-caption uppercase text-text-secondary">
               <Sparkles className="h-3.5 w-3.5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
               Professional crypto trading platform
             </span>
@@ -254,14 +254,14 @@ export default function Landing() {
                 ) : (
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 animate-pulse rounded-full bg-surface-overlay" />
+                      <div className="h-11 w-11 animate-pulse rounded-full glass-inset" />
                       <div className="flex flex-col gap-2">
-                        <div className="h-4 w-24 animate-pulse rounded bg-surface-overlay" />
-                        <div className="h-3 w-12 animate-pulse rounded bg-surface-overlay" />
+                        <div className="h-4 w-24 animate-pulse rounded glass-inset" />
+                        <div className="h-3 w-12 animate-pulse rounded glass-inset" />
                       </div>
                     </div>
-                    <div className="h-8 w-32 animate-pulse rounded bg-surface-overlay" />
-                    <div className="h-10 w-full animate-pulse rounded-lg bg-surface-overlay" />
+                    <div className="h-8 w-32 animate-pulse rounded glass-inset" />
+                    <div className="h-10 w-full animate-pulse rounded-lg glass-inset" />
                   </div>
                 )}
               </Card>
@@ -327,7 +327,7 @@ export default function Landing() {
 
         {/* ---- Subscribe ---- */}
         <motion.section className="py-20" {...reveal}>
-          <Card className="relative overflow-hidden p-8 lg:p-12">
+          <div className="liquid-glass relative overflow-hidden rounded-2xl p-8 lg:p-12">
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-primary opacity-[0.10] blur-3xl" aria-hidden="true" />
             <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
               <h2 className="text-balance text-h1">Insights, straight to your inbox</h2>
@@ -344,7 +344,7 @@ export default function Landing() {
                 <Button type="submit" variant="primary" size="lg">Subscribe</Button>
               </form>
             </div>
-          </Card>
+          </div>
         </motion.section>
       </main>
 

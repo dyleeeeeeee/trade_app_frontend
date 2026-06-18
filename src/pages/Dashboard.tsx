@@ -262,7 +262,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
           {/* Advanced chart */}
           <Card className="flex flex-col overflow-hidden xl:col-span-2">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4">
+            <div className="liquid-glass flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4">
               <div className="flex items-center gap-3">
                 {selectedPrice && <AssetLogo symbol={selectedPrice.symbol} size={32} />}
                 <div>
@@ -275,7 +275,7 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1 rounded-full bg-white/[0.04] p-1" role="group" aria-label="Chart timeframe">
+              <div className="flex items-center gap-1 rounded-full glass-inset p-1" role="group" aria-label="Chart timeframe">
                 {TIMEFRAMES.map((tf) => (
                   <button
                     key={tf.value}
@@ -295,7 +295,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Portfolio value + allocation donut */}
-          <Card className="flex flex-col p-6">
+          <Card className="liquid-glass flex flex-col p-6">
             <p className="text-caption uppercase text-text-tertiary">Portfolio value</p>
             <p className="mt-2 font-mono text-display text-text-primary leading-none">
               {loading ? <span className="shimmer inline-block h-12 w-40 rounded-lg bg-white/[0.06]" /> : `$${money(balance)}`}
@@ -309,11 +309,11 @@ export default function Dashboard() {
             </div>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+              <div className="rounded-xl glass-inset p-3">
                 <p className="flex items-center gap-1.5 text-caption text-text-tertiary"><Wallet className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" /> Buying power</p>
                 <p className="mt-1 font-mono text-body-sm font-semibold text-text-primary">${money(balance, 0)}</p>
               </div>
-              <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+              <div className="rounded-xl glass-inset p-3">
                 <p className="flex items-center gap-1.5 text-caption text-text-tertiary"><Activity className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" /> Open positions</p>
                 <p className="mt-1 font-mono text-body-sm font-semibold text-text-primary">{activeTradesCount}</p>
               </div>
@@ -371,7 +371,7 @@ export default function Dashboard() {
                       aria-pressed={active}
                       className={cn(
                         'flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-micro',
-                        active ? 'bg-interactive/10' : 'hover:bg-white/[0.04]',
+                        active ? 'bg-interactive/10' : 'hover:bg-white/[0.05]',
                       )}
                     >
                       <AssetLogo symbol={a.symbol} size={32} />
@@ -393,7 +393,7 @@ export default function Dashboard() {
           </Card>
 
           {/* AI insights spotlight */}
-          <Card className="relative overflow-hidden p-6">
+          <Card className="liquid-glass relative overflow-hidden p-6">
             <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-interactive/20 blur-3xl" aria-hidden="true" />
             <div className="relative flex h-full flex-col gap-4">
               <div className="flex items-center gap-2">
@@ -432,7 +432,7 @@ export default function Dashboard() {
               {loading ? (
                 <div className="flex flex-col gap-3">
                   {Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className="flex items-center justify-between rounded-xl border border-white/[0.08] p-3">
+                    <div key={index} className="flex items-center justify-between rounded-xl glass-inset p-3">
                       <div className="flex items-center gap-3">
                         <div className="shimmer h-9 w-9 rounded-lg bg-white/[0.06]" />
                         <div className="flex flex-col gap-2">
@@ -446,7 +446,7 @@ export default function Dashboard() {
                 </div>
               ) : trades.length === 0 ? (
                 <div className="flex flex-col items-center gap-3 py-12 text-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl glass-inset">
                     <Activity className="h-6 w-6 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                   </div>
                   <p className="text-body-sm font-medium text-text-primary">No trades yet</p>

@@ -107,7 +107,7 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 pt-6">
-                <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                <div className="glass-inset flex items-start gap-3 rounded-xl p-4">
                   <Bell className="mt-0.5 h-4 w-4 shrink-0 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                   <p className="text-body-sm text-text-secondary">Notification settings aren't available yet. Check back soon.</p>
                 </div>

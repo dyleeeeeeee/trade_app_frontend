@@ -216,12 +216,12 @@ export default function Wallet() {
 
         {/* Balance Hero — Apple Wallet card */}
         <motion.div {...reveal}>
-          <Card className="glass-strong relative overflow-hidden p-8">
+          <Card className="liquid-glass relative overflow-hidden p-8">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
             <div className="flex flex-col gap-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                  <div className="glass-inset flex h-11 w-11 items-center justify-center rounded-xl">
                     <WalletIcon className="h-5 w-5 text-interactive" />
                   </div>
                   <span className="text-caption uppercase text-text-tertiary">Available balance</span>
@@ -249,7 +249,7 @@ export default function Wallet() {
         {/* Transactions Tabs */}
         <motion.div {...reveal}>
           <Tabs defaultValue="deposit" className="flex flex-col gap-6">
-            <TabsList className="grid w-full grid-cols-3 gap-1 rounded-full border border-white/[0.08] bg-white/[0.04] p-1">
+            <TabsList className="glass-inset grid w-full grid-cols-3 gap-1 rounded-full p-1">
               <TabsTrigger
                 value="deposit"
                 className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
@@ -302,7 +302,7 @@ export default function Wallet() {
                       </p>
 
                       {/* QR Code Placeholder - Will replace with actual QR when library is available */}
-                      <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                      <div className="glass-inset mx-auto flex h-48 w-48 items-center justify-center rounded-xl">
                         <div className="flex flex-col items-center gap-2 text-center">
                           <QrCode className="h-12 w-12 text-text-tertiary" />
                           <p className="text-caption text-text-secondary">QR code</p>
@@ -312,7 +312,7 @@ export default function Wallet() {
 
                       <div className="flex flex-col gap-2">
                         <Label>Bitcoin address (BTC)</Label>
-                        <div className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+                        <div className="glass-inset flex items-center gap-2 rounded-xl p-3">
                           <code className="flex-1 break-all font-mono text-body-sm text-text-primary">
                             {/* bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
                             bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw
@@ -372,7 +372,7 @@ export default function Wallet() {
                     <div className="flex flex-col gap-3">
                       {deposits.length > 0 ? (
                         deposits.map((deposit: any, index: number) => (
-                          <div key={deposit.id || index} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                          <div key={deposit.id || index} className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4">
                             <div className="flex items-center gap-3">
                               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-feedback-success/10">
                                 <ArrowDownRight className="h-4 w-4 text-feedback-success" />
@@ -406,7 +406,7 @@ export default function Wallet() {
               <Card className="p-6">
                 <div className="flex flex-col gap-6">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+                    <div className="glass-inset flex h-11 w-11 items-center justify-center rounded-xl">
                       <ArrowUpRight className="h-5 w-5 text-feedback-error" />
                     </div>
                     <h3 className="text-h3 text-text-primary">Withdraw funds</h3>
@@ -537,7 +537,7 @@ export default function Wallet() {
               <div className="flex flex-col gap-3">
                 {withdrawals.length > 0 ? (
                   withdrawals.map((withdrawal: any, index: number) => (
-                    <div key={index} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                    <div key={index} className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4">
                       <div className="flex items-center gap-3">
                         {getStatusBadge(withdrawal.status)}
                         <div className="flex flex-col gap-0.5">

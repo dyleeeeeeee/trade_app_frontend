@@ -261,7 +261,7 @@ export default function Strategies() {
         </div>
 
         {/* Performance Chart Placeholder */}
-        <div className="mt-5 flex h-32 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
+        <div className="glass-inset mt-5 flex h-32 items-center justify-center rounded-xl">
           <div className="text-center text-text-tertiary">
             <LineChart className="mx-auto mb-2 h-6 w-6" strokeWidth={1.5} />
             <p className="text-caption">Performance history coming soon</p>
@@ -270,7 +270,7 @@ export default function Strategies() {
 
         {/* Stats */}
         <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+          <div className="glass-inset rounded-xl p-3">
             <p className="text-caption uppercase text-text-tertiary">Daily ROI</p>
             <p
               className={cn(
@@ -281,13 +281,13 @@ export default function Strategies() {
               {strategy.expected_roi.toFixed(2)}%
             </p>
           </div>
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+          <div className="glass-inset rounded-xl p-3">
             <p className="text-caption uppercase text-text-tertiary">Minimum</p>
             <p className="mt-1 font-mono tabular-nums text-body-sm font-semibold text-text-primary">
               ${strategy.min_investment.toLocaleString()}
             </p>
           </div>
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
+          <div className="glass-inset rounded-xl p-3">
             <p className="text-caption uppercase text-text-tertiary">Members</p>
             <p className="mt-1 font-mono tabular-nums text-body-sm font-semibold text-text-primary">
               {strategy.subscriber_count}
@@ -395,7 +395,7 @@ export default function Strategies() {
                 {myStrategies.map((strategy) => (
                   <div
                     key={strategy.subscription_id}
-                    className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5"
+                    className="glass-inset rounded-xl p-5"
                   >
                     <div className="mb-3 flex items-start justify-between gap-2">
                       <h4 className="text-body font-semibold text-text-primary">
@@ -533,7 +533,7 @@ export default function Strategies() {
             </DialogHeader>
             {selectedStrategy && (
               <div className="flex flex-col gap-4">
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                <div className="glass-inset rounded-xl p-4">
                   <p className="text-caption uppercase text-text-tertiary">Strategy details</p>
                   <div className="mt-3 grid grid-cols-2 gap-4 text-body-sm">
                     <div>

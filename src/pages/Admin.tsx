@@ -196,7 +196,7 @@ export default function Admin() {
                 {pendingWithdrawals.map((withdrawal: any) => (
                   <div
                     key={withdrawal.id}
-                    className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
+                    className="glass-inset flex items-center justify-between gap-4 rounded-xl p-4"
                   >
                     <div className="flex items-center gap-4">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full bg-feedback-warning/15 text-feedback-warning">
@@ -225,7 +225,7 @@ export default function Admin() {
                   </div>
                 ))}
                 {pendingWithdrawals.length === 0 && (
-                  <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-10 text-center">
+                  <div className="glass-inset flex flex-col items-center gap-2 rounded-xl px-6 py-10 text-center">
                     <span className="flex h-11 w-11 items-center justify-center rounded-full bg-feedback-success/15 text-feedback-success">
                       <CheckCircle className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
                     </span>
@@ -317,7 +317,7 @@ export default function Admin() {
                 </TableBody>
               </Table>
               {users.length === 0 && (
-                <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-10 text-center">
+                <div className="glass-inset flex flex-col items-center gap-2 rounded-xl px-6 py-10 text-center">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-overlay text-text-tertiary">
                     <Users className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
                   </span>
@@ -340,7 +340,7 @@ export default function Admin() {
             <div className="flex flex-col gap-5">
               {selectedUser && (
                 <div className="flex flex-col gap-5">
-                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                  <div className="glass-inset rounded-xl p-4">
                     <p className="text-caption uppercase text-text-tertiary">User</p>
                     <p className="text-body font-medium text-text-primary">{selectedUser.email}</p>
                     <p className="mt-2 text-body-sm text-text-secondary">
@@ -409,7 +409,7 @@ export default function Admin() {
             <div className="flex flex-col gap-5">
               {selectedUser && (
                 <div className="flex flex-col gap-5">
-                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                  <div className="glass-inset rounded-xl p-4">
                     <p className="text-caption uppercase text-text-tertiary">User</p>
                     <p className="text-body font-medium text-text-primary">{selectedUser.email}</p>
                     <p className="mt-2 text-body-sm text-text-secondary">

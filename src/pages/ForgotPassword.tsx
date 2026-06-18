@@ -45,7 +45,7 @@ export default function ForgotPassword() {
           className="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-primary opacity-[0.12] blur-3xl"
           aria-hidden="true"
         />
-        <Card className="p-8">
+        <Card className="liquid-glass p-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
             <h2 className="text-h2">Reset your password</h2>

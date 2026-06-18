@@ -112,7 +112,7 @@ export default function KYC() {
               A few quick steps to confirm it's you. Your information stays private and encrypted.
             </p>
           </div>
-          <span className="inline-flex items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2.5">
+          <span className="glass-inset inline-flex items-center gap-3 rounded-full px-4 py-2.5">
             <Shield className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
             {getStatusBadge()}
           </span>
@@ -145,7 +145,7 @@ export default function KYC() {
           </CardHeader>
           <CardContent className="p-0 pt-6">
             {/* Progress bar */}
-            <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+            <div className="glass-inset mb-6 h-1.5 w-full overflow-hidden rounded-full">
               <div
                 className="h-full rounded-full bg-interactive transition-[width] duration-interaction ease-decelerate"
                 style={{ width: `${progressPct}%` }}
@@ -159,10 +159,10 @@ export default function KYC() {
                   <div
                     key={index}
                     className={cn(
-                      'flex flex-col items-center gap-3 rounded-xl border p-5 text-center transition-colors duration-interaction ease-standard',
+                      'flex flex-col items-center gap-3 rounded-xl p-5 text-center transition-colors duration-interaction ease-standard',
                       complete
-                        ? 'border-feedback-success/30 bg-feedback-success/10'
-                        : 'border-white/[0.08] bg-white/[0.04]',
+                        ? 'border border-feedback-success/30 bg-feedback-success/10'
+                        : 'glass-inset',
                     )}
                   >
                     <span
@@ -281,7 +281,7 @@ export default function KYC() {
               <div className="flex flex-col gap-2">
                 <Label>Photo of your document</Label>
                 <div
-                  className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/[0.12] bg-white/[0.03] p-8 text-center transition-colors duration-interaction ease-standard hover:border-interactive/40 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base cursor-pointer"
+                  className="glass-inset flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/[0.12] p-8 text-center transition-colors duration-interaction ease-standard hover:border-interactive/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base cursor-pointer"
                   role="button"
                   tabIndex={0}
                   aria-label="Upload a photo of your ID document"
@@ -368,14 +368,14 @@ export default function KYC() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-5 p-0 pt-6">
-              <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+              <div className="glass-inset flex items-start gap-3 rounded-xl p-4">
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-interactive" strokeWidth={1.5} aria-hidden="true" />
                 <p className="text-body-sm text-text-secondary">
                   Hold your ID next to your face and take a clear photo. This confirms the document is yours.
                 </p>
               </div>
               <div
-                className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/[0.12] bg-white/[0.03] p-8 text-center transition-colors duration-interaction ease-standard hover:border-interactive/40 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base cursor-pointer"
+                className="glass-inset flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/[0.12] p-8 text-center transition-colors duration-interaction ease-standard hover:border-interactive/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base cursor-pointer"
                 role="button"
                 tabIndex={0}
                 aria-label="Take or upload a selfie holding your ID"

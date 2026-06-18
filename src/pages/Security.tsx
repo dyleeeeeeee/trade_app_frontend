@@ -82,7 +82,7 @@ export default function Security() {
             </div>
             <ul className="mt-1 flex flex-col gap-3">
               {points.map((point) => (
-                <li key={point} className="flex items-center gap-3 text-body-sm text-text-secondary">
+                <li key={point} className="glass-inset flex items-center gap-3 rounded-xl px-3 py-2.5 text-body-sm text-text-secondary">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-feedback-success/15">
                     <Check className="h-3 w-3 text-feedback-success" strokeWidth={2} aria-hidden="true" />
                   </span>
@@ -96,7 +96,7 @@ export default function Security() {
 
       {/* Commitment + stats */}
       <motion.section className="py-12 lg:py-20" {...reveal}>
-        <Card className="relative overflow-hidden p-8 text-center lg:p-12">
+        <Card className="liquid-glass relative overflow-hidden p-8 text-center lg:p-12">
           <div
             className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-gradient-primary opacity-[0.10] blur-3xl"
             aria-hidden="true"

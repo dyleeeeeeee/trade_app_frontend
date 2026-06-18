@@ -304,7 +304,7 @@ export default function CopyTrading() {
                 {subscriptions.map((sub: any, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
+                    className="glass-inset flex items-center justify-between rounded-xl p-4"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -337,7 +337,7 @@ export default function CopyTrading() {
         ) : (
           <Card className="p-10 text-center">
             <span
-              className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04]"
+              className="glass-inset mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
               aria-hidden="true"
             >
               <Users className="h-6 w-6 text-text-tertiary" strokeWidth={1.5} />

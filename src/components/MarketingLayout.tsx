@@ -25,7 +25,7 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
       {/* Floating glass pill nav */}
       <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
         <nav
-          className="glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
+          className="liquid-glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
           aria-label="Primary"
         >
           <Link to="/" className="flex items-center gap-2">
