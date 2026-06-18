@@ -49,9 +49,9 @@ export default function Landing() {
           className="liquid-glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
           aria-label="Primary"
         >
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/images/main-logo.png" alt="" className="h-6 w-auto" aria-hidden="true" />
-            <span className="text-body-sm font-semibold tracking-tight">Astrid Global</span>
+          <Link to="/" className="flex min-w-0 items-center gap-2">
+            <img src="/images/main-logo.png" alt="" className="h-6 w-auto shrink-0" aria-hidden="true" />
+            <span className="truncate text-body-sm font-semibold tracking-tight">Astrid Global</span>
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -86,7 +86,7 @@ export default function Landing() {
           </div>
 
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-white/[0.06] hover:text-text-primary md:hidden"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-white/[0.06] hover:text-text-primary md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -135,9 +135,9 @@ export default function Landing() {
 
       <main className="mx-auto max-w-[1200px] px-6 pt-28 lg:px-8">
         {/* ---- Hero ---- */}
-        <section className="grid grid-cols-1 items-center gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-32">
+        <section className="grid grid-cols-1 items-center gap-8 py-12 sm:gap-12 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:py-32">
           <motion.div
-            className="order-2 flex flex-col gap-8 lg:order-1"
+            className="order-2 flex flex-col gap-6 sm:gap-8 lg:order-1"
             initial={{ opacity: 0, y: reduce ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
@@ -147,7 +147,7 @@ export default function Landing() {
               Professional crypto trading platform
             </span>
 
-            <h1 className="text-balance text-[2.75rem] font-bold leading-[1.05] tracking-tight md:text-6xl">
+            <h1 className="text-balance text-display">
               Expert crypto &amp;
               <br />
               <span className="bg-gradient-to-r from-brand-300 to-interactive bg-clip-text text-transparent">
@@ -179,9 +179,9 @@ export default function Landing() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: [0, 0, 0.2, 1], delay: 0.1 }}
           >
-            <div className="relative mx-auto max-w-md lg:mx-0">
+            <div className="relative mx-auto w-full max-w-md lg:mx-0">
               <div
-                className="absolute -inset-6 rounded-[2rem] bg-gradient-primary opacity-[0.12] blur-2xl"
+                className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-gradient-primary opacity-[0.12] blur-2xl"
                 aria-hidden="true"
               />
               <div className="relative aspect-square overflow-hidden rounded-2xl border border-hairline/[0.08] shadow-elevation-3">
@@ -213,8 +213,8 @@ export default function Landing() {
         </motion.section>
 
         {/* ---- Live markets ---- */}
-        <motion.section className="py-20" {...reveal}>
-          <div className="mb-12 flex flex-col items-center gap-3 text-center">
+        <motion.section className="py-12 sm:py-20" {...reveal}>
+          <div className="mb-8 flex flex-col items-center gap-3 text-center sm:mb-12">
             <span className="flex items-center gap-2 text-caption uppercase text-text-tertiary">
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-feedback-success opacity-60" />
@@ -228,9 +228,9 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {(featured.length > 0 ? featured : [null, null, null]).map((asset: any, i: number) => (
-              <Card key={asset?.symbol ?? i} interactive className="p-6">
+              <Card key={asset?.symbol ?? i} interactive className="p-5 sm:p-6">
                 {asset ? (
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-3">
@@ -240,8 +240,8 @@ export default function Landing() {
                         <p className="text-caption uppercase text-text-tertiary">{asset.symbol}</p>
                       </div>
                     </div>
-                    <div className="flex items-end justify-between">
-                      <LivePrice value={Number(asset.price)} className="font-mono text-h2 font-semibold" />
+                    <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
+                      <LivePrice value={Number(asset.price)} className="min-w-0 truncate font-mono text-h2 font-semibold" />
                       <PriceChange changePercent={asset.changePercent} />
                     </div>
                     <Button asChild variant="secondary" size="md" className="w-full">
@@ -270,7 +270,7 @@ export default function Landing() {
         </motion.section>
 
         {/* ---- Feature: portfolio tracking ---- */}
-        <motion.section className="grid grid-cols-1 items-center gap-12 border-t border-hairline/[0.08] py-20 lg:grid-cols-2 lg:gap-16" {...reveal}>
+        <motion.section className="grid grid-cols-1 items-center gap-8 border-t border-hairline/[0.08] py-12 sm:gap-12 sm:py-20 lg:grid-cols-2 lg:gap-16" {...reveal}>
           <div className="overflow-hidden rounded-2xl border border-hairline/[0.08] shadow-elevation-2">
             <img src="/images/single-image1.png" alt="Portfolio tracking dashboard" className="w-full" />
           </div>
@@ -298,7 +298,7 @@ export default function Landing() {
         </motion.section>
 
         {/* ---- Feature: security ---- */}
-        <motion.section className="grid grid-cols-1 items-center gap-12 border-t border-hairline/[0.08] py-20 lg:grid-cols-2 lg:gap-16" {...reveal}>
+        <motion.section className="grid grid-cols-1 items-center gap-8 border-t border-hairline/[0.08] py-12 sm:gap-12 sm:py-20 lg:grid-cols-2 lg:gap-16" {...reveal}>
           <div className="order-2 flex flex-col gap-5 lg:order-1">
             <span className="flex w-fit items-center gap-2 rounded-lg bg-interactive/10 px-3 py-1.5 text-caption uppercase text-interactive">
               <ShieldCheck className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
@@ -326,8 +326,8 @@ export default function Landing() {
         </motion.section>
 
         {/* ---- Subscribe ---- */}
-        <motion.section className="py-20" {...reveal}>
-          <div className="liquid-glass relative overflow-hidden rounded-2xl p-8 lg:p-12">
+        <motion.section className="py-12 sm:py-20" {...reveal}>
+          <div className="liquid-glass relative overflow-hidden rounded-2xl p-6 sm:p-8 lg:p-12">
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-primary opacity-[0.10] blur-3xl" aria-hidden="true" />
             <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
               <h2 className="text-balance text-h1">Insights, straight to your inbox</h2>
@@ -350,8 +350,8 @@ export default function Landing() {
 
       {/* ---- Footer ---- */}
       <footer className="border-t border-hairline/[0.08]">
-        <div className="mx-auto max-w-[1200px] px-6 py-16 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="mx-auto max-w-[1200px] px-6 py-12 sm:py-16 lg:px-8">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 md:gap-8 lg:grid-cols-5">
             <div className="col-span-2">
               <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-8 w-auto" />
               <p className="mt-4 max-w-sm text-body-sm text-text-secondary">

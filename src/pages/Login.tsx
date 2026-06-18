@@ -31,7 +31,7 @@ export default function Login() {
         transition={{ duration: 0.4, ease: [0, 0, 0.2, 1] }}
       >
         <div className="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-primary opacity-[0.12] blur-3xl" aria-hidden="true" />
-        <Card className="liquid-glass p-8">
+        <Card className="liquid-glass p-6 sm:p-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
             <h1 className="text-h2">Welcome back</h1>
@@ -42,7 +42,7 @@ export default function Login() {
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <Mail className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                 <Input
                   id="email"
                   type="email"
@@ -63,7 +63,7 @@ export default function Login() {
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                <Lock className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
                 <Input
                   id="password"
                   type="password"

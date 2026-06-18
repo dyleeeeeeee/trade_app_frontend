@@ -50,7 +50,7 @@ export default function Services() {
     <MarketingLayout>
       {/* Hero */}
       <motion.section
-        className="flex flex-col items-center gap-6 py-20 text-center lg:py-28"
+        className="flex flex-col items-center gap-6 py-12 text-center sm:py-20 lg:py-28"
         initial={{ opacity: 0, y: reduce ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
@@ -63,9 +63,9 @@ export default function Services() {
       </motion.section>
 
       {/* Service cards */}
-      <motion.section className="grid grid-cols-1 gap-6 py-12 md:grid-cols-2" {...reveal}>
+      <motion.section className="grid grid-cols-1 gap-5 py-8 sm:gap-6 sm:py-12 md:grid-cols-2" {...reveal}>
         {SERVICES.map(({ icon: Icon, title, body, points }) => (
-          <Card key={title} interactive className="flex flex-col gap-5 p-8">
+          <Card key={title} interactive className="flex flex-col gap-5 p-5 sm:p-6">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-interactive/10">
               <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
             </span>
@@ -88,8 +88,8 @@ export default function Services() {
       </motion.section>
 
       {/* CTA */}
-      <motion.section className="py-12 lg:py-20" {...reveal}>
-        <Card className="relative overflow-hidden p-8 text-center lg:p-12">
+      <motion.section className="py-12 sm:py-12 lg:py-20" {...reveal}>
+        <Card className="relative overflow-hidden p-6 text-center sm:p-8 lg:p-12">
           <div
             className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-primary opacity-[0.10] blur-3xl"
             aria-hidden="true"

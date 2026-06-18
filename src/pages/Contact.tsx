@@ -53,7 +53,7 @@ export default function Contact() {
     <MarketingLayout>
       {/* Hero */}
       <motion.section
-        className="flex flex-col items-center gap-6 py-20 text-center lg:py-28"
+        className="flex flex-col items-center gap-6 py-12 text-center sm:py-20 lg:py-28"
         initial={{ opacity: 0, y: reduce ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
@@ -66,9 +66,9 @@ export default function Contact() {
       </motion.section>
 
       {/* Contact grid */}
-      <motion.section className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-2 lg:py-20" {...reveal}>
+      <motion.section className="grid grid-cols-1 gap-6 py-8 sm:py-12 lg:grid-cols-2 lg:py-20" {...reveal}>
         {/* Details */}
-        <Card className="flex flex-col gap-6 p-8">
+        <Card className="flex flex-col gap-6 p-5 sm:p-6">
           <h2 className="text-h3 text-text-primary">Get in touch</h2>
           <div className="flex flex-col gap-6">
             {DETAILS.map(({ icon: Icon, label, value }) => (
@@ -76,9 +76,9 @@ export default function Contact() {
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-interactive/10">
                   <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
                 </span>
-                <div className="flex flex-col gap-1">
+                <div className="flex min-w-0 flex-col gap-1">
                   <p className="text-caption uppercase text-text-tertiary">{label}</p>
-                  <p className="text-body-sm text-text-secondary">{value}</p>
+                  <p className="break-words text-body-sm text-text-secondary">{value}</p>
                 </div>
               </div>
             ))}
@@ -86,7 +86,7 @@ export default function Contact() {
         </Card>
 
         {/* Form */}
-        <Card className="flex flex-col gap-6 p-8">
+        <Card className="flex flex-col gap-6 p-5 sm:p-6">
           <h2 className="text-h3 text-text-primary">Send a message</h2>
           <form className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">

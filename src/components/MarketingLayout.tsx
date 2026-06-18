@@ -28,9 +28,9 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
           className="liquid-glass flex h-14 w-full max-w-[940px] items-center justify-between gap-2 rounded-full pl-4 pr-2 shadow-elevation-3"
           aria-label="Primary"
         >
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/images/main-logo.png" alt="" className="h-6 w-auto" aria-hidden="true" />
-            <span className="text-body-sm font-semibold tracking-tight">Astrid Global</span>
+          <Link to="/" className="flex min-w-0 items-center gap-2">
+            <img src="/images/main-logo.png" alt="" className="h-6 w-auto shrink-0" aria-hidden="true" />
+            <span className="truncate text-body-sm font-semibold tracking-tight">Astrid Global</span>
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -55,7 +55,7 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-white/[0.06] hover:text-text-primary md:hidden"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-white/[0.06] hover:text-text-primary md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { User, Lock, Bell } from 'lucide-react';
+import { User, Lock, Bell, Mail, Phone, Globe, KeyRound } from 'lucide-react';
 
 export default function Profile() {
   const { toast } = useToast();
@@ -34,14 +34,14 @@ export default function Profile() {
         </header>
 
         <Tabs defaultValue="profile" className="flex flex-col gap-6">
-          <TabsList>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 sm:inline-flex sm:w-auto">
+            <TabsTrigger value="profile" className="w-full sm:w-auto">Profile</TabsTrigger>
+            <TabsTrigger value="security" className="w-full sm:w-auto">Security</TabsTrigger>
+            <TabsTrigger value="notifications" className="w-full sm:w-auto">Notifications</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile">
-            <Card className="p-6">
+            <Card className="p-4 sm:p-6">
               <CardHeader className="p-0">
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
@@ -49,22 +49,34 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-6 p-0 pt-6">
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="fullName">Full name</Label>
-                    <Input id="fullName" value={profileData.fullName} onChange={(e) => setProfileData({...profileData, fullName: e.target.value})} />
+                    <div className="relative">
+                      <User className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                      <Input id="fullName" className="pl-10" value={profileData.fullName} onChange={(e) => setProfileData({...profileData, fullName: e.target.value})} />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} />
+                    <div className="relative">
+                      <Mail className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                      <Input id="email" className="pl-10" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" value={profileData.phone} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} />
+                    <div className="relative">
+                      <Phone className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                      <Input id="phone" className="pl-10" value={profileData.phone} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="country">Country</Label>
-                    <Input id="country" value={profileData.country} onChange={(e) => setProfileData({...profileData, country: e.target.value})} />
+                    <div className="relative">
+                      <Globe className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                      <Input id="country" className="pl-10" value={profileData.country} onChange={(e) => setProfileData({...profileData, country: e.target.value})} />
+                    </div>
                   </div>
                 </div>
                 <Button onClick={handleSave} variant="primary" className="self-start">Save changes</Button>
@@ -73,7 +85,7 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="security">
-            <Card className="p-6">
+            <Card className="p-4 sm:p-6">
               <CardHeader className="p-0">
                 <CardTitle className="flex items-center gap-2">
                   <Lock className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
@@ -83,15 +95,24 @@ export default function Profile() {
               <CardContent className="flex flex-col gap-5 p-0 pt-6">
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="currentPassword">Current password</Label>
-                  <Input id="currentPassword" type="password" placeholder="Current password" />
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                    <Input id="currentPassword" type="password" className="pl-10" placeholder="Current password" />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="newPassword">New password</Label>
-                  <Input id="newPassword" type="password" placeholder="New password" />
+                  <div className="relative">
+                    <KeyRound className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                    <Input id="newPassword" type="password" className="pl-10" placeholder="New password" />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="confirmPassword">Confirm new password</Label>
-                  <Input id="confirmPassword" type="password" placeholder="Re-enter new password" />
+                  <div className="relative">
+                    <KeyRound className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
+                    <Input id="confirmPassword" type="password" className="pl-10" placeholder="Re-enter new password" />
+                  </div>
                 </div>
                 <Button variant="primary" className="self-start">Update password</Button>
               </CardContent>
@@ -99,7 +120,7 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="notifications">
-            <Card className="p-6">
+            <Card className="p-4 sm:p-6">
               <CardHeader className="p-0">
                 <CardTitle className="flex items-center gap-2">
                   <Bell className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />

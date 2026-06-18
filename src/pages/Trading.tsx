@@ -17,7 +17,8 @@ import {
   TrendingDown,
   Activity,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  Hash
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -153,24 +154,24 @@ export default function Trading() {
 
   return (
     <Layout>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6 sm:gap-8">
         {/* Header */}
-        <div className="flex items-end justify-between gap-4">
-          <div className="flex flex-col gap-1">
+        <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+          <div className="flex min-w-0 flex-col gap-1">
             <span className="text-caption uppercase tracking-wider text-text-tertiary">Trade</span>
             <h1 className="text-h1 text-text-primary">Markets</h1>
             <p className="text-body-sm text-text-secondary">Live prices. Buy and sell in a tap.</p>
           </div>
           {lastUpdated && (
-            <div className="flex items-center gap-1.5 text-caption text-text-tertiary tabular-nums">
-              <RefreshCw className="h-3 w-3" aria-hidden="true" />
+            <div className="flex shrink-0 items-center gap-1.5 text-caption text-text-tertiary tabular-nums">
+              <RefreshCw className="h-3 w-3 shrink-0" aria-hidden="true" />
               Updated {lastUpdated.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </div>
           )}
         </div>
 
         {/* Market Overview — Ticker Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
           {assets.map((assetItem, index) => {
             const isSelected = assetItem.symbol === asset;
             return (
@@ -184,7 +185,7 @@ export default function Trading() {
                 <Card
                   interactive
                   className={cn(
-                    "cursor-pointer p-4",
+                    "cursor-pointer overflow-hidden p-4",
                     isSelected &&
                       "border-interactive/60 bg-interactive/10 shadow-[0_0_20px_hsl(var(--interactive-default)/0.2)]"
                   )}
@@ -201,7 +202,7 @@ export default function Trading() {
                   }}
                 >
                   <div className="flex items-center gap-2.5 mb-3">
-                    <AssetLogo symbol={assetItem.symbol} size={28} />
+                    <AssetLogo symbol={assetItem.symbol} size={28} className="shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="text-body-sm font-medium text-text-primary truncate leading-tight">
                         {assetItem.symbol.replace('/USD', '')}
@@ -211,8 +212,8 @@ export default function Trading() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex items-end justify-between gap-2">
+                  <div className="flex min-w-0 flex-col gap-1.5">
+                    <div className="flex min-w-0 flex-wrap items-end justify-between gap-x-2 gap-y-1">
                       {pricesLoading ? (
                         <Loader2 className="h-4 w-4 animate-spin text-text-tertiary" aria-hidden="true" />
                       ) : (
@@ -220,18 +221,18 @@ export default function Trading() {
                           value={assetItem.price}
                           flash={false}
                           className={cn(
-                            "text-body font-mono tabular-nums text-text-primary",
+                            "inline-block min-w-0 max-w-full truncate text-body font-mono tabular-nums text-text-primary",
                             priceFlash[assetItem.symbol] === 'up' && "text-feedback-success",
                             priceFlash[assetItem.symbol] === 'down' && "text-feedback-error",
                           )}
                         />
                       )}
                       {!pricesLoading && (
-                        <PriceChange changePercent={assetItem.changePercent} />
+                        <PriceChange changePercent={assetItem.changePercent} className="shrink-0" />
                       )}
                     </div>
                     {!pricesLoading && assetItem.volume > 0 && (
-                      <p className="text-caption text-text-tertiary font-mono tabular-nums">
+                      <p className="truncate text-caption text-text-tertiary font-mono tabular-nums">
                         Vol{' '}
                         {assetItem.volume >= 1e9
                           ? `${(assetItem.volume / 1e9).toFixed(1)}B`
@@ -248,7 +249,7 @@ export default function Trading() {
         </div>
 
         {/* Chart + Order ticket */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
           {/* TradingView chart */}
           <motion.div
             className="lg:col-span-2"
@@ -258,15 +259,15 @@ export default function Trading() {
             transition={{ duration: 0.4, ease: EASE_GLASS }}
           >
             <Card className="liquid-glass flex h-full flex-col overflow-hidden">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4">
-                <div className="flex items-center gap-3">
-                  {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={28} />}
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-h3 text-text-primary">{asset.replace('/USD', '')}</h2>
-                      {selectedAssetData && <PriceChange changePercent={selectedAssetData.changePercent} />}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4 sm:p-6">
+                <div className="flex min-w-0 items-center gap-3">
+                  {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={28} className="shrink-0" />}
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="truncate text-h3 text-text-primary">{asset.replace('/USD', '')}</h2>
+                      {selectedAssetData && <PriceChange changePercent={selectedAssetData.changePercent} className="shrink-0" />}
                     </div>
-                    <p className="text-caption text-text-tertiary">{selectedAssetData?.name}</p>
+                    <p className="truncate text-caption text-text-tertiary">{selectedAssetData?.name}</p>
                   </div>
                 </div>
                 <div
@@ -291,7 +292,7 @@ export default function Trading() {
                   ))}
                 </div>
               </div>
-              <TradingViewChart symbol={asset} interval={chartInterval} className="h-[420px] w-full" />
+              <TradingViewChart symbol={asset} interval={chartInterval} className="h-[320px] w-full sm:h-[440px]" />
             </Card>
           </motion.div>
 
@@ -302,16 +303,16 @@ export default function Trading() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, ease: EASE_GLASS }}
           >
-            <Card className="liquid-glass lg:col-span-1">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={24} />}
-                  <CardTitle>
+            <Card className="liquid-glass overflow-hidden lg:col-span-1">
+              <CardHeader className="p-4 sm:p-6">
+                <div className="flex min-w-0 items-center gap-3">
+                  {selectedAssetData && <AssetLogo symbol={selectedAssetData.symbol} size={24} className="shrink-0" />}
+                  <CardTitle className="truncate">
                     {orderType === 'buy' ? 'Buy' : 'Sell'} {asset.replace('/USD', '')}
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="flex flex-col gap-5">
+              <CardContent className="flex flex-col gap-5 p-4 pt-0 sm:p-6 sm:pt-0">
                 <Tabs value={orderType} onValueChange={(v) => setOrderType(v as 'buy' | 'sell')}>
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger
@@ -350,20 +351,23 @@ export default function Trading() {
 
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="size" className="text-caption uppercase tracking-wider text-text-tertiary">Quantity</Label>
-                  <Input
-                    id="size"
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                    value={size}
-                    onChange={(e) => setSize(e.target.value)}
-                    className="font-mono tabular-nums"
-                  />
+                  <div className="relative">
+                    <Hash className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+                    <Input
+                      id="size"
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={size}
+                      onChange={(e) => setSize(e.target.value)}
+                      className="pl-10 font-mono tabular-nums"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <Label className="text-caption uppercase tracking-wider text-text-tertiary">Last price</Label>
-                  <div className="glass-inset rounded-xl p-3">
+                  <div className="glass-inset overflow-hidden rounded-xl p-3">
                     {pricesLoading ? (
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin text-text-tertiary" aria-hidden="true" />
@@ -372,7 +376,7 @@ export default function Trading() {
                     ) : (
                       <LivePrice
                         value={parseFloat(price || '0')}
-                        className="text-h3 font-mono tabular-nums text-text-primary"
+                        className="block min-w-0 max-w-full truncate text-h3 font-mono tabular-nums text-text-primary"
                       />
                     )}
                   </div>
@@ -381,9 +385,9 @@ export default function Trading() {
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center border-t border-white/[0.08] pt-4 text-body-sm">
-                  <span className="text-text-secondary">Est. total</span>
-                  <span className="font-mono tabular-nums font-medium text-text-primary">
+                <div className="flex min-w-0 items-center justify-between gap-3 border-t border-white/[0.08] pt-4 text-body-sm">
+                  <span className="shrink-0 text-text-secondary">Est. total</span>
+                  <span className="min-w-0 truncate text-right font-mono tabular-nums font-medium text-text-primary">
                     ${(parseFloat(size || '0') * parseFloat(price || '0')).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
@@ -423,14 +427,14 @@ export default function Trading() {
           viewport={{ once: true }}
           transition={{ duration: 0.4, ease: EASE_GLASS }}
         >
-          <Card className="h-full">
-              <CardHeader>
+          <Card className="h-full overflow-hidden">
+              <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-text-tertiary" aria-hidden="true" />
+                  <Activity className="h-5 w-5 shrink-0 text-text-tertiary" aria-hidden="true" />
                   Recent trades
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
                 <div className="flex flex-col divide-y divide-white/[0.06] max-h-[480px] overflow-y-auto pr-1">
                   {trades.length > 0 ? (
                     trades.map((trade: any, index: number) => (
@@ -439,19 +443,21 @@ export default function Trading() {
                         className="flex items-center justify-between gap-3 py-3 first:pt-0"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <AssetLogo symbol={trade.asset} size={28} />
+                          <div className="shrink-0">
+                            <AssetLogo symbol={trade.asset} size={28} />
+                          </div>
                           <div className="min-w-0">
                             <p className="text-body-sm font-medium text-text-primary truncate">
                               {trade.side === 'buy' ? 'Bought' : 'Sold'} {trade.asset.replace('/USD', '')}
                             </p>
-                            <p className="text-caption text-text-tertiary font-mono tabular-nums">
+                            <p className="text-caption text-text-tertiary font-mono tabular-nums truncate">
                               {trade.size} @ ${parseFloat(trade.price).toLocaleString()}
                             </p>
                           </div>
                         </div>
-                        <div className="text-right shrink-0">
+                        <div className="text-right shrink-0 min-w-0">
                           <p className={cn(
-                            "text-body-sm font-mono tabular-nums font-medium",
+                            "text-body-sm font-mono tabular-nums font-medium truncate",
                             trade.side === 'buy' ? "text-feedback-error" : "text-feedback-success"
                           )}>
                             {trade.side === 'buy' ? '-' : '+'}${(trade.size * trade.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

@@ -166,7 +166,7 @@ export default function Admin() {
 
   return (
     <Layout>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6 sm:gap-8">
         {/* Page header */}
         <motion.header {...rise()} className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -196,23 +196,24 @@ export default function Admin() {
                 {pendingWithdrawals.map((withdrawal: any) => (
                   <div
                     key={withdrawal.id}
-                    className="glass-inset flex items-center justify-between gap-4 rounded-xl p-4"
+                    className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4 sm:gap-4"
                   >
-                    <div className="flex items-center gap-4">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-feedback-warning/15 text-feedback-warning">
+                    <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-feedback-warning/15 text-feedback-warning">
                         <Clock className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
                       </span>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex min-w-0 flex-col gap-0.5">
                         <p className="font-mono tabular-nums text-body font-semibold text-text-primary">
                           ${withdrawal.amount}
                         </p>
-                        <p className="text-body-sm text-text-secondary">{withdrawal.user_email}</p>
+                        <p className="truncate text-body-sm text-text-secondary">{withdrawal.user_email}</p>
                       </div>
                     </div>
                     <Button
                       onClick={() => handleApproveWithdrawal(withdrawal.id)}
                       disabled={loading}
                       size="sm"
+                      className="shrink-0"
                       aria-label={`Approve withdrawal of $${withdrawal.amount} for ${withdrawal.user_email}`}
                     >
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
@@ -248,39 +249,40 @@ export default function Admin() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
+              <div className="-mx-6 overflow-x-auto px-6">
+                <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Email</TableHead>
-                    <TableHead className="text-right">Balance</TableHead>
-                    <TableHead className="text-right">P&L</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="whitespace-nowrap">Email</TableHead>
+                    <TableHead className="whitespace-nowrap text-right">Balance</TableHead>
+                    <TableHead className="whitespace-nowrap text-right">P&L</TableHead>
+                    <TableHead className="whitespace-nowrap">Status</TableHead>
+                    <TableHead className="whitespace-nowrap">Role</TableHead>
+                    <TableHead className="whitespace-nowrap text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {users.map((user: any) => (
                     <TableRow key={user.id}>
-                      <TableCell className="text-text-primary">{user.email}</TableCell>
-                      <TableCell className="text-right font-mono tabular-nums font-medium text-feedback-success">
+                      <TableCell className="whitespace-nowrap text-text-primary">{user.email}</TableCell>
+                      <TableCell className="whitespace-nowrap text-right font-mono tabular-nums font-medium text-feedback-success">
                         ${user.balance?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </TableCell>
-                      <TableCell className="text-right font-mono tabular-nums font-medium text-feedback-success">
+                      <TableCell className="whitespace-nowrap text-right font-mono tabular-nums font-medium text-feedback-success">
                         ${user.profit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <Badge variant={user.blocked ? 'error' : 'success'}>
                           {user.blocked ? 'Blocked' : 'Active'}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <Badge variant={user.role === 'admin' ? 'default' : 'neutral'}>
                           {user.role}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-2 whitespace-nowrap">
                           <Button
                             variant="secondary"
                             size="sm"
@@ -315,7 +317,8 @@ export default function Admin() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+                </Table>
+              </div>
               {users.length === 0 && (
                 <div className="glass-inset flex flex-col items-center gap-2 rounded-xl px-6 py-10 text-center">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-overlay text-text-tertiary">
@@ -330,7 +333,7 @@ export default function Admin() {
 
         {/* Balance Edit Modal */}
         <Dialog open={balanceModalOpen} onOpenChange={setBalanceModalOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] p-4 sm:max-w-md sm:p-6">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
@@ -342,7 +345,7 @@ export default function Admin() {
                 <div className="flex flex-col gap-5">
                   <div className="glass-inset rounded-xl p-4">
                     <p className="text-caption uppercase text-text-tertiary">User</p>
-                    <p className="text-body font-medium text-text-primary">{selectedUser.email}</p>
+                    <p className="break-all text-body font-medium text-text-primary">{selectedUser.email}</p>
                     <p className="mt-2 text-body-sm text-text-secondary">
                       Current balance:{' '}
                       <span className="font-mono tabular-nums font-medium text-feedback-success">
@@ -399,7 +402,7 @@ export default function Admin() {
 
         {/* Profit Edit Modal */}
         <Dialog open={profitModalOpen} onOpenChange={setProfitModalOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] p-4 sm:max-w-md sm:p-6">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
@@ -411,7 +414,7 @@ export default function Admin() {
                 <div className="flex flex-col gap-5">
                   <div className="glass-inset rounded-xl p-4">
                     <p className="text-caption uppercase text-text-tertiary">User</p>
-                    <p className="text-body font-medium text-text-primary">{selectedUser.email}</p>
+                    <p className="break-all text-body font-medium text-text-primary">{selectedUser.email}</p>
                     <p className="mt-2 text-body-sm text-text-secondary">
                       Current P&L:{' '}
                       <span className="font-mono tabular-nums font-medium text-feedback-success">

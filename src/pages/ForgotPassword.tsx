@@ -45,7 +45,7 @@ export default function ForgotPassword() {
           className="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-primary opacity-[0.12] blur-3xl"
           aria-hidden="true"
         />
-        <Card className="liquid-glass p-8">
+        <Card className="liquid-glass p-6 sm:p-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
             <h2 className="text-h2">Reset your password</h2>
@@ -94,7 +94,7 @@ export default function ForgotPassword() {
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-feedback-success/15">
                 <MailCheck className="h-6 w-6 text-feedback-success" strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <p className="text-body-sm text-text-secondary">
+              <p className="break-words text-body-sm text-text-secondary">
                 If an account exists for {email}, we&apos;ve sent a reset link. Check your inbox.
               </p>
               <Button asChild variant="primary" size="lg" className="w-full">

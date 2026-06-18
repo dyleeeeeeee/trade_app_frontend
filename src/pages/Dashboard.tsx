@@ -203,7 +203,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
         {/* Header */}
         <header className="flex flex-wrap items-end justify-between gap-2">
           <div className="flex flex-col gap-1">
@@ -234,14 +234,14 @@ export default function Dashboard() {
             const Icon = stat.icon;
             const neutral = stat.change === '—';
             return (
-              <Card key={stat.title} interactive className="p-5">
-                <div className="flex items-center justify-between">
-                  <p className="text-caption uppercase text-text-tertiary">{stat.title}</p>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-interactive/10" aria-hidden="true">
+              <Card key={stat.title} interactive className="overflow-hidden p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="min-w-0 flex-1 truncate text-caption uppercase text-text-tertiary">{stat.title}</p>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-interactive/10" aria-hidden="true">
                     <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} />
                   </span>
                 </div>
-                <p className="mt-3 font-mono text-h2 text-text-primary" aria-label={`${stat.title}: ${stat.value}`}>
+                <p className="mt-3 truncate font-mono text-h2 tabular-nums text-text-primary" aria-label={`${stat.title}: ${stat.value}`}>
                   {loading ? <span className="shimmer inline-block h-7 w-28 rounded-md bg-white/[0.06]" /> : stat.value}
                 </p>
                 <div className={cn('mt-1.5 flex items-center gap-1 text-body-sm', neutral ? 'text-text-tertiary' : stat.positive ? 'text-feedback-success' : 'text-feedback-error')}>
@@ -254,24 +254,24 @@ export default function Dashboard() {
         </section>
 
         {/* Live ticker tape */}
-        <Card className="overflow-hidden p-0">
+        <Card className="w-full overflow-hidden p-0">
           <TradingViewTicker />
         </Card>
 
         {/* Chart + portfolio summary */}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-3">
           {/* Advanced chart */}
           <Card className="flex flex-col overflow-hidden xl:col-span-2">
             <div className="liquid-glass flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4">
-              <div className="flex items-center gap-3">
+              <div className="flex min-w-0 items-center gap-3">
                 {selectedPrice && <AssetLogo symbol={selectedPrice.symbol} size={32} />}
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-h3 text-text-primary">{chartSymbol.replace('/USD', '')}</h2>
+                    <h2 className="truncate text-h3 text-text-primary">{chartSymbol.replace('/USD', '')}</h2>
                     {selectedPrice && <PriceChange changePercent={selectedPrice.changePercent} />}
                   </div>
                   {selectedPrice && (
-                    <LivePrice value={Number(selectedPrice.price)} className="font-mono text-body-sm text-text-secondary" />
+                    <LivePrice value={Number(selectedPrice.price)} className="block truncate font-mono text-body-sm tabular-nums text-text-secondary" />
                   )}
                 </div>
               </div>
@@ -291,17 +291,17 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-            <TradingViewChart symbol={chartSymbol} interval={chartInterval} className="h-[440px] w-full" />
+            <TradingViewChart symbol={chartSymbol} interval={chartInterval} className="h-[320px] w-full sm:h-[440px]" />
           </Card>
 
           {/* Portfolio value + allocation donut */}
-          <Card className="liquid-glass flex flex-col p-6">
+          <Card className="liquid-glass flex min-w-0 flex-col overflow-hidden p-5 sm:p-6">
             <p className="text-caption uppercase text-text-tertiary">Portfolio value</p>
-            <p className="mt-2 font-mono text-display text-text-primary leading-none">
+            <p className="mt-2 min-w-0 break-words font-mono text-display tabular-nums text-text-primary leading-none">
               {loading ? <span className="shimmer inline-block h-12 w-40 rounded-lg bg-white/[0.06]" /> : `$${money(balance)}`}
             </p>
-            <div className="mt-3 flex items-center gap-2">
-              <span className={cn('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-medium tabular-nums', profit >= 0 ? 'bg-feedback-success/15 text-feedback-success' : 'bg-feedback-error/15 text-feedback-error')}>
+            <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
+              <span className={cn('inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-caption font-medium tabular-nums', profit >= 0 ? 'bg-feedback-success/15 text-feedback-success' : 'bg-feedback-error/15 text-feedback-error')}>
                 {profit >= 0 ? <ArrowUpRight className="h-3 w-3" strokeWidth={2} /> : <ArrowDownRight className="h-3 w-3" strokeWidth={2} />}
                 {profit >= 0 ? '+' : '-'}${money(Math.abs(profit), 0)}
               </span>
@@ -309,13 +309,13 @@ export default function Dashboard() {
             </div>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-xl glass-inset p-3">
-                <p className="flex items-center gap-1.5 text-caption text-text-tertiary"><Wallet className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" /> Buying power</p>
-                <p className="mt-1 font-mono text-body-sm font-semibold text-text-primary">${money(balance, 0)}</p>
+              <div className="min-w-0 rounded-xl glass-inset p-3">
+                <p className="flex min-w-0 items-center gap-1.5 text-caption text-text-tertiary"><Wallet className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden="true" /> <span className="truncate">Buying power</span></p>
+                <p className="mt-1 truncate font-mono text-body-sm font-semibold tabular-nums text-text-primary">${money(balance, 0)}</p>
               </div>
-              <div className="rounded-xl glass-inset p-3">
-                <p className="flex items-center gap-1.5 text-caption text-text-tertiary"><Activity className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" /> Open positions</p>
-                <p className="mt-1 font-mono text-body-sm font-semibold text-text-primary">{activeTradesCount}</p>
+              <div className="min-w-0 rounded-xl glass-inset p-3">
+                <p className="flex min-w-0 items-center gap-1.5 text-caption text-text-tertiary"><Activity className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden="true" /> <span className="truncate">Open positions</span></p>
+                <p className="mt-1 truncate font-mono text-body-sm font-semibold tabular-nums text-text-primary">{activeTradesCount}</p>
               </div>
             </div>
 
@@ -332,18 +332,18 @@ export default function Dashboard() {
                   </RePieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="font-mono text-body font-semibold text-text-primary">{portfolioAllocation.length}</span>
+                  <span className="font-mono text-body font-semibold tabular-nums text-text-primary">{portfolioAllocation.length}</span>
                   <span className="text-caption text-text-tertiary">assets</span>
                 </div>
               </div>
-              <ul className="flex flex-1 flex-col gap-2">
+              <ul className="flex min-w-0 flex-1 flex-col gap-2">
                 {portfolioAllocation.map((item, i) => (
-                  <li key={i} className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-2 text-body-sm text-text-secondary">
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.brandColor }} aria-hidden="true" />
-                      {item.asset}
+                  <li key={i} className="flex min-w-0 items-center justify-between gap-2">
+                    <span className="flex min-w-0 flex-1 items-center gap-2 text-body-sm text-text-secondary">
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: item.brandColor }} aria-hidden="true" />
+                      <span className="truncate">{item.asset}</span>
                     </span>
-                    <span className="font-mono text-body-sm font-medium text-text-primary tabular-nums">{item.allocation}%</span>
+                    <span className="shrink-0 font-mono text-body-sm font-medium text-text-primary tabular-nums">{item.allocation}%</span>
                   </li>
                 ))}
               </ul>
@@ -352,7 +352,7 @@ export default function Dashboard() {
         </div>
 
         {/* Watchlist + AI insights */}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-3">
           {/* Watchlist drives the chart */}
           <Card className="flex flex-col xl:col-span-2">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -370,7 +370,7 @@ export default function Dashboard() {
                       onClick={() => setChartSymbol(a.symbol)}
                       aria-pressed={active}
                       className={cn(
-                        'flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-micro',
+                        'flex min-w-0 items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-micro',
                         active ? 'bg-interactive/10' : 'hover:bg-white/[0.05]',
                       )}
                     >
@@ -379,9 +379,9 @@ export default function Dashboard() {
                         <p className="truncate text-body-sm font-semibold text-text-primary">{a.symbol.replace('/USD', '')}</p>
                         <p className="truncate text-caption text-text-tertiary">{a.name}</p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <LivePrice value={Number(a.price)} className="font-mono text-body-sm text-text-primary tabular-nums" />
-                        <div className="w-20 text-right">
+                      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                        <LivePrice value={Number(a.price)} className="truncate font-mono text-body-sm text-text-primary tabular-nums" />
+                        <div className="w-16 shrink-0 text-right sm:w-20">
                           <PriceChange changePercent={a.changePercent} />
                         </div>
                       </div>
@@ -393,7 +393,7 @@ export default function Dashboard() {
           </Card>
 
           {/* AI insights spotlight */}
-          <Card className="liquid-glass relative overflow-hidden p-6">
+          <Card className="liquid-glass relative overflow-hidden p-5 sm:p-6">
             <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-interactive/20 blur-3xl" aria-hidden="true" />
             <div className="relative flex h-full flex-col gap-4">
               <div className="flex items-center gap-2">
@@ -405,9 +405,9 @@ export default function Dashboard() {
               {featuredAsset ? (
                 <ul className="flex flex-col gap-3">
                   {insights.map((insight, i) => (
-                    <li key={i} className="flex gap-2.5 text-body-sm text-text-secondary">
+                    <li key={i} className="flex min-w-0 gap-2.5 text-body-sm text-text-secondary">
                       <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-interactive" aria-hidden="true" />
-                      {insight.text}
+                      <span className="min-w-0 break-words">{insight.text}</span>
                     </li>
                   ))}
                 </ul>
@@ -422,7 +422,7 @@ export default function Dashboard() {
         </div>
 
         {/* Recent activity + quick actions */}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-3">
           <Card className="flex flex-col xl:col-span-2">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-h3">Recent activity</CardTitle>
@@ -466,11 +466,11 @@ export default function Dashboard() {
                           <p className="text-caption text-text-tertiary">{formatTradeTime(trade)}</p>
                         </div>
                       </div>
-                      <div className="ml-4 flex-shrink-0 text-right">
-                        <p className={cn('font-mono text-body-sm font-semibold tabular-nums', trade.side === 'buy' ? 'text-feedback-error' : 'text-feedback-success')}>
+                      <div className="ml-2 min-w-0 max-w-[45%] shrink-0 text-right sm:ml-4">
+                        <p className={cn('truncate font-mono text-body-sm font-semibold tabular-nums', trade.side === 'buy' ? 'text-feedback-error' : 'text-feedback-success')}>
                           {trade.side === 'buy' ? '-' : '+'}${money((trade.size || 0) * (trade.price || 0))}
                         </p>
-                        <p className="font-mono text-caption text-text-tertiary tabular-nums">
+                        <p className="truncate font-mono text-caption text-text-tertiary tabular-nums">
                           {(trade.size || 0).toFixed(4)} {(trade.asset || 'BTC/USD').split('/')[0]}
                         </p>
                       </div>
@@ -482,7 +482,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Quick actions */}
-          <Card className="flex flex-col p-6">
+          <Card className="flex flex-col p-5 sm:p-6">
             <h2 className="text-h3">Quick actions</h2>
             <p className="mt-1 text-body-sm text-text-secondary">Manage your funds and positions.</p>
             <div className="mt-5 grid grid-cols-2 gap-3">

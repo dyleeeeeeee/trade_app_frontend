@@ -36,7 +36,7 @@ export default function About() {
     <MarketingLayout>
       {/* Hero */}
       <motion.section
-        className="flex flex-col items-center gap-6 py-20 text-center lg:py-28"
+        className="flex flex-col items-center gap-6 py-12 text-center sm:py-20 lg:py-28"
         initial={{ opacity: 0, y: reduce ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
@@ -52,15 +52,15 @@ export default function About() {
       </motion.section>
 
       {/* Mission & vision */}
-      <motion.section className="grid grid-cols-1 gap-6 py-12 md:grid-cols-2" {...reveal}>
-        <Card className="p-8">
+      <motion.section className="grid grid-cols-1 gap-6 py-8 sm:py-12 md:grid-cols-2" {...reveal}>
+        <Card className="p-5 sm:p-6">
           <h2 className="text-h3 text-text-primary">Our mission</h2>
           <p className="mt-3 text-body text-text-secondary">
             Make serious investing simple. We bring trading tools and professional advice
             together in one place, so good strategies are within reach for everyone.
           </p>
         </Card>
-        <Card className="p-8">
+        <Card className="p-5 sm:p-6">
           <h2 className="text-h3 text-text-primary">Our vision</h2>
           <p className="mt-3 text-body text-text-secondary">
             A platform where traditional wealth management and crypto work as one, giving you
@@ -70,10 +70,10 @@ export default function About() {
       </motion.section>
 
       {/* Values */}
-      <motion.section className="py-12 lg:py-20" {...reveal}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <motion.section className="py-12 sm:py-12 lg:py-20" {...reveal}>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {VALUES.map(({ icon: Icon, title, body }) => (
-            <Card key={title} interactive className="flex flex-col gap-4 p-6">
+            <Card key={title} interactive className="flex flex-col gap-4 p-5 sm:p-6">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-interactive/10">
                 <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} aria-hidden="true" />
               </span>

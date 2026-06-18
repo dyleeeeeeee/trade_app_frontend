@@ -160,7 +160,9 @@ export function LiquidNav() {
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            const showLabel = isDesktop || isActive;
+            // Icon-only on mobile (predictable width that always fits); the
+            // morphing indicator marks the active tab. Labels on desktop.
+            const showLabel = isDesktop;
             return (
               <motion.div key={item.path} layout={!reduce} transition={spring} className="relative shrink-0">
                 <Link

@@ -27,7 +27,9 @@ import {
   Loader2,
   QrCode,
   Copy,
-  ExternalLink
+  ExternalLink,
+  DollarSign,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 // import QRCode from 'react-qr-code'; // Will add when library is available
@@ -194,9 +196,9 @@ export default function Wallet() {
 
   return (
     <Layout>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6 sm:gap-8">
         {/* Header */}
-        <div className="flex flex-col gap-1">
+        <div className="flex min-w-0 flex-col gap-1">
           <span className="text-caption uppercase text-text-tertiary">Funds</span>
           <h1 className="text-h1 text-text-primary">Wallet</h1>
           <p className="text-body text-text-secondary">Add, withdraw, and send funds.</p>
@@ -204,10 +206,10 @@ export default function Wallet() {
 
         {/* Error Message */}
         {error && (
-          <Card className="border-feedback-error/20 bg-feedback-error/10 p-6">
+          <Card className="border-feedback-error/20 bg-feedback-error/10 p-4 sm:p-6">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-body-sm text-feedback-error">{error}</p>
-              <Button variant="secondary" size="sm" onClick={() => fetchWalletData()}>
+              <p className="min-w-0 text-body-sm text-feedback-error">{error}</p>
+              <Button variant="secondary" size="sm" className="shrink-0" onClick={() => fetchWalletData()}>
                 Retry
               </Button>
             </div>
@@ -216,24 +218,24 @@ export default function Wallet() {
 
         {/* Balance Hero — Apple Wallet card */}
         <motion.div {...reveal}>
-          <Card className="liquid-glass relative overflow-hidden p-8">
+          <Card className="liquid-glass relative overflow-hidden p-6 sm:p-8">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="glass-inset flex h-11 w-11 items-center justify-center rounded-xl">
+            <div className="flex flex-col gap-5 sm:gap-6">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="glass-inset flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
                     <WalletIcon className="h-5 w-5 text-interactive" />
                   </div>
-                  <span className="text-caption uppercase text-text-tertiary">Available balance</span>
+                  <span className="truncate text-caption uppercase text-text-tertiary">Available balance</span>
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-feedback-success/10 px-3 py-1 text-caption font-semibold text-feedback-success">
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-feedback-success/10 px-3 py-1 text-caption font-semibold text-feedback-success">
                   <ArrowUpRight className="h-3.5 w-3.5" /> Live
                 </span>
               </div>
 
-              <div className="font-mono tabular-nums text-5xl font-semibold tracking-tight text-text-primary md:text-6xl">
+              <div className="min-w-0 break-words font-mono tabular-nums text-display font-semibold tracking-tight text-text-primary">
                 {initialLoading ? (
-                  <span className="shimmer inline-block h-14 w-56 rounded-xl bg-white/[0.06]" />
+                  <span className="shimmer inline-block h-14 w-56 max-w-full rounded-xl bg-white/[0.06]" />
                 ) : (
                   <>${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>
                 )}
@@ -252,19 +254,19 @@ export default function Wallet() {
             <TabsList className="glass-inset grid w-full grid-cols-3 gap-1 rounded-full p-1">
               <TabsTrigger
                 value="deposit"
-                className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
+                className="min-w-0 truncate rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
               >
                 Deposit
               </TabsTrigger>
               <TabsTrigger
                 value="withdraw"
-                className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
+                className="min-w-0 truncate rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
               >
                 Withdraw
               </TabsTrigger>
               <TabsTrigger
                 value="transfer"
-                className="rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
+                className="min-w-0 truncate rounded-full text-body-sm font-medium text-text-secondary data-[state=active]:bg-white/[0.10] data-[state=active]:text-text-primary"
               >
                 Send
               </TabsTrigger>
@@ -275,12 +277,12 @@ export default function Wallet() {
                 {/* Deposit Instructions Modal */}
                 <Dialog open={depositModalOpen} onOpenChange={setDepositModalOpen}>
                   <DialogTrigger asChild>
-                    <Card interactive className="cursor-pointer p-6">
+                    <Card interactive className="cursor-pointer p-4 sm:p-6">
                       <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/[0.08] bg-feedback-success/10">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-feedback-success/10">
                           <ArrowDownRight className="h-5 w-5 text-feedback-success" />
                         </div>
-                        <div className="flex flex-col gap-0.5">
+                        <div className="flex min-w-0 flex-col gap-0.5">
                           <h3 className="text-h3 text-text-primary">Add funds</h3>
                           <p className="text-body-sm text-text-secondary">
                             See where to send your deposit and how to track it.
@@ -313,13 +315,14 @@ export default function Wallet() {
                       <div className="flex flex-col gap-2">
                         <Label>Bitcoin address (BTC)</Label>
                         <div className="glass-inset flex items-center gap-2 rounded-xl p-3">
-                          <code className="flex-1 break-all font-mono text-body-sm text-text-primary">
+                          <code className="min-w-0 flex-1 break-all font-mono text-body-sm text-text-primary">
                             {/* bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw bc1q4lx9tptr58cld78g7cev7y9f6jfgcfrzcnmudt */}
                             bc1qnyzz76de0sqn5ufyq22ued4dk0qh7jlf40megw
                           </code>
                           <Button
                             variant="ghost"
                             size="icon-sm"
+                            className="shrink-0"
                             aria-label="Copy Bitcoin address"
                             onClick={() => {
                               navigator.clipboard.writeText('bc1qndh646ztj08nzmtshmsl5wmlq7kn7kad0vx8wl');
@@ -366,27 +369,27 @@ export default function Wallet() {
                 </Dialog>
 
                 {/* Deposit History */}
-                <Card className="p-6">
+                <Card className="overflow-hidden p-4 sm:p-6">
                   <div className="flex flex-col gap-4">
                     <h3 className="text-h3 text-text-primary">Deposits</h3>
                     <div className="flex flex-col gap-3">
                       {deposits.length > 0 ? (
                         deposits.map((deposit: any, index: number) => (
                           <div key={deposit.id || index} className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4">
-                            <div className="flex items-center gap-3">
-                              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-feedback-success/10">
+                            <div className="flex min-w-0 items-center gap-3">
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-feedback-success/10">
                                 <ArrowDownRight className="h-4 w-4 text-feedback-success" />
                               </div>
-                              <div className="flex flex-col gap-0.5">
-                                <p className="font-mono tabular-nums text-body-sm font-medium text-text-primary">
+                              <div className="flex min-w-0 flex-col gap-0.5">
+                                <p className="truncate font-mono tabular-nums text-body-sm font-medium text-text-primary">
                                   ${deposit.amount}
                                 </p>
-                                <p className="text-caption text-text-tertiary">
+                                <p className="truncate text-caption text-text-tertiary">
                                   {new Date(deposit.created_at).toLocaleDateString()}
                                 </p>
                               </div>
                             </div>
-                            <span className="rounded-full bg-feedback-success/10 px-2.5 py-1 text-caption font-semibold text-feedback-success">
+                            <span className="shrink-0 rounded-full bg-feedback-success/10 px-2.5 py-1 text-caption font-semibold text-feedback-success">
                               Completed
                             </span>
                           </div>
@@ -403,25 +406,29 @@ export default function Wallet() {
             </TabsContent>
 
             <TabsContent value="withdraw">
-              <Card className="p-6">
+              <Card className="overflow-hidden p-4 sm:p-6">
                 <div className="flex flex-col gap-6">
-                  <div className="flex items-center gap-3">
-                    <div className="glass-inset flex h-11 w-11 items-center justify-center rounded-xl">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="glass-inset flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
                       <ArrowUpRight className="h-5 w-5 text-feedback-error" />
                     </div>
-                    <h3 className="text-h3 text-text-primary">Withdraw funds</h3>
+                    <h3 className="truncate text-h3 text-text-primary">Withdraw funds</h3>
                   </div>
 
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="withdrawAmount">Amount (USD)</Label>
-                      <Input
-                        id="withdrawAmount"
-                        type="number"
-                        placeholder="0.00"
-                        value={withdrawAmount}
-                        onChange={(e) => setWithdrawAmount(e.target.value)}
-                      />
+                      <div className="relative">
+                        <DollarSign className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+                        <Input
+                          id="withdrawAmount"
+                          type="number"
+                          placeholder="0.00"
+                          value={withdrawAmount}
+                          onChange={(e) => setWithdrawAmount(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -443,12 +450,16 @@ export default function Wallet() {
 
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="walletAddress">Wallet address</Label>
-                      <Input
-                        id="walletAddress"
-                        placeholder="Where to send your funds"
-                        value={withdrawalAddress}
-                        onChange={(e) => setWithdrawalAddress(e.target.value)}
-                      />
+                      <div className="relative">
+                        <WalletIcon className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+                        <Input
+                          id="walletAddress"
+                          placeholder="Where to send your funds"
+                          value={withdrawalAddress}
+                          onChange={(e) => setWithdrawalAddress(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
 
                     <Button
@@ -476,35 +487,43 @@ export default function Wallet() {
             </TabsContent>
 
             <TabsContent value="transfer">
-              <Card className="p-6">
+              <Card className="overflow-hidden p-4 sm:p-6">
                 <div className="flex flex-col gap-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-interactive/10">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-interactive/10">
                       <Send className="h-5 w-5 text-interactive" />
                     </div>
-                    <h3 className="text-h3 text-text-primary">Send funds</h3>
+                    <h3 className="truncate text-h3 text-text-primary">Send funds</h3>
                   </div>
 
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="recipient">Recipient email</Label>
-                      <Input
-                        id="recipient"
-                        type="email"
-                        placeholder="recipient@example.com"
-                        value={transferRecipient}
-                        onChange={(e) => setTransferRecipient(e.target.value)}
-                      />
+                      <div className="relative">
+                        <Mail className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+                        <Input
+                          id="recipient"
+                          type="email"
+                          placeholder="recipient@example.com"
+                          value={transferRecipient}
+                          onChange={(e) => setTransferRecipient(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="transferAmount">Amount (USD)</Label>
-                      <Input
-                        id="transferAmount"
-                        type="number"
-                        placeholder="0.00"
-                        value={transferAmount}
-                        onChange={(e) => setTransferAmount(e.target.value)}
-                      />
+                      <div className="relative">
+                        <DollarSign className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+                        <Input
+                          id="transferAmount"
+                          type="number"
+                          placeholder="0.00"
+                          value={transferAmount}
+                          onChange={(e) => setTransferAmount(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
                     <Button
                       variant="primary"
@@ -531,29 +550,29 @@ export default function Wallet() {
 
         {/* Withdrawal History */}
         <motion.div {...reveal}>
-          <Card className="p-6">
+          <Card className="overflow-hidden p-4 sm:p-6">
             <div className="flex flex-col gap-4">
               <h3 className="text-h3 text-text-primary">Withdrawals</h3>
               <div className="flex flex-col gap-3">
                 {withdrawals.length > 0 ? (
                   withdrawals.map((withdrawal: any, index: number) => (
                     <div key={index} className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4">
-                      <div className="flex items-center gap-3">
-                        {getStatusBadge(withdrawal.status)}
-                        <div className="flex flex-col gap-0.5">
-                          <p className="font-mono tabular-nums text-body-sm font-medium text-text-primary">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="shrink-0">{getStatusBadge(withdrawal.status)}</span>
+                        <div className="flex min-w-0 flex-col gap-0.5">
+                          <p className="truncate font-mono tabular-nums text-body-sm font-medium text-text-primary">
                             ${withdrawal.amount}
                           </p>
-                          <p className="text-caption text-text-tertiary">
+                          <p className="truncate text-caption text-text-tertiary">
                             {withdrawal.network ? withdrawal.network.toUpperCase() : 'Unknown'} • {withdrawal.wallet_address ? `${withdrawal.wallet_address.substring(0, 6)}...` : ''}
                           </p>
-                          <p className="text-caption text-text-tertiary">
+                          <p className="truncate text-caption text-text-tertiary">
                             {new Date(withdrawal.created_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
                       <span className={cn(
-                        "rounded-full px-2.5 py-1 text-caption font-semibold capitalize",
+                        "shrink-0 rounded-full px-2.5 py-1 text-caption font-semibold capitalize",
                         withdrawal.status === 'approved' && "bg-feedback-success/10 text-feedback-success",
                         withdrawal.status === 'pending' && "bg-interactive/10 text-interactive",
                         withdrawal.status === 'rejected' && "bg-feedback-error/10 text-feedback-error"

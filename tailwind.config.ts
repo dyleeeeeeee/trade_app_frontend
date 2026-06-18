@@ -85,12 +85,13 @@ export default {
         neutral: token("neutral"),
       },
 
-      /* ---- Type scale: weight + opacity carry hierarchy, not size jumps ---- */
+      /* ---- Type scale: fluid (clamp) so large figures/headings never
+         overflow on mobile yet keep their desktop presence. ---- */
       fontSize: {
-        display: ["3.5rem", { lineHeight: "1.05", letterSpacing: "-0.022em", fontWeight: "700" }],
-        h1: ["2rem", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "700" }],
-        h2: ["1.5rem", { lineHeight: "1.25", letterSpacing: "-0.015em", fontWeight: "600" }],
-        h3: ["1.25rem", { lineHeight: "1.35", letterSpacing: "-0.01em", fontWeight: "600" }],
+        display: ["clamp(2rem, 7vw, 3.5rem)", { lineHeight: "1.05", letterSpacing: "-0.022em", fontWeight: "700" }],
+        h1: ["clamp(1.5rem, 4.5vw, 2rem)", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "700" }],
+        h2: ["clamp(1.25rem, 3.5vw, 1.5rem)", { lineHeight: "1.25", letterSpacing: "-0.015em", fontWeight: "600" }],
+        h3: ["clamp(1.125rem, 2.5vw, 1.25rem)", { lineHeight: "1.35", letterSpacing: "-0.01em", fontWeight: "600" }],
         body: ["1rem", { lineHeight: "1.6" }],
         "body-sm": ["0.875rem", { lineHeight: "1.5" }],
         caption: ["0.75rem", { lineHeight: "1.4", letterSpacing: "0.02em", fontWeight: "500" }],

@@ -242,21 +242,21 @@ export default function Strategies() {
     const isSubscribed = myStrategies.some(s => s.strategy_id === strategy.id);
 
     return (
-      <Card interactive className="flex flex-col p-6">
-        <div className="flex items-start justify-between">
+      <Card interactive className="flex flex-col p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
           <span
             className="flex h-11 w-11 items-center justify-center rounded-xl bg-interactive/15"
             aria-hidden="true"
           >
             <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} />
           </span>
-          <Badge variant={getRiskBadgeVariant(strategy.risk_level)}>
+          <Badge variant={getRiskBadgeVariant(strategy.risk_level)} className="shrink-0">
             {strategy.risk_level} risk
           </Badge>
         </div>
 
-        <div className="mt-4 flex flex-col gap-1.5">
-          <h3 className="text-h3">{strategy.name}</h3>
+        <div className="mt-4 flex min-w-0 flex-col gap-1.5">
+          <h3 className="truncate text-h3">{strategy.name}</h3>
           <p className="text-body-sm text-text-secondary">{strategy.description}</p>
         </div>
 
@@ -269,27 +269,27 @@ export default function Strategies() {
         </div>
 
         {/* Stats */}
-        <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-          <div className="glass-inset rounded-xl p-3">
-            <p className="text-caption uppercase text-text-tertiary">Daily ROI</p>
+        <div className="mt-5 grid grid-cols-2 gap-2 text-center sm:grid-cols-3">
+          <div className="glass-inset min-w-0 rounded-xl p-3">
+            <p className="truncate text-caption uppercase text-text-tertiary">Daily ROI</p>
             <p
               className={cn(
-                'mt-1 font-mono tabular-nums text-body-sm font-semibold',
+                'mt-1 truncate font-mono tabular-nums text-body-sm font-semibold',
                 strategy.expected_roi > 1 ? 'text-feedback-success' : 'text-text-primary',
               )}
             >
               {strategy.expected_roi.toFixed(2)}%
             </p>
           </div>
-          <div className="glass-inset rounded-xl p-3">
-            <p className="text-caption uppercase text-text-tertiary">Minimum</p>
-            <p className="mt-1 font-mono tabular-nums text-body-sm font-semibold text-text-primary">
+          <div className="glass-inset min-w-0 rounded-xl p-3">
+            <p className="truncate text-caption uppercase text-text-tertiary">Minimum</p>
+            <p className="mt-1 truncate font-mono tabular-nums text-body-sm font-semibold text-text-primary">
               ${strategy.min_investment.toLocaleString()}
             </p>
           </div>
-          <div className="glass-inset rounded-xl p-3">
-            <p className="text-caption uppercase text-text-tertiary">Members</p>
-            <p className="mt-1 font-mono tabular-nums text-body-sm font-semibold text-text-primary">
+          <div className="glass-inset min-w-0 rounded-xl p-3">
+            <p className="truncate text-caption uppercase text-text-tertiary">Members</p>
+            <p className="mt-1 truncate font-mono tabular-nums text-body-sm font-semibold text-text-primary">
               {strategy.subscriber_count}
             </p>
           </div>
@@ -383,7 +383,7 @@ export default function Strategies() {
 
         {/* My Strategies Summary */}
         {myStrategies.length > 0 && (
-          <Card className="p-6">
+          <Card className="p-4 sm:p-6">
             <CardHeader className="p-0">
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-interactive" strokeWidth={1.5} />
@@ -391,36 +391,36 @@ export default function Strategies() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 pt-6">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {myStrategies.map((strategy) => (
                   <div
                     key={strategy.subscription_id}
-                    className="glass-inset rounded-xl p-5"
+                    className="glass-inset min-w-0 rounded-xl p-4 sm:p-5"
                   >
                     <div className="mb-3 flex items-start justify-between gap-2">
-                      <h4 className="text-body font-semibold text-text-primary">
+                      <h4 className="min-w-0 truncate text-body font-semibold text-text-primary">
                         {strategy.strategy_name}
                       </h4>
-                      <Badge variant={getRiskBadgeVariant(strategy.risk_level)}>
+                      <Badge variant={getRiskBadgeVariant(strategy.risk_level)} className="shrink-0">
                         {strategy.risk_level}
                       </Badge>
                     </div>
                     <dl className="flex flex-col gap-2 text-body-sm">
-                      <div className="flex items-center justify-between">
-                        <dt className="text-text-tertiary">Invested</dt>
-                        <dd className="font-mono tabular-nums font-medium text-text-primary">
+                      <div className="flex min-w-0 items-center justify-between gap-3">
+                        <dt className="truncate text-text-tertiary">Invested</dt>
+                        <dd className="truncate font-mono tabular-nums font-medium text-text-primary">
                           ${strategy.invested_amount.toLocaleString()}
                         </dd>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-text-tertiary">Earnings</dt>
-                        <dd className="font-mono tabular-nums font-medium text-feedback-success">
+                      <div className="flex min-w-0 items-center justify-between gap-3">
+                        <dt className="truncate text-text-tertiary">Earnings</dt>
+                        <dd className="truncate font-mono tabular-nums font-medium text-feedback-success">
                           +${strategy.total_earnings.toFixed(2)}
                         </dd>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-text-tertiary">Days active</dt>
-                        <dd className="font-mono tabular-nums font-medium text-text-primary">
+                      <div className="flex min-w-0 items-center justify-between gap-3">
+                        <dt className="truncate text-text-tertiary">Days active</dt>
+                        <dd className="truncate font-mono tabular-nums font-medium text-text-primary">
                           {strategy.days_active}
                         </dd>
                       </div>
@@ -443,17 +443,17 @@ export default function Strategies() {
 
         {/* Stats Overview */}
         <section
-          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4"
           aria-label="Strategy portfolio overview"
         >
           {overviewStats.map((stat) => {
             const Icon = stat.icon;
             return (
-              <Card key={stat.label} interactive className="p-6">
-                <div className="flex items-center justify-between">
-                  <p className="text-caption uppercase text-text-tertiary">{stat.label}</p>
+              <Card key={stat.label} interactive className="min-w-0 p-4 sm:p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="truncate text-caption uppercase text-text-tertiary">{stat.label}</p>
                   <span
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-interactive/10"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-interactive/10"
                     aria-hidden="true"
                   >
                     <Icon className="h-5 w-5 text-interactive" strokeWidth={1.5} />
@@ -461,7 +461,7 @@ export default function Strategies() {
                 </div>
                 <p
                   className={cn(
-                    'mt-4 font-mono tabular-nums text-h2',
+                    'mt-4 truncate font-mono tabular-nums text-h2',
                     stat.tone === 'success' ? 'text-feedback-success' : 'text-text-primary',
                   )}
                 >
@@ -487,13 +487,13 @@ export default function Strategies() {
 
           <TabsContent value="crypto" className="flex flex-col gap-6">
             {cryptoStrategies.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
                 {cryptoStrategies.map((strategy) => (
                   <StrategyCard key={strategy.id} strategy={strategy} />
                 ))}
               </div>
             ) : (
-              <Card className="p-10 text-center">
+              <Card className="p-6 text-center sm:p-10">
                 <p className="text-body-sm text-text-tertiary">
                   No crypto strategies available right now. Check back soon.
                 </p>
@@ -503,13 +503,13 @@ export default function Strategies() {
 
           <TabsContent value="quant" className="flex flex-col gap-6">
             {quantStrategies.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
                 {quantStrategies.map((strategy) => (
                   <StrategyCard key={strategy.id} strategy={strategy} />
                 ))}
               </div>
             ) : (
-              <Card className="p-10 text-center">
+              <Card className="p-6 text-center sm:p-10">
                 <p className="text-body-sm text-text-tertiary">
                   No quant strategies available right now. Check back soon.
                 </p>
@@ -536,27 +536,27 @@ export default function Strategies() {
                 <div className="glass-inset rounded-xl p-4">
                   <p className="text-caption uppercase text-text-tertiary">Strategy details</p>
                   <div className="mt-3 grid grid-cols-2 gap-4 text-body-sm">
-                    <div>
-                      <p className="text-text-tertiary">Target daily ROI</p>
-                      <p className="mt-0.5 font-mono tabular-nums font-medium text-text-primary">
+                    <div className="min-w-0">
+                      <p className="truncate text-text-tertiary">Target daily ROI</p>
+                      <p className="mt-0.5 truncate font-mono tabular-nums font-medium text-text-primary">
                         {selectedStrategy.expected_roi.toFixed(2)}%
                       </p>
                     </div>
-                    <div>
-                      <p className="text-text-tertiary">Risk level</p>
-                      <p className="mt-0.5 font-medium capitalize text-text-primary">
+                    <div className="min-w-0">
+                      <p className="truncate text-text-tertiary">Risk level</p>
+                      <p className="mt-0.5 truncate font-medium capitalize text-text-primary">
                         {selectedStrategy.risk_level}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-text-tertiary">Minimum</p>
-                      <p className="mt-0.5 font-mono tabular-nums font-medium text-text-primary">
+                    <div className="min-w-0">
+                      <p className="truncate text-text-tertiary">Minimum</p>
+                      <p className="mt-0.5 truncate font-mono tabular-nums font-medium text-text-primary">
                         ${selectedStrategy.min_investment.toLocaleString()}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-text-tertiary">Maximum</p>
-                      <p className="mt-0.5 font-mono tabular-nums font-medium text-text-primary">
+                    <div className="min-w-0">
+                      <p className="truncate text-text-tertiary">Maximum</p>
+                      <p className="mt-0.5 truncate font-mono tabular-nums font-medium text-text-primary">
                         {selectedStrategy.max_investment ? `$${selectedStrategy.max_investment.toLocaleString()}` : 'No limit'}
                       </p>
                     </div>
@@ -565,27 +565,35 @@ export default function Strategies() {
 
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="investment">Amount to invest ($)</Label>
-                  <Input
-                    id="investment"
-                    type="number"
-                    placeholder={`Min: $${selectedStrategy.min_investment}`}
-                    value={investmentAmount}
-                    onChange={(e) => setInvestmentAmount(e.target.value)}
-                    min={selectedStrategy.min_investment}
-                    max={selectedStrategy.max_investment}
-                  />
+                  <div className="relative">
+                    <DollarSign
+                      className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                    <Input
+                      id="investment"
+                      type="number"
+                      placeholder={`Min: $${selectedStrategy.min_investment}`}
+                      value={investmentAmount}
+                      onChange={(e) => setInvestmentAmount(e.target.value)}
+                      min={selectedStrategy.min_investment}
+                      max={selectedStrategy.max_investment}
+                      className="pl-10"
+                    />
+                  </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <Button
                     variant="secondary"
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                     onClick={() => setDialogOpen(false)}
                   >
                     Cancel
                   </Button>
                   <Button
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                     onClick={() => handleSubscribe(selectedStrategy)}
                     disabled={subscribing === selectedStrategy.id}
                   >
