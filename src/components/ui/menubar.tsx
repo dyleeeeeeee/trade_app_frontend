@@ -106,7 +106,7 @@ const MenubarItem = React.forwardRef<
   <MenubarPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex h-9 cursor-default select-none items-center rounded-md px-3 text-body-sm text-text-primary outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-surface-raised",
+      "relative flex h-9 cursor-default select-none items-center rounded-md px-3 text-body-sm text-text-primary outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-40 focus:bg-surface-raised",
       inset && "pl-8",
       className,
     )}
@@ -122,7 +122,7 @@ const MenubarCheckboxItem = React.forwardRef<
   <MenubarPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "relative flex h-9 cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-3 text-body-sm text-text-primary outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-surface-raised data-[state=checked]:bg-interactive/10 data-[state=checked]:text-interactive",
+      "relative flex h-9 cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-3 text-body-sm text-text-primary outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-40 focus:bg-surface-raised data-[state=checked]:bg-interactive/10 data-[state=checked]:text-interactive",
       className,
     )}
     checked={checked}
@@ -145,7 +145,7 @@ const MenubarRadioItem = React.forwardRef<
   <MenubarPrimitive.RadioItem
     ref={ref}
     className={cn(
-      "relative flex h-9 cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-3 text-body-sm text-text-primary outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-surface-raised data-[state=checked]:bg-interactive/10 data-[state=checked]:text-interactive",
+      "relative flex h-9 cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-3 text-body-sm text-text-primary outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-40 focus:bg-surface-raised data-[state=checked]:bg-interactive/10 data-[state=checked]:text-interactive",
       className,
     )}
     {...props}

@@ -48,7 +48,7 @@ export default function ForgotPassword() {
         <Card className="liquid-glass p-6 sm:p-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <img src="/images/main-logo.png" alt="Astrid Global Ltd" className="h-12 w-auto" />
-            <h2 className="text-h2">Reset your password</h2>
+            <h1 className="text-h2">Reset your password</h1>
             <p className="text-body-sm text-text-secondary">
               {isSubmitted
                 ? 'Check your inbox for the reset link.'

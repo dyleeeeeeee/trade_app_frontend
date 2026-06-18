@@ -25,7 +25,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-interactive text-interactive-foreground shadow-[0_4px_16px_hsl(var(--interactive-default)/0.32)] hover:bg-interactive-hover hover:shadow-glow",
+          "bg-interactive-solid text-interactive-foreground shadow-[0_4px_16px_hsl(var(--interactive-default)/0.32)] hover:bg-interactive-solid-hover hover:shadow-glow",
         secondary:
           "glass text-text-primary hover:bg-white/[0.10] hover:shadow-glow",
         ghost:
@@ -37,7 +37,7 @@ const buttonVariants = cva(
         link: "text-interactive underline-offset-4 hover:underline",
         /* legacy aliases kept so existing pages don't break */
         default:
-          "bg-interactive text-interactive-foreground shadow-[0_4px_16px_hsl(var(--interactive-default)/0.32)] hover:bg-interactive-hover hover:shadow-glow",
+          "bg-interactive-solid text-interactive-foreground shadow-[0_4px_16px_hsl(var(--interactive-default)/0.32)] hover:bg-interactive-solid-hover hover:shadow-glow",
         outline:
           "glass text-text-primary hover:bg-white/[0.10]",
         premium:

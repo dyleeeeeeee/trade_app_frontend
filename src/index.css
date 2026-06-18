@@ -53,10 +53,11 @@
     --surface-overlay: 220 32% 14%;
     --surface-glass: 0 0% 100%;          /* glass tints are white at low alpha */
 
-    /* Text — hierarchy by weight + opacity, not size */
-    --text-primary: 210 40% 98%;
-    --text-secondary: 214 18% 72%;
-    --text-tertiary: 216 14% 52%;
+    /* Text — hierarchy by weight + opacity, not size. Tuned for WCAG AA
+       (>=4.5:1) on the deep-navy surfaces, including the lighter glass tiles. */
+    --text-primary: 210 40% 98%;         /* ~17:1 on base */
+    --text-secondary: 214 20% 78%;       /* ~8:1 — supporting copy */
+    --text-tertiary: 215 16% 64%;        /* ~5:1 — captions/labels (was 52%, failed) */
     --text-inverse: 223 45% 6%;
 
     /* Borders — soft light edges, not harsh strokes */
@@ -64,27 +65,32 @@
     --border-default: 216 22% 22%;       /* gentle edge at full opacity */
     --border-strong: 215 18% 34%;
 
-    /* Interactive — Apple system blue (#0A84FF) */
-    --interactive-default: 211 100% 52%;
-    --interactive-hover: 211 100% 62%;
-    --interactive-pressed: 214 90% 46%;
+    /* Interactive — two blues so contrast holds both ways:
+       `default` is a bright Apple blue used for accent TEXT, rings and tints
+       (>=4.5:1 on dark); `solid` is a deeper blue used for FILLS so white
+       labels stay AA (white-on-bright-blue would have failed). */
+    --interactive-default: 210 100% 66%; /* accent/link text on dark — AA */
+    --interactive-hover: 210 100% 74%;
+    --interactive-pressed: 214 90% 58%;
+    --interactive-solid: 214 90% 47%;    /* button fills — white text is AA */
+    --interactive-solid-hover: 214 90% 53%;
     --interactive-foreground: 0 0% 100%;
-    --interactive-subtle: 211 100% 52%;  /* used at low alpha for tints */
+    --interactive-subtle: 210 100% 66%;  /* used at low alpha for tints */
 
-    /* Feedback — calibrated, never neon */
-    --feedback-success: 150 48% 50%;     /* muted emerald */
-    --feedback-success-foreground: 150 60% 96%;
-    --feedback-warning: 36 88% 58%;
-    --feedback-warning-foreground: 36 90% 12%;
-    --feedback-error: 4 72% 63%;         /* soft red */
-    --feedback-error-foreground: 4 80% 97%;
-    --feedback-info: 211 100% 62%;
-    --feedback-info-foreground: 211 90% 12%;
+    /* Feedback — calibrated, never neon; tuned to AA as text on dark */
+    --feedback-success: 152 58% 58%;     /* emerald — ~5:1 as profit text */
+    --feedback-success-foreground: 152 60% 10%;
+    --feedback-warning: 38 92% 62%;
+    --feedback-warning-foreground: 38 90% 12%;
+    --feedback-error: 4 84% 70%;         /* soft red — ~5:1 as loss/error text */
+    --feedback-error-foreground: 4 60% 12%;
+    --feedback-info: 210 100% 70%;
+    --feedback-info-foreground: 210 90% 12%;
 
     /* Trading domain (semantic, accessibility-paired with icon/shape) */
-    --profit: 150 48% 50%;
-    --loss: 4 72% 63%;
-    --neutral: 216 14% 52%;
+    --profit: 152 58% 58%;
+    --loss: 4 84% 70%;
+    --neutral: 215 16% 64%;
 
     /* ---- Elevation — Z-depth as spatial language ----
        Dark mode: softened shadow opacity + a top inset highlight to simulate

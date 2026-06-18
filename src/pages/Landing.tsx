@@ -206,7 +206,7 @@ export default function Landing() {
                 key={i}
                 src={`/images/association-brand${i}.png`}
                 alt={`Partner ${i}`}
-                className="h-8 w-auto opacity-40 grayscale transition-opacity duration-interaction hover:opacity-80 lg:h-9"
+                className="h-8 w-auto opacity-70 grayscale transition-opacity duration-interaction hover:opacity-100 lg:h-9"
               />
             ))}
           </div>
@@ -236,12 +236,12 @@ export default function Landing() {
                     <div className="flex items-center gap-3">
                       <AssetLogo symbol={asset.symbol} size={44} />
                       <div className="min-w-0">
-                        <p className="truncate text-body font-semibold">{asset.name}</p>
+                        <p className="truncate text-body font-semibold text-text-primary">{asset.name}</p>
                         <p className="text-caption uppercase text-text-tertiary">{asset.symbol}</p>
                       </div>
                     </div>
                     <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
-                      <LivePrice value={Number(asset.price)} className="min-w-0 truncate font-mono text-h2 font-semibold" />
+                      <LivePrice value={Number(asset.price)} className="min-w-0 truncate font-mono tabular-nums text-h2 font-semibold text-text-primary" />
                       <PriceChange changePercent={asset.changePercent} />
                     </div>
                     <Button asChild variant="secondary" size="md" className="w-full">

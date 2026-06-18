@@ -187,7 +187,14 @@ export function LiquidNav() {
                   )}
                   <Icon className="relative h-5 w-5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
                   {showLabel && (
-                    <span className="relative whitespace-nowrap text-body-sm font-medium">{item.label}</span>
+                    <span
+                      className={cn(
+                        'relative whitespace-nowrap text-body-sm',
+                        isActive ? 'font-semibold' : 'font-medium',
+                      )}
+                    >
+                      {item.label}
+                    </span>
                   )}
                 </Link>
               </motion.div>

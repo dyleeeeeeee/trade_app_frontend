@@ -43,6 +43,8 @@ export default {
           DEFAULT: token("interactive-default"),
           hover: token("interactive-hover"),
           pressed: token("interactive-pressed"),
+          solid: token("interactive-solid"),
+          "solid-hover": token("interactive-solid-hover"),
           foreground: token("interactive-foreground"),
           subtle: token("interactive-subtle"),
         },
