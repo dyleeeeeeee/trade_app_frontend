@@ -63,6 +63,14 @@ export const authAPI = {
     return response;
   },
 
+  async resetPassword(token: string, password: string) {
+    const response = await apiCall('/api/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, password }),
+    });
+    return response;
+  },
+
   async getCurrentUser() {
     const response = await apiCall('/api/user', {
       method: 'GET',
@@ -76,14 +84,6 @@ export const walletAPI = {
   async getBalance() {
     const response = await apiCall('/api/wallet', {
       method: 'GET',
-    });
-    return response;
-  },
-
-  async deposit(amount: number) {
-    const response = await apiCall('/api/deposit', {
-      method: 'POST',
-      body: JSON.stringify({ amount }),
     });
     return response;
   },
