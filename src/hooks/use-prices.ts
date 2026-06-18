@@ -32,9 +32,17 @@ export function usePrices() {
     queryKey: ['prices'],
     queryFn: fetchPrices,
     refetchInterval: 15_000,
+    // Pause polling in hidden/background tabs — don't burn API calls unseen.
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    // Keep the last good data on screen across refetches/errors.
+    placeholderData: (prev) => prev,
     staleTime: 10_000,
+    gcTime: 5 * 60_000,
+    // Resilient to transient blips, but never stall the UI for long.
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
 }
 

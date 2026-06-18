@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { AssetLogo } from '@/components/AssetLogo';
 import { LivePrice, PriceChange } from '@/components/LivePrice';
 import { TradingViewChart } from '@/components/TradingViewChart';
+import { usePrices } from '@/hooks/use-prices';
 import {
   TrendingUp,
   TrendingDown,
@@ -50,24 +51,55 @@ export default function Trading() {
   const [asset, setAsset] = useState('BTC/USD');
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
-  const [assets, setAssets] = useState<AssetData[]>([]);
-  const [pricesLoading, setPricesLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [priceFlash, setPriceFlash] = useState<Record<string, 'up' | 'down' | null>>({});
   const prevPrices = useRef<Record<string, number>>({});
 
-  useEffect(() => {
-    fetchTrades();
-    fetchPrices();
-    const interval = setInterval(fetchPrices, 15000);
-    return () => clearInterval(interval);
-  }, []);
+  // Single shared, deduped, visibility-aware price query (one poll for the
+  // whole app — Dashboard/Landing/Trading reuse the same cache).
+  const { data: priceData, isLoading: isPricesLoading, dataUpdatedAt } = usePrices();
+  const pricesLoading = isPricesLoading && !priceData;
+
+  const assets: AssetData[] = useMemo(
+    () =>
+      (priceData ?? []).map((a) => ({
+        symbol: a.symbol,
+        name: a.name,
+        id: a.id,
+        price: parseFloat(a.price),
+        change: a.change || 0,
+        changePercent: a.changePercent || 0,
+        previousClose: a.previousClose || 0,
+        volume: a.volume || 0,
+        marketCap: a.marketCap || 0,
+      })),
+    [priceData],
+  );
+
+  const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt) : null;
 
   useEffect(() => {
-    const selectedAsset = assets.find(a => a.symbol === asset);
-    if (selectedAsset) {
-      setPrice(selectedAsset.price.toString());
+    fetchTrades();
+  }, []);
+
+  // Flash each ticker green/red when its price changes between polls.
+  useEffect(() => {
+    if (assets.length === 0) return;
+    const flashes: Record<string, 'up' | 'down' | null> = {};
+    assets.forEach((a) => {
+      const prev = prevPrices.current[a.symbol];
+      if (prev && prev !== a.price) flashes[a.symbol] = a.price > prev ? 'up' : 'down';
+      prevPrices.current[a.symbol] = a.price;
+    });
+    if (Object.keys(flashes).length > 0) {
+      setPriceFlash(flashes);
+      const t = setTimeout(() => setPriceFlash({}), 1200);
+      return () => clearTimeout(t);
     }
+  }, [assets]);
+
+  useEffect(() => {
+    const selectedAsset = assets.find((a) => a.symbol === asset);
+    if (selectedAsset) setPrice(selectedAsset.price.toString());
   }, [asset, assets]);
 
   const fetchTrades = async () => {
@@ -81,46 +113,6 @@ export default function Trading() {
       console.error('Failed to fetch trades:', error);
     }
   };
-
-  const fetchPrices = useCallback(async () => {
-    if (assets.length === 0) setPricesLoading(true);
-    try {
-      const response = await tradingAPI.getPrices();
-      if (response.ok) {
-        const data = await response.json();
-        const newAssets: AssetData[] = data.assets.map((a: any) => ({
-          ...a,
-          price: parseFloat(a.price),
-          change: a.change || 0,
-          changePercent: a.changePercent || 0,
-          previousClose: a.previousClose || 0,
-          volume: a.volume || 0,
-          marketCap: a.marketCap || 0,
-        }));
-
-        // Detect price direction for flash animation
-        const flashes: Record<string, 'up' | 'down' | null> = {};
-        newAssets.forEach(a => {
-          const prev = prevPrices.current[a.symbol];
-          if (prev && prev !== a.price) {
-            flashes[a.symbol] = a.price > prev ? 'up' : 'down';
-          }
-          prevPrices.current[a.symbol] = a.price;
-        });
-        if (Object.keys(flashes).length > 0) {
-          setPriceFlash(flashes);
-          setTimeout(() => setPriceFlash({}), 1200);
-        }
-
-        setAssets(newAssets);
-        setLastUpdated(new Date());
-      }
-    } catch (error) {
-      console.error('Failed to fetch prices:', error);
-    } finally {
-      setPricesLoading(false);
-    }
-  }, [assets.length]);
 
   const handleTrade = async () => {
     setLoading(true);
