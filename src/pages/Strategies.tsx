@@ -565,23 +565,16 @@ export default function Strategies() {
 
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="investment">Amount to invest ($)</Label>
-                  <div className="relative">
-                    <DollarSign
-                      className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                    <Input
-                      id="investment"
-                      type="number"
-                      placeholder={`Min: $${selectedStrategy.min_investment}`}
-                      value={investmentAmount}
-                      onChange={(e) => setInvestmentAmount(e.target.value)}
-                      min={selectedStrategy.min_investment}
-                      max={selectedStrategy.max_investment}
-                      className="pl-10"
-                    />
-                  </div>
+                  <Input
+                    icon={DollarSign}
+                    id="investment"
+                    type="number"
+                    placeholder={`Min: $${selectedStrategy.min_investment}`}
+                    value={investmentAmount}
+                    onChange={(e) => setInvestmentAmount(e.target.value)}
+                    min={selectedStrategy.min_investment}
+                    max={selectedStrategy.max_investment}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row">

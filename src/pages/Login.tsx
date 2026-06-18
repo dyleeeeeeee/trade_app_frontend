@@ -41,18 +41,15 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="pl-10"
-                />
-              </div>
+              <Input
+                icon={Mail}
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -62,18 +59,15 @@ export default function Login() {
                   Forgot password?
                 </Link>
               </div>
-              <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="pl-10"
-                />
-              </div>
+              <Input
+                icon={Lock}
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
             </div>
 
             <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>

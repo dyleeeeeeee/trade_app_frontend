@@ -52,31 +52,19 @@ export default function Profile() {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="fullName">Full name</Label>
-                    <div className="relative">
-                      <User className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                      <Input id="fullName" className="pl-10" value={profileData.fullName} onChange={(e) => setProfileData({...profileData, fullName: e.target.value})} />
-                    </div>
+                    <Input icon={User} id="fullName" value={profileData.fullName} onChange={(e) => setProfileData({...profileData, fullName: e.target.value})} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                      <Input id="email" className="pl-10" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} />
-                    </div>
+                    <Input icon={Mail} id="email" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="phone">Phone</Label>
-                    <div className="relative">
-                      <Phone className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                      <Input id="phone" className="pl-10" value={profileData.phone} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} />
-                    </div>
+                    <Input icon={Phone} id="phone" value={profileData.phone} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="country">Country</Label>
-                    <div className="relative">
-                      <Globe className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                      <Input id="country" className="pl-10" value={profileData.country} onChange={(e) => setProfileData({...profileData, country: e.target.value})} />
-                    </div>
+                    <Input icon={Globe} id="country" value={profileData.country} onChange={(e) => setProfileData({...profileData, country: e.target.value})} />
                   </div>
                 </div>
                 <Button onClick={handleSave} variant="primary" className="self-start">Save changes</Button>
@@ -95,24 +83,15 @@ export default function Profile() {
               <CardContent className="flex flex-col gap-5 p-0 pt-6">
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="currentPassword">Current password</Label>
-                  <div className="relative">
-                    <Lock className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                    <Input id="currentPassword" type="password" className="pl-10" placeholder="Current password" />
-                  </div>
+                  <Input icon={Lock} id="currentPassword" type="password" placeholder="Current password" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="newPassword">New password</Label>
-                  <div className="relative">
-                    <KeyRound className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                    <Input id="newPassword" type="password" className="pl-10" placeholder="New password" />
-                  </div>
+                  <Input icon={KeyRound} id="newPassword" type="password" placeholder="New password" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="confirmPassword">Confirm new password</Label>
-                  <div className="relative">
-                    <KeyRound className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                    <Input id="confirmPassword" type="password" className="pl-10" placeholder="Re-enter new password" />
-                  </div>
+                  <Input icon={KeyRound} id="confirmPassword" type="password" placeholder="Re-enter new password" />
                 </div>
                 <Button variant="primary" className="self-start">Update password</Button>
               </CardContent>

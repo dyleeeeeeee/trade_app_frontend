@@ -418,17 +418,14 @@ export default function Wallet() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="withdrawAmount">Amount (USD)</Label>
-                      <div className="relative">
-                        <DollarSign className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
-                        <Input
-                          id="withdrawAmount"
-                          type="number"
-                          placeholder="0.00"
-                          value={withdrawAmount}
-                          onChange={(e) => setWithdrawAmount(e.target.value)}
-                          className="pl-10"
-                        />
-                      </div>
+                      <Input
+                        icon={DollarSign}
+                        id="withdrawAmount"
+                        type="number"
+                        placeholder="0.00"
+                        value={withdrawAmount}
+                        onChange={(e) => setWithdrawAmount(e.target.value)}
+                      />
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -450,16 +447,13 @@ export default function Wallet() {
 
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="walletAddress">Wallet address</Label>
-                      <div className="relative">
-                        <WalletIcon className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
-                        <Input
-                          id="walletAddress"
-                          placeholder="Where to send your funds"
-                          value={withdrawalAddress}
-                          onChange={(e) => setWithdrawalAddress(e.target.value)}
-                          className="pl-10"
-                        />
-                      </div>
+                      <Input
+                        icon={WalletIcon}
+                        id="walletAddress"
+                        placeholder="Where to send your funds"
+                        value={withdrawalAddress}
+                        onChange={(e) => setWithdrawalAddress(e.target.value)}
+                      />
                     </div>
 
                     <Button
@@ -499,31 +493,25 @@ export default function Wallet() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="recipient">Recipient email</Label>
-                      <div className="relative">
-                        <Mail className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
-                        <Input
-                          id="recipient"
-                          type="email"
-                          placeholder="recipient@example.com"
-                          value={transferRecipient}
-                          onChange={(e) => setTransferRecipient(e.target.value)}
-                          className="pl-10"
-                        />
-                      </div>
+                      <Input
+                        icon={Mail}
+                        id="recipient"
+                        type="email"
+                        placeholder="recipient@example.com"
+                        value={transferRecipient}
+                        onChange={(e) => setTransferRecipient(e.target.value)}
+                      />
                     </div>
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="transferAmount">Amount (USD)</Label>
-                      <div className="relative">
-                        <DollarSign className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
-                        <Input
-                          id="transferAmount"
-                          type="number"
-                          placeholder="0.00"
-                          value={transferAmount}
-                          onChange={(e) => setTransferAmount(e.target.value)}
-                          className="pl-10"
-                        />
-                      </div>
+                      <Input
+                        icon={DollarSign}
+                        id="transferAmount"
+                        type="number"
+                        placeholder="0.00"
+                        value={transferAmount}
+                        onChange={(e) => setTransferAmount(e.target.value)}
+                      />
                     </div>
                     <Button
                       variant="primary"

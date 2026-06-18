@@ -351,18 +351,16 @@ export default function Trading() {
 
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="size" className="text-caption uppercase tracking-wider text-text-tertiary">Quantity</Label>
-                  <div className="relative">
-                    <Hash className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
-                    <Input
-                      id="size"
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      value={size}
-                      onChange={(e) => setSize(e.target.value)}
-                      className="pl-10 font-mono tabular-nums"
-                    />
-                  </div>
+                  <Input
+                    icon={Hash}
+                    id="size"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={size}
+                    onChange={(e) => setSize(e.target.value)}
+                    className="font-mono tabular-nums"
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">

@@ -83,37 +83,31 @@ export default function ResetPassword() {
               <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="password">New password</Label>
-                  <div className="relative">
-                    <Lock className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="At least 8 characters"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      aria-invalid={tooShort}
-                      className="pl-10"
-                    />
-                  </div>
+                  <Input
+                    icon={Lock}
+                    id="password"
+                    type="password"
+                    placeholder="At least 8 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    aria-invalid={tooShort}
+                  />
                   {tooShort && <p className="text-caption text-feedback-error">Use at least 8 characters.</p>}
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="confirmPassword">Confirm new password</Label>
-                  <div className="relative">
-                    <ShieldCheck className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.5} aria-hidden="true" />
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      aria-invalid={mismatch}
-                      className="pl-10"
-                    />
-                  </div>
+                  <Input
+                    icon={ShieldCheck}
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    aria-invalid={mismatch}
+                  />
                   {mismatch && <p className="text-caption text-feedback-error">Passwords don't match.</p>}
                 </div>
 

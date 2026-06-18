@@ -241,24 +241,17 @@ export default function CopyTrading() {
                         <Label htmlFor={`allocation-${trader.id}`}>
                           Portfolio to allocate (%)
                         </Label>
-                        <div className="relative">
-                          <Users
-                            className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-text-tertiary"
-                            strokeWidth={1.5}
-                            aria-hidden="true"
-                          />
-                          <Input
-                            id={`allocation-${trader.id}`}
-                            type="number"
-                            min="1"
-                            max="100"
-                            placeholder="e.g. 10"
-                            value={allocation}
-                            onChange={(e) => setAllocation(e.target.value)}
-                            className="pl-10"
-                            aria-label={`Percentage of your portfolio to allocate to ${trader.name}`}
-                          />
-                        </div>
+                        <Input
+                          icon={Users}
+                          id={`allocation-${trader.id}`}
+                          type="number"
+                          min="1"
+                          max="100"
+                          placeholder="e.g. 10"
+                          value={allocation}
+                          onChange={(e) => setAllocation(e.target.value)}
+                          aria-label={`Percentage of your portfolio to allocate to ${trader.name}`}
+                        />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <Button
