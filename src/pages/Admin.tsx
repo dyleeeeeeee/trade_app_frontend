@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
+import { Skeleton } from '@/components/ui/skeleton';
 import { adminAPI, walletAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -18,6 +19,7 @@ export default function Admin() {
   const [users, setUsers] = useState([]);
   const [withdrawals, setWithdrawals] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [balanceModalOpen, setBalanceModalOpen] = useState(false);
   const [profitModalOpen, setProfitModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -50,26 +52,11 @@ export default function Admin() {
 
       if (usersRes.ok) {
         const usersData = await usersRes.json();
-        const usersWithData = await Promise.all(
-          usersData.users.map(async (user: any) => {
-            try {
-              const [balanceRes, profitRes] = await Promise.all([
-                adminAPI.getUserBalance(user.id),
-                adminAPI.getUserProfit(user.id)
-              ]);
-              const balance = balanceRes.ok ? (await balanceRes.json()).balance || 0 : 0;
-              const profit = profitRes.ok ? (await profitRes.json()).profit || 0 : 0;
-              return { ...user, balance, profit };
-            } catch {
-              return { ...user, balance: 0, profit: 0 };
-            }
-          })
-        );
-        // Newest account first
-        usersWithData.sort(
+        // Balance/profit now arrive with each user — no per-user calls.
+        const list = (usersData.users || []).sort(
           (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
-        setUsers(usersWithData);
+        setUsers(list);
       }
 
       if (withdrawalsRes.ok) {
@@ -78,6 +65,8 @@ export default function Admin() {
       }
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
+    } finally {
+      setInitialLoading(false);
     }
   };
 
@@ -186,7 +175,9 @@ export default function Admin() {
     setProfitModalOpen(true);
   };
 
-  const pendingWithdrawals = withdrawals.filter((w: any) => w.status === 'pending');
+  const pendingWithdrawals = withdrawals
+    .filter((w: any) => w.status === 'pending')
+    .sort((a: any, b: any) => new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime());
 
   return (
     <Layout>
@@ -217,7 +208,20 @@ export default function Admin() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-3">
-                {pendingWithdrawals.map((withdrawal: any) => (
+                {initialLoading &&
+                  Array.from({ length: 2 }).map((_, i) => (
+                    <div key={`wsk-${i}`} className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4 sm:gap-4">
+                      <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                        <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+                        <div className="flex flex-col gap-1.5">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-3 w-36" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-8 w-24 rounded-md" />
+                    </div>
+                  ))}
+                {!initialLoading && pendingWithdrawals.map((withdrawal: any) => (
                   <div
                     key={withdrawal.id}
                     className="glass-inset flex items-center justify-between gap-3 rounded-xl p-4 sm:gap-4"
@@ -249,7 +253,7 @@ export default function Admin() {
                     </Button>
                   </div>
                 ))}
-                {pendingWithdrawals.length === 0 && (
+                {!initialLoading && pendingWithdrawals.length === 0 && (
                   <div className="glass-inset flex flex-col items-center gap-2 rounded-xl px-6 py-10 text-center">
                     <span className="flex h-11 w-11 items-center justify-center rounded-full bg-feedback-success/15 text-feedback-success">
                       <CheckCircle className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
@@ -286,7 +290,23 @@ export default function Admin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user: any) => (
+                  {initialLoading &&
+                    Array.from({ length: 8 }).map((_, i) => (
+                      <TableRow key={`usk-${i}`}>
+                        <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                        <TableCell className="text-right"><Skeleton className="ml-auto h-4 w-20" /></TableCell>
+                        <TableCell className="text-right"><Skeleton className="ml-auto h-4 w-20" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-14 rounded-full" /></TableCell>
+                        <TableCell>
+                          <div className="flex justify-end gap-2">
+                            <Skeleton className="h-8 w-20 rounded-md" />
+                            <Skeleton className="h-8 w-16 rounded-md" />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  {!initialLoading && users.map((user: any) => (
                     <TableRow key={user.id}>
                       <TableCell className="whitespace-nowrap text-text-primary">{user.email}</TableCell>
                       <TableCell className="whitespace-nowrap text-right font-mono tabular-nums font-medium text-feedback-success">
@@ -363,7 +383,7 @@ export default function Admin() {
                 </TableBody>
                 </Table>
               </div>
-              {users.length === 0 && (
+              {!initialLoading && users.length === 0 && (
                 <div className="glass-inset flex flex-col items-center gap-2 rounded-xl px-6 py-10 text-center">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-overlay text-text-tertiary">
                     <Users className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
