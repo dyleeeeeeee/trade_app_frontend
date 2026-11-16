@@ -229,7 +229,12 @@
 
   html,
   body {
-    overflow-x: hidden;          /* never allow a stray element to scroll sideways */
+    /* `clip` contains horizontal overflow WITHOUT turning html/body into a
+       scroll container. `hidden` forces overflow-y to `auto`, which (with
+       overscroll-behavior-y: none) traps the mouse wheel on <body> and stops
+       it chaining to the viewport — the page then only scrolls by dragging
+       the scrollbar. `clip` leaves overflow-y visible, so the wheel works. */
+    overflow-x: clip;            /* never allow a stray element to scroll sideways */
     overscroll-behavior-y: none;
   }
 
