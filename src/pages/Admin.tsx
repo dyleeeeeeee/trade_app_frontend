@@ -8,8 +8,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from '@/components/ui/badge';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { adminAPI, walletAPI } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { Shield, Users, DollarSign, CheckCircle, XCircle, Clock, Loader2, Edit } from 'lucide-react';
+import { Shield, Users, DollarSign, CheckCircle, XCircle, Clock, Loader2, Edit, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, useReducedMotion } from 'framer-motion';
 
@@ -22,6 +23,8 @@ export default function Admin() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [newBalance, setNewBalance] = useState('');
   const [newProfit, setNewProfit] = useState('');
+  const { user: currentUser } = useAuth();
+  const isSuperAdmin = currentUser?.role === 'super_admin';
   const reduce = useReducedMotion();
 
   const rise = (delay = 0) =>
@@ -145,6 +148,23 @@ export default function Admin() {
       }
     } catch (error) {
       toast.error("Couldn't update P&L. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleVisibility = async (userId: string, hidden: boolean) => {
+    setLoading(true);
+    try {
+      const response = await adminAPI.setUserVisibility(userId, hidden);
+      if (response.ok) {
+        toast.success(hidden ? 'User hidden from staff admins' : 'User visible to staff admins');
+        fetchAdminData();
+      } else {
+        toast.error("Couldn't update visibility. Try again.");
+      }
+    } catch (error) {
+      toast.error("Couldn't update visibility. Try again.");
     } finally {
       setLoading(false);
     }
@@ -277,9 +297,14 @@ export default function Admin() {
                         </Badge>
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
-                        <Badge variant={user.role === 'admin' ? 'default' : 'neutral'}>
-                          {user.role}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={user.role === 'admin' || user.role === 'super_admin' ? 'default' : 'neutral'}>
+                            {user.role}
+                          </Badge>
+                          {isSuperAdmin && user.hidden && (
+                            <Badge variant="warning">Hidden</Badge>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-2 whitespace-nowrap">
@@ -312,6 +337,21 @@ export default function Admin() {
                           >
                             {user.blocked ? 'Unblock' : 'Block'}
                           </Button>
+                          {isSuperAdmin && (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleToggleVisibility(user.id, !user.hidden)}
+                              disabled={loading}
+                              aria-label={`${user.hidden ? 'Show' : 'Hide'} ${user.email} ${user.hidden ? 'to' : 'from'} staff admins`}
+                            >
+                              {user.hidden ? (
+                                <><Eye className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />Show</>
+                              ) : (
+                                <><EyeOff className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />Hide</>
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

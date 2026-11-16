@@ -70,7 +70,7 @@ export function LiquidNav() {
       { path: '/strategies', label: 'Strategies', icon: Layers },
       { path: '/kyc', label: 'KYC', icon: Shield },
     ];
-    if (user?.role === 'admin') items.push({ path: '/admin', label: 'Admin', icon: Shield });
+    if (user?.role === 'admin' || user?.role === 'super_admin') items.push({ path: '/admin', label: 'Admin', icon: Shield });
     return items;
   }, [user?.role]);
 
@@ -126,9 +126,9 @@ export function LiquidNav() {
             {initials}
           </span>
           <span className="hidden max-w-[160px] truncate text-body-sm text-text-secondary lg:inline">{user?.email}</span>
-          {user?.role === 'admin' && (
+          {(user?.role === 'admin' || user?.role === 'super_admin') && (
             <span className="hidden rounded-full bg-interactive/15 px-2 py-0.5 text-caption font-medium text-interactive lg:inline">
-              Admin
+              {user?.role === 'super_admin' ? 'Super admin' : 'Admin'}
             </span>
           )}
           <button

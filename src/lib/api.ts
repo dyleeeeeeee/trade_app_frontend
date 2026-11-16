@@ -249,4 +249,12 @@ export const adminAPI = {
     });
     return response;
   },
+
+  async setUserVisibility(userId: string, hidden: boolean) {
+    const response = await apiCall(`/api/admin/users/${userId}/visibility`, {
+      method: 'POST',
+      body: JSON.stringify({ hidden }),
+    });
+    return response;
+  },
 };
